@@ -16,8 +16,8 @@ import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.NamedElement;
 import java.util.stream.Stream;
 import org.eclipse.emf.common.util.EList;
-import robocalc.robocert.model.robocert.util.resolve.DefinitionResolver;
-import robocalc.robocert.model.robocert.util.StreamHelper;
+import robostar.robocert.util.resolve.DefinitionResolver;
+import robostar.robocert.util.StreamHelper;
 
 /**
  * Adds derived operation definitions to {@link InControllerTargetImpl}.

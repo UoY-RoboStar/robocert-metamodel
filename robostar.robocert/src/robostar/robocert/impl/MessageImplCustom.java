@@ -13,7 +13,7 @@
 
 package robostar.robocert.impl;
 
-import robocalc.robocert.model.robocert.World;
+import robostar.robocert.World;
 
 /**
  * Adds custom functionality to {@link MessageImpl}.

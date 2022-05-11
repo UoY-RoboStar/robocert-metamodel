@@ -17,7 +17,7 @@ import circus.robocalc.robochart.NamedElement;
 import circus.robocalc.robochart.RoboticPlatform;
 import java.util.stream.Stream;
 import org.eclipse.emf.common.util.EList;
-import robocalc.robocert.model.robocert.util.StreamHelper;
+import robostar.robocert.util.StreamHelper;
 
 /**
  * Adds derived operation definitions to {@link InModuleTargetImpl}.
