@@ -8,14 +8,18 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: robostar.robocert;uses:="org.eclipse.emf.ecore,org.eclipse.emf.common.util,circus.robocalc.robochart",
- robostar.robocert.impl;uses:="org.eclipse.emf.common.util,circus.robocalc.robochart",
- robostar.robocert.util;
-  uses:="org.eclipse.emf.common.util,
+Export-Package: robostar.robocert;uses:="org.eclipse.emf.ecore,
+ org.eclipse.emf.common.util,
+ circus.robocalc.robochart",
+ robostar.robocert.impl;uses:="org.eclipse.emf.common.util,
+ circus.robocalc.robochart",
+ robostar.robocert.util; uses:="org.eclipse.emf.common.util,
    robostar.robocert.util.resolve,
    circus.robocalc.robochart,
    robostar.robocert",
- robostar.robocert.util.resolve;uses:="robostar.robocert.util,circus.robocalc.robochart,robostar.robocert"
+ robostar.robocert.util.resolve;uses:="robostar.robocert.util,
+ circus.robocalc.robochart,
+ robostar.robocert"
 Require-Bundle: org.eclipse.core.runtime,
   org.eclipse.emf.ecore;visibility:=reexport,
   org.apache.log4j;bundle-version="1.2.15",

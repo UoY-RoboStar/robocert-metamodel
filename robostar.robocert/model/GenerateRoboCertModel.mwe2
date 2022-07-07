@@ -21,5 +21,8 @@ Workflow {
 	component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
 		genModel = "platform:/resource/${project}/model/RoboCert.genmodel"
 		srcPath = "platform:/resource/${project}/src-gen"
+
+		generateEdit = true
+		generateEditor = true
 	}
 }
