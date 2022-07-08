@@ -25,6 +25,8 @@ SPDX-License-Identifier: EPL-2.0
 
   <modules>
     <module>robostar.robocert</module>
+    <module>robostar.robocert.edit</module>
+    <module>robostar.robocert.editor</module>
     <module>robostar.robocert.feature</module>
     <module>robostar.robocert.update</module>
   </modules>
