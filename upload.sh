@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Get current version"
 dir=robostar.robocert.update/target/repository/
 remote=${ROBOSTAR_WEB_ROOT}/robotool/metamodel/
 url=${ROBOSTAR_WEB_USER}@${ROBOSTAR_WEB_HOST}
-files=( "$dir"/features/*.jar )
-file=${files[0]}
-version=${file#*_}
-version=${version%.jar}
+
+echo "Get current version"
+version=$(./version.sh "$dir")
 
 # Use the branch name to choose the name of the branch. This assumes
 # no branch of name 'update' will ever be used.
