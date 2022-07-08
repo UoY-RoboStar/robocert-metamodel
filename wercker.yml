@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 box: 
-  id: openjdk:11.0.3-jdk-stretch
+  id: openjdk:17.0.2-jdk-stretch
   username: $DOCKERUSR
   password: $DOCKERPWD
 
