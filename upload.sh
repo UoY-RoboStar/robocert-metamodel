@@ -21,7 +21,7 @@ fi
 if [[ $version = *[!\ ]* ]]; 
 then 
   echo "Current version:" "$version";
-  echo "Branch:" "$WERCKER_GIT_BRANCH";
+  echo "Branch:" "$BRANCH_NAME";
   dest=${update}_${version}
   echo "Target dir:" "$dest";
   rm -rf tmp
