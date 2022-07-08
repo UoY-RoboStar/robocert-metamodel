@@ -2,19 +2,20 @@
 set -euo pipefail
 
 dir=robostar.robocert.update/target/repository/
-remote=${ROBOSTAR_WEB_ROOT}/robotool/metamodel/
+remote=${ROBOSTAR_WEB_ROOT}/robotool/robocert-metamodel/
 url=${ROBOSTAR_WEB_USER}@${ROBOSTAR_WEB_HOST}
 
 echo "Get current version"
 version=$(./version.sh "$dir")
 
+BRANCH_NAME=${GITHUB_REF##*/}
 # Use the branch name to choose the name of the branch. This assumes
 # no branch of name 'update' will ever be used.
-if [[ $WERCKER_GIT_BRANCH = main ]];
+if [[ $BRANCH_NAME = main ]];
 then
   update=update
 else
-  update=$WERCKER_GIT_BRANCH
+  update=$BRANCH_NAME
 fi
 
 if [[ $version = *[!\ ]* ]]; 
