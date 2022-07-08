@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - if: (github.ref == 'refs/heads/main') && github.event_name == 'push'
+        name: Setup SSH
+        uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+        with:
+          # Private key required to access the host
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Hostname or IP to add to the known hosts file
+          ssh-host: ${{ secrets.ROBOSTAR_WEB_HOST }}
+
+      - if: (github.ref == 'refs/heads/main') && github.event_name == 'push'
+        name: Making shell scripts executable
+        run: chmod +x upload.sh version.sh
+
+      # If branch is 'main' and not a pull request, then upload.
+      - if: (github.ref == 'refs/heads/main') && github.event_name == 'push'
+        name: Uploading update site
+        run: ./upload.sh
+        env:
+          ROBOSTAR_WEB_ROOT: ${{ secrets.ROBOSTAR_WEB_ROOT }}
+          ROBOSTAR_WEB_USER: ${{ secrets.ROBOSTAR_WEB_USER }}
+          ROBOSTAR_WEB_HOST: ${{ secrets.ROBOSTAR_WEB_HOST }}
+
+      # TODO(@MattWindsor91): requires textual editor to be available
+      # - if: (github.ref == 'refs/heads/main') && github.event_name == 'push'
+      #   name: Recompile Textual Editor
+      #   run: |
+      #     # Propagate recompilation if global flag is active
+      #     if [[ -z ${ROBOSTAR_RECOMPILE_ALL} || ${ROBOSTAR_RECOMPILE_ALL} = false ]]; then
+      #       echo "Recompilation is disabled or not set."
+      #     else
+      #       curl -H "Authorization: token ${ROBOSTAR_GITHUB_ACTIONS_TOKEN}" \
+      #            -X POST \
+      #            -d '{"event_type":"rebuild"}' \
+      #            https://api.github.com/repos/UoY-RoboStar/robocert-textual/dispatches
+      #     fi
+      #   env:
+      #     ROBOSTAR_RECOMPILE_ALL: ${{ secrets.ROBOSTAR_RECOMPILE_ALL }}
+      #     ROBOSTAR_GITHUB_ACTIONS_TOKEN: ${{ secrets.ROBOSTAR_GITHUB_ACTIONS_TOKEN }}
