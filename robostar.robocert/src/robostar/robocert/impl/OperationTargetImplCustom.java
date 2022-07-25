@@ -25,12 +25,4 @@ public class OperationTargetImplCustom extends OperationTargetImpl {
   public NamedElement basicGetElement() {
     return getOperation();
   }
-
-  /**
-   * @return a human-readable summary of this controller.
-   */
-  @Override
-  public String toString() {
-    return "operation " + getOperation().getName();
-  }
 }

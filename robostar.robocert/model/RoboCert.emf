@@ -25,8 +25,13 @@ import "platform:/resource/circus.robocalc.robochart/model/robochart.ecore";
  * - With the exception of utility classes, the metamodel is structured based
  *   on how things are (or should be) structured in the RoboCert reference
  *   manual, as well as in the Sirius diagrams.
+ *
  * - The Sirius diagrams in `representations.aird` are probably a more
  *   approachable introduction to what is going on here.
+ *
+ * - Derived operations and attributes have attached bodies written in Java
+ *   (inside 'body="..."' and 'get="..."' annotations).  These are spliced
+ *   verbatim into the generated code.
  */
 
 
@@ -119,24 +124,48 @@ Such a target has the robotic platform as its context and its element is the mod
 class ModuleTarget extends ComponentTarget {
 	@genmodel(documentation="The module referred to by this target.")
 	ref robochart.RCModule[1] module;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.component(TargetStringer.MODULE, getModule().getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="A target referring to a RoboChart controller.")
 class ControllerTarget extends ComponentTarget {
 	@genmodel(documentation="The controller referred to by this target.")
 	ref robochart.ControllerDef[1] controller;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.component(TargetStringer.CONTROLLER, getController().getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="A target referring to a RoboChart state machine.")
 class StateMachineTarget extends ComponentTarget {
 	@genmodel(documentation="The state machine referred to by this target.")
 	ref robochart.StateMachineDef[1] stateMachine;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.component(TargetStringer.STATE_MACHINE, getStateMachine().getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="A target referring to a RoboChart operation.")
 class OperationTarget extends ComponentTarget {
 	@genmodel(documentation="The operation referred to by this target.")
 	ref robochart.OperationDef[1] operation;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.component(TargetStringer.OPERATION, getOperation().getName());
+	")
+	derived op String[1] toString();
 }
 
 //
@@ -153,12 +182,24 @@ abstract class CollectionTarget extends Target {
 class InModuleTarget extends CollectionTarget {
 	@genmodel(documentation="The module referred to by this target.")
 	ref robochart.RCModule[1] module;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.collection(TargetStringer.MODULE, getModule().getName());
+	")
+	derived op String[1] toString();	
 }
 
 @genmodel(documentation="A target referring to the contents of a RoboChart controller.")
 class InControllerTarget extends CollectionTarget {
 	@genmodel(documentation="The controller referred to by this target.")
 	ref robochart.ControllerDef[1] controller;
+	
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		return TargetStringer.collection(TargetStringer.CONTROLLER, getController().getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="Assigns a value to one or more constants.")

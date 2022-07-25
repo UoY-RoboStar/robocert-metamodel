@@ -25,12 +25,4 @@ public class ControllerTargetImplCustom extends ControllerTargetImpl {
   public NamedElement basicGetElement() {
     return getController();
   }
-
-  /**
-   * @return a human-readable summary of this controller.
-   */
-  @Override
-  public String toString() {
-    return "controller " + getController().getName();
-  }
 }

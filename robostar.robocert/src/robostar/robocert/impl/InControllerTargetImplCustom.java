@@ -38,12 +38,4 @@ public class InControllerTargetImplCustom extends InControllerTargetImpl {
 				getController().getMachines().stream().map(dr::resolve)
 		));
 	}
-
-	/**
-	 * @return a human-readable summary of this module.
-	 */
-	@Override
-	public String toString() {
-		return "components of controller " + getController().getName();
-	}
 }

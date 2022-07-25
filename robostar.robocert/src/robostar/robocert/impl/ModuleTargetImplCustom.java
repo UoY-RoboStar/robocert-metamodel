@@ -24,12 +24,4 @@ public class ModuleTargetImplCustom extends ModuleTargetImpl {
   public NamedElement basicGetElement() {
     return getModule();
   }
-
-  /**
-   * @return a human-readable summary of this module.
-   */
-  @Override
-  public String toString() {
-    return "module " + getModule().getName();
-  }
 }

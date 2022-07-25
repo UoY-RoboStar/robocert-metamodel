@@ -38,12 +38,4 @@ public class InModuleTargetImplCustom extends InModuleTargetImpl {
   private Stream<ConnectionNode> nodes() {
     return getModule().getNodes().stream();
   }
-
-  /**
-   * @return a human-readable summary of this module.
-   */
-  @Override
-  public String toString() {
-    return "components of module " + getModule().getName();
-  }
 }

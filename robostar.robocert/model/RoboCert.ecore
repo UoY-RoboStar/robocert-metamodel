@@ -103,6 +103,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to a RoboChart module.&#xD;&#xA;&#xD;&#xA;Such a target has the robotic platform as its context and its element is the module."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.component(TargetStringer.MODULE, getModule().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//RCModule">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -114,6 +119,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to a RoboChart controller."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.component(TargetStringer.CONTROLLER, getController().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="controller" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//ControllerDef">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -125,6 +135,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to a RoboChart state machine."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.component(TargetStringer.STATE_MACHINE, getStateMachine().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="stateMachine" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//StateMachineDef">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -136,6 +151,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to a RoboChart operation."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.component(TargetStringer.OPERATION, getOperation().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="operation" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//OperationDef">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -159,6 +179,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to the contents of a RoboChart module."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.collection(TargetStringer.MODULE, getModule().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//RCModule">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -170,6 +195,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A target referring to the contents of a RoboChart controller."/>
     </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return TargetStringer.collection(TargetStringer.CONTROLLER, getController().getName());&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="controller" lowerBound="1"
         eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//ControllerDef">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

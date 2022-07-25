@@ -25,12 +25,4 @@ public class StateMachineTargetImplCustom extends StateMachineTargetImpl {
   public NamedElement basicGetElement() {
     return getStateMachine();
   }
-
-  /**
-   * @return a human-readable summary of this controller.
-   */
-  @Override
-  public String toString() {
-    return "state machine " + getStateMachine().getName();
-  }
 }
