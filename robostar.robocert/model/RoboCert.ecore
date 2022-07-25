@@ -594,6 +594,7 @@
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Whether this message has at least one Actor that is a World."/>
+        <details key="get" value="return getFrom() instanceof robostar.robocert.World || getTo() instanceof robostar.robocert.World;"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

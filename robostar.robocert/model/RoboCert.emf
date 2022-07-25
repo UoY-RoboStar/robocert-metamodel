@@ -502,7 +502,10 @@ class Message {
 	// Derived properties
 	//
 	
-	@genmodel(documentation="Whether this message has at least one Actor that is a World.")
+	@genmodel(
+		documentation="Whether this message has at least one Actor that is a World.",
+		get="return getFrom() instanceof robostar.robocert.World || getTo() instanceof robostar.robocert.World;"
+	)
 	derived transient readonly volatile attr boolean outbound;
 }
 
