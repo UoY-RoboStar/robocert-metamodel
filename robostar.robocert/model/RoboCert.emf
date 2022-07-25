@@ -682,10 +682,18 @@ abstract class Actor extends robochart.NamedElement {
 
 @genmodel(documentation="Actor that stands for the current target.")
 class TargetActor extends Actor {
+	@genmodel(body="
+		return ActorStringer.singleton(ActorStringer.TARGET, getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="Actor that stands for the environment of the current target.")
 class World extends Actor {
+	@genmodel(body="
+		return ActorStringer.singleton(ActorStringer.WORLD, getName());
+	")
+	derived op String[1] toString();
 }
 
 @genmodel(documentation="Actor that references a component of the target.")
@@ -695,6 +703,11 @@ class ComponentActor extends Actor {
 It is ill-formed for this node to not be a component of the target,
 and also ill-formed for the same component to form multiple actors.")
 	ref robochart.ConnectionNode[1] node;
+
+	@genmodel(body="
+		return ActorStringer.multi(ActorStringer.COMPONENT, getName(), getNode().toString());
+	")
+	derived op String[1] toString();
 }
 
 
