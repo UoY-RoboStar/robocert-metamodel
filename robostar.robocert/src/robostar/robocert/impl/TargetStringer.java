@@ -14,56 +14,57 @@ package robostar.robocert.impl;
 
 /**
  * Prefixes used for constructing string representations of targets.
- * 
- * This sidesteps a problem with Emfatic where we can't nest string literals
- * into injected bodies; instead of giving the toString() definitions inline,
- * we just call out into this class.
- * 
- * @author Matt Windsor
+ * <p>
+ * This sidesteps a problem with Emfatic where we can't nest string literals into injected bodies;
+ * instead of giving the toString() definitions inline, we just call out into this class.
  *
+ * @author Matt Windsor
  */
 public class TargetStringer {
-	/**
-	 * Prefix of controller targets.
-	 */
-	public static final String MODULE = "module";
 
-	/**
-	 * Prefix of controller targets.
-	 */
-	public static final String CONTROLLER = "controller";
+  /**
+   * Prefix of controller targets.
+   */
+  public static final String MODULE = "module";
 
-	/**
-	 * Prefix of state machine targets.
-	 */
-	public static final String STATE_MACHINE = "state machine";
+  /**
+   * Prefix of controller targets.
+   */
+  public static final String CONTROLLER = "controller";
 
-	/**
-	 * Prefix of operation targets.
-	 */
-	public static final String OPERATION = "operation";
-	
-	/**
-	 * Produces the name of a collection target.
-	 * @param type prefix for the type of component.
-	 * @param name name of the component.
-	 * @return human-friendly string representation of the target.
-	 */
-	public static String collection(String type, String name) {
-		return addComponent(new StringBuilder().append("components of "), type, name);
-	}
+  /**
+   * Prefix of state machine targets.
+   */
+  public static final String STATE_MACHINE = "state machine";
 
-	/**
-	 * Produces the name of a component target.
-	 * @param type prefix for the type of component.
-	 * @param name name of the component.
-	 * @return human-friendly string representation of the target.
-	 */
-	public static String component(String type, String name) {
-		return addComponent(new StringBuilder(), type, name);
-	}
-	
-	private static String addComponent(StringBuilder sb, String type, String name) {
-		return sb.append(type).append(' ').append(name).toString();
-	}
+  /**
+   * Prefix of operation targets.
+   */
+  public static final String OPERATION = "operation";
+
+  /**
+   * Produces the name of a collection target.
+   *
+   * @param type prefix for the type of component.
+   * @param name name of the component.
+   * @return human-friendly string representation of the target.
+   */
+  public static String collection(String type, String name) {
+    return addComponent(new StringBuilder().append("components of "), type, name);
+  }
+
+  /**
+   * Produces the name of a component target.
+   *
+   * @param type prefix for the type of component.
+   * @param name name of the component.
+   * @return human-friendly string representation of the target.
+   */
+  public static String component(String type, String name) {
+    return addComponent(new StringBuilder(), type, name);
+  }
+
+  private static String addComponent(StringBuilder sb, String type, String name) {
+    return sb.append(type).append(' ').append(name).toString();
+  }
 }
