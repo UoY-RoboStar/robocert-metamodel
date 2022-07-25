@@ -27,17 +27,17 @@ public class ActorStringer {
   /**
    * Type string for target actors.
    */
-  public static String TARGET = "target";
+  public static final String TARGET = "target";
 
   /**
    * Type string for component actors.
    */
-  public static String COMPONENT = "component";
+  public static final String COMPONENT = "component";
 
   /**
    * Type string for worlds.
    */
-  public static String WORLD = "world";
+  public static final String WORLD = "world";
 
   /**
    * Produces a string representation for a singleton actor.
