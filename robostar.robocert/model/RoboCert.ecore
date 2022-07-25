@@ -158,15 +158,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CollectionTarget" abstract="true" eSuperTypes="#//Target">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A target that contains a collection of elements."/>
+      <details key="documentation" value="A target that contains a collection of elements.&#xD;&#xA;&#xD;&#xA;To resolve the collection given an arbitrary CollectionTarget, use robostar.robocert.util.resolve.TargetComponentsResolver."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
-        eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//ConnectionNode"
-        changeable="false" volatile="true" transient="true" derived="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Any components accessible from this target."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InModuleTarget" eSuperTypes="#//CollectionTarget">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

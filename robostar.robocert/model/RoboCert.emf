@@ -167,10 +167,10 @@ class OperationTarget extends ComponentTarget {
 // Collection targets
 //
 
-@genmodel(documentation="A target that contains a collection of elements.")
+@genmodel(documentation="A target that contains a collection of elements.
+
+To resolve the collection given an arbitrary CollectionTarget, use robostar.robocert.util.resolve.TargetComponentsResolver.")
 abstract class CollectionTarget extends Target {
-	@genmodel(documentation="Any components accessible from this target.")
-	derived volatile transient readonly ref robochart.ConnectionNode[*] components;	
 }
 
 @genmodel(documentation="A target referring to the contents of a RoboChart module.")
