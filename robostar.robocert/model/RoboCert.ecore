@@ -78,19 +78,12 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A specification target.&#xD;&#xA;&#xD;&#xA;Targets combine several things: a RoboChart element;&#xD;&#xA;a process representing the element from a refinement perspective;&#xD;&#xA;information about the upstream ('context') elements connected to this target;&#xD;&#xA;and information about the downstream elements connected to it."/>
+      <details key="documentation" value="A specification target.&#xD;&#xA;&#xD;&#xA;Targets combine several things: a RoboChart element;&#xD;&#xA;a process representing the element from a refinement perspective;&#xD;&#xA;information about the upstream ('context') elements connected to this target;&#xD;&#xA;and information about the downstream elements connected to it.&#xD;&#xA;&#xD;&#xA;To look up the element of a Target, use robostar.robocert.util.resolve.TargetElementResolver."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="group" lowerBound="1" eType="#//SpecificationGroup"
         eOpposite="#//SpecificationGroup/target">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The specification group to which this target belongs."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
-        eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//NamedElement"
-        changeable="false" volatile="true" transient="true" derived="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Lowest common denominator for the targeted element."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

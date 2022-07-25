@@ -97,17 +97,12 @@ class SpecificationGroup extends Group {
 Targets combine several things: a RoboChart element;
 a process representing the element from a refinement perspective;
 information about the upstream ('context') elements connected to this target;
-and information about the downstream elements connected to it.")
+and information about the downstream elements connected to it.
+
+To look up the element of a Target, use robostar.robocert.util.resolve.TargetElementResolver.")
 abstract class Target {
 	@genmodel(documentation="The specification group to which this target belongs.")
 	ref SpecificationGroup[1]#target group;
-	
-	//
-	// Derived properties
-	//
-
-	@genmodel(documentation="Lowest common denominator for the targeted element.")
-	derived volatile transient readonly ref robochart.NamedElement[1] element;	
 }
 
 //

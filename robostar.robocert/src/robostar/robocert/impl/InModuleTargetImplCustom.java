@@ -13,7 +13,6 @@
 package robostar.robocert.impl;
 
 import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.NamedElement;
 import circus.robocalc.robochart.RoboticPlatform;
 import java.util.stream.Stream;
 import org.eclipse.emf.common.util.EList;
@@ -25,11 +24,6 @@ import robostar.robocert.util.StreamHelper;
  * @author Matt Windsor
  */
 public class InModuleTargetImplCustom extends InModuleTargetImpl {
-  @Override
-  public NamedElement basicGetElement() {
-    return getModule();
-  }
-
   @Override
   public EList<ConnectionNode> getComponents() {
     return StreamHelper.toEList(nodes().filter(x -> !(x instanceof RoboticPlatform)));

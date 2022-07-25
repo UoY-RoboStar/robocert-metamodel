@@ -13,7 +13,6 @@
 package robostar.robocert.impl;
 
 import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.NamedElement;
 import java.util.stream.Stream;
 import org.eclipse.emf.common.util.EList;
 import robostar.robocert.util.resolve.DefinitionResolver;
@@ -25,11 +24,6 @@ import robostar.robocert.util.StreamHelper;
  * @author Matt Windsor
  */
 public class InControllerTargetImplCustom extends InControllerTargetImpl {
-	@Override
-	public NamedElement basicGetElement() {
-		return getController();
-	}
-
 	@Override
 	public EList<ConnectionNode> getComponents() {
 		final var dr = new DefinitionResolver();
