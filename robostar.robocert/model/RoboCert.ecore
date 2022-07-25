@@ -184,6 +184,7 @@
     <eOperations name="hasConstant" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Checks whether this assignment maps the given constant."/>
+        <details key="body" value="return constants.stream().anyMatch(other -> constant == other);"/>
       </eAnnotations>
       <eParameters name="constant" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Variable"/>
     </eOperations>

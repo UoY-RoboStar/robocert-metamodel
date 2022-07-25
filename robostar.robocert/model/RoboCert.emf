@@ -169,7 +169,13 @@ class ConstAssignment {
 	@genmodel(documentation="The expression containing the new value of the constant(s).")
 	val robochart.Expression[1] value;
 	
-	@genmodel(documentation="Checks whether this assignment maps the given constant.")
+	@genmodel(
+		documentation="Checks whether this assignment maps the given constant.",
+		// The normal RoboChart equality test compares by name, which doesn't
+		// account for the variables being defined in different contexts.
+		// So we use object identity here.
+		body="return constants.stream().anyMatch(other -> constant == other);"
+	)
 	derived readonly transient volatile op boolean[1] hasConstant(robochart.Variable constant);
 }
 
