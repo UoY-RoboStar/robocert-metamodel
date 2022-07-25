@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2022 University of York and others
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Matt Windsor - initial definition
+ ******************************************************************************/
 package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.ConnectionNode;
@@ -39,16 +51,16 @@ public class TargetComponentsResolver extends RoboCertSwitch<Stream<ConnectionNo
    * @return a stream of that target's components, as connection nodes.
    */
   public Stream<ConnectionNode> resolve(CollectionTarget t) {
-    final var elem = doSwitch(t);
+    final var comps = doSwitch(t);
 
     // Safety valve in case we forget to add an override.
-    if (elem == null) {
+    if (comps == null) {
       throw new UnsupportedOperationException(
           "Tried to resolve the components of a target %s that is not yet supported.  This is an internal error.".formatted(
               t));
     }
 
-    return elem;
+    return comps;
   }
 
   @Override
