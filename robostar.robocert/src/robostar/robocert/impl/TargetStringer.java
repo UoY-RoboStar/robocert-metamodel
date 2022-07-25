@@ -50,7 +50,7 @@ public class TargetStringer {
 	 * @return human-friendly string representation of the target.
 	 */
 	public static String collection(String type, String name) {
-		return new StringBuilder().append("components of").append(type).append(' ').append(name).toString();
+		return addComponent(new StringBuilder().append("components of "), type, name);
 	}
 
 	/**
@@ -60,6 +60,10 @@ public class TargetStringer {
 	 * @return human-friendly string representation of the target.
 	 */
 	public static String component(String type, String name) {
-		return new StringBuilder().append(type).append(' ').append(name).toString();
+		return addComponent(new StringBuilder(), type, name);
+	}
+	
+	private static String addComponent(StringBuilder sb, String type, String name) {
+		return sb.append(type).append(' ').append(name).toString();
 	}
 }
