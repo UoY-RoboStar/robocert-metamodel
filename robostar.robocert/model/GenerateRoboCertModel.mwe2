@@ -9,7 +9,9 @@ var project = "robostar.robocert"
 Workflow {
 	bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
 		scanClassPath = true
+		platformUri = ".."
 		
+		// RoboChart model files.
 		registerGenModelFile = "platform:/resource/circus.robocalc.robochart/model/robochart.genmodel"
 		registerEcoreFile = "platform:/resource/circus.robocalc.robochart/model/robochart.ecore"
 	}
