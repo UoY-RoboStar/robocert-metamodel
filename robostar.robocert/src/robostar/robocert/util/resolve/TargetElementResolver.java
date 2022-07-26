@@ -27,13 +27,11 @@ import robostar.robocert.util.RoboCertSwitch;
  *
  * @author Matt Windsor
  */
-public class TargetElementResolver extends RoboCertSwitch<NamedElement> {
+public class TargetElementResolver {
   /* This used to be an innate derived attribute of Target, but implementing it on the metamodel
   side (which has poor support for inheritance of derived attributes) involved overriding the code
   with custom implementations in a way that is flimsy when exposed to Maven builds.  As such, we now
   do it here. */
-
-  // NOTE: add any new Targets as they are defined.
 
   /**
    * Resolves the underlying element of a target.
@@ -43,7 +41,7 @@ public class TargetElementResolver extends RoboCertSwitch<NamedElement> {
    * target, or the container of a collection target).
    */
   public NamedElement resolve(Target t) {
-    final var elem = doSwitch(t);
+    final var elem = new Switch().doSwitch(t);
 
     // Safety valve in case we forget to add an override.
     if (elem == null) {
@@ -55,41 +53,45 @@ public class TargetElementResolver extends RoboCertSwitch<NamedElement> {
     return elem;
   }
 
-  //
-  // Collection targets
-  //
+  private static class Switch extends RoboCertSwitch<NamedElement> {
+    // NOTE: add any new Targets as they are defined.
 
-  @Override
-  public NamedElement caseInModuleTarget(InModuleTarget t) {
-    return t.getModule();
-  }
+    //
+    // Collection targets
+    //
 
-  @Override
-  public NamedElement caseInControllerTarget(InControllerTarget t) {
-    return t.getController();
-  }
+    @Override
+    public NamedElement caseInModuleTarget(InModuleTarget t) {
+      return t.getModule();
+    }
 
-  //
-  // Component targets
-  //
+    @Override
+    public NamedElement caseInControllerTarget(InControllerTarget t) {
+      return t.getController();
+    }
 
-  @Override
-  public NamedElement caseModuleTarget(ModuleTarget t) {
-    return t.getModule();
-  }
+    //
+    // Component targets
+    //
 
-  @Override
-  public NamedElement caseControllerTarget(ControllerTarget t) {
-    return t.getController();
-  }
+    @Override
+    public NamedElement caseModuleTarget(ModuleTarget t) {
+      return t.getModule();
+    }
 
-  @Override
-  public NamedElement caseStateMachineTarget(StateMachineTarget t) {
-    return t.getStateMachine();
-  }
+    @Override
+    public NamedElement caseControllerTarget(ControllerTarget t) {
+      return t.getController();
+    }
 
-  @Override
-  public NamedElement caseOperationTarget(OperationTarget t) {
-    return t.getOperation();
+    @Override
+    public NamedElement caseStateMachineTarget(StateMachineTarget t) {
+      return t.getStateMachine();
+    }
+
+    @Override
+    public NamedElement caseOperationTarget(OperationTarget t) {
+      return t.getOperation();
+    }
   }
 }

@@ -14,6 +14,8 @@ package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.RoboticPlatform;
+import com.google.inject.Inject;
+import java.util.Objects;
 import java.util.stream.Stream;
 import robostar.robocert.CollectionTarget;
 import robostar.robocert.InControllerTarget;
@@ -25,24 +27,20 @@ import robostar.robocert.util.RoboCertSwitch;
  *
  * @author Matt Windsor
  */
-public class TargetComponentsResolver extends RoboCertSwitch<Stream<ConnectionNode>> {
-  private final DefinitionResolver definitionResolver;
-
+public record TargetComponentsResolver(DefinitionResolver defRes) {
   /**
-   * Constructs a target components resolver
-   * @param dr the definition resolver to use for inspecting controller components.
+   * Constructs a target components resolver.
+   * @param defRes the definition resolver to use for inspecting controller components.
    */
-  public TargetComponentsResolver(DefinitionResolver dr) {
-    super();
-    definitionResolver = dr;
+  @Inject
+  public TargetComponentsResolver {
+    Objects.requireNonNull(defRes);
   }
 
   /* This used to be an innate derived attribute of Target, but implementing it on the metamodel
   side (which has poor support for inheritance of derived attributes) involved overriding the code
   with custom implementations in a way that is flimsy when exposed to Maven builds.  As such, we now
   do it here. */
-
-  // NOTE: add any new Targets as they are defined.
 
   /**
    * Resolves the underlying components of a collection target.
@@ -51,7 +49,7 @@ public class TargetComponentsResolver extends RoboCertSwitch<Stream<ConnectionNo
    * @return a stream of that target's components, as connection nodes.
    */
   public Stream<ConnectionNode> resolve(CollectionTarget t) {
-    final var comps = doSwitch(t);
+    final var comps = new Switch().doSwitch(t);
 
     // Safety valve in case we forget to add an override.
     if (comps == null) {
@@ -63,17 +61,24 @@ public class TargetComponentsResolver extends RoboCertSwitch<Stream<ConnectionNo
     return comps;
   }
 
-  @Override
-  public Stream<ConnectionNode> caseInModuleTarget(InModuleTarget t) {
-      return t.getModule().getNodes().stream().filter(x -> !(x instanceof RoboticPlatform));
-  }
+  /**
+   * The switch, which handles dispatch on the various types of target handled by the resolver.
+   */
+  private class Switch extends RoboCertSwitch<Stream<ConnectionNode>> {
+    // NOTE: add any new Targets as they are defined.
 
-  @Override
-  public Stream<ConnectionNode> caseInControllerTarget(InControllerTarget t) {
-    final var ctrl = t.getController();
-    return Stream.concat(
-        ctrl.getLOperations().stream().map(definitionResolver::resolve),
-        ctrl.getMachines().stream().map(definitionResolver::resolve)
-    );
+    @Override
+    public Stream<ConnectionNode> caseInModuleTarget(InModuleTarget t) {
+      return t.getModule().getNodes().stream().filter(x -> !(x instanceof RoboticPlatform));
+    }
+
+    @Override
+    public Stream<ConnectionNode> caseInControllerTarget(InControllerTarget t) {
+      final var ctrl = t.getController();
+      return Stream.concat(
+          ctrl.getLOperations().stream().map(defRes::resolve),
+          ctrl.getMachines().stream().map(defRes::resolve)
+      );
+    }
   }
 }
