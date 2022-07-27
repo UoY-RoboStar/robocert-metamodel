@@ -588,9 +588,7 @@ class NamedMessageSet extends robochart.NamedElement {
 	val MessageSet[1] set;
 }
 
-@genmodel(documentation="A set of message specifications.
-
-To analyse whether a message set is universal, empty, and so on, use robostar.robocert.util.SetAnalyser.")
+@genmodel(documentation="A set of message specifications.")
 abstract class MessageSet {
 }
 
