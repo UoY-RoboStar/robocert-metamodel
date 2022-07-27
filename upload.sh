@@ -8,7 +8,7 @@ url=${ROBOSTAR_WEB_USER}@${ROBOSTAR_WEB_HOST}
 echo "Get current version"
 version=$(./version.sh "$dir")
 
-BRANCH_NAME=${GITHUB_REF##*/}
+BRANCH_NAME=${GITHUB_REF_NAME}
 # Use the branch name to choose the name of the branch. This assumes
 # no branch of name 'update' will ever be used.
 if [[ $BRANCH_NAME = main ]];
