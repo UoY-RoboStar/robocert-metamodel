@@ -82,19 +82,19 @@ SPDX-License-Identifier: EPL-2.0
         <configuration>
           <filesets combine.children="append">
             <fileset>
-              <directory>${basedir}/../circus.robocalc.robochart/src-gen/</directory>
+              <directory>${basedir}/../robostar.robocert/src-gen/</directory>
               <includes>
                 <include>**/*</include>
               </includes>
             </fileset>
             <fileset>
-              <directory>${basedir}/../circus.robocalc.robochart.edit/src-gen/</directory>
+              <directory>${basedir}/../robostar.robocert.edit/src-gen/</directory>
               <includes>
                 <include>**/*</include>
               </includes>
             </fileset>
             <fileset>
-              <directory>${basedir}/../circus.robocalc.robochart.editor/src-gen/</directory>
+              <directory>${basedir}/../robostar.robocert.editor/src-gen/</directory>
               <includes>
                 <include>**/*</include>
               </includes>
