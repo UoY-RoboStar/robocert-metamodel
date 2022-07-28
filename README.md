@@ -10,10 +10,24 @@ The main representation of the metamodel is
 selecting 'Generate Ecore Model'.  The two files _must_ be kept in sync, and
 the Emfatic version _must_ remain the primary source of truth.
 
-## Development platform requirements
+_This is pre-release material._  We greatly appreciate any suggestions,
+comments, and issues.
 
-* [Eclipse IDE](https://www.eclipse.org/downloads/) (tested with 2022-03)
-* [Emfatic](https://www.eclipse.org/emfatic/) (tested with 1.0)
+
+## Dependencies
+
+- Java 17.  This should now be readily available for modern systems (I was able
+  to install it on Ubuntu 20.04, for instance), but likely won't be your
+  default install at time of writing.
+- An Eclipse setup (2021-12+) with plugin development tools and the latest
+  version of RoboChart's metamodel checked
+  out (see, for instance, the
+  [RoboChart metamodel](https://github.com/UoY-RoboStar/robochart-metamodel)
+  dependency notes);
+- [Emfatic](https://www.eclipse.org/emfatic/) (you will need 1.1.0.202207260534
+  or higher; at time of writing, this means **you will need to use the interim
+  branch**.  This is because of a known bug with string escaping in previous
+  versions.)
 * [Eclipse Modelling Framework](https://www.eclipse.org/modeling/emf/) Ecore
   processing plugins (tested with 2.27.0)
 * [Maven](https://maven.apache.org) Maven (tested with 3.8.5)
@@ -22,20 +36,30 @@ the Emfatic version _must_ remain the primary source of truth.
 Other items may be required.  If the list above is incomplete, please file an
 issue.
 
-### Build (maven) ###
 
-TODO: this is almost certainly broken at the moment.
+## How to build and run
 
-1. `mvn clean install`
+Please inform us of any build failures.
 
-### Build (eclipse) ###
+### Maven
 
-You may need to make sure that `circus.robocalc.robochart` is available two
-levels up from the models directory, possibly by symlinking it from wherever
-your source copy of
-[robochart-metamodel](https://github.com/UoY-RoboStar/robochart-metamodel) is.
+1. `$ mvn clean install`
+
+
+### Eclipse
 
 1. Right click `robostar.robocert/model/RoboCert.emf`
         1. Click `Generate Ecore Model`
 2. Right click `robostar.robocert/model/GenerateRoboCertModel.mwe2`
         1. Click `Run As > MWE2 Workflow`
+
+
+## Protocol for updating the metamodel
+
+Whenever updating the metamodel, follow these steps:
+
+1. Perform regression testing
+2. Change the [language reference manual](https://github.com/UoY-RoboStar/robocert-reference-manual)
+
+If changes to documentations are not possible immediately, create issues
+indicating exactly what needs to be done.

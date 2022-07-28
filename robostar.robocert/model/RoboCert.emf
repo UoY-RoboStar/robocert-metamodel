@@ -122,7 +122,7 @@ class ModuleTarget extends ComponentTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.component(TargetStringer.MODULE, getModule().getName());
+		return \"module \" + getModule().getName();
 	")
 	derived op String[1] toString();
 }
@@ -134,7 +134,7 @@ class ControllerTarget extends ComponentTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.component(TargetStringer.CONTROLLER, getController().getName());
+		return \"controller \" + getController().getName();
 	")
 	derived op String[1] toString();
 }
@@ -146,7 +146,7 @@ class StateMachineTarget extends ComponentTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.component(TargetStringer.STATE_MACHINE, getStateMachine().getName());
+		return \"state machine \" + getStateMachine().getName();
 	")
 	derived op String[1] toString();
 }
@@ -158,7 +158,7 @@ class OperationTarget extends ComponentTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.component(TargetStringer.OPERATION, getOperation().getName());
+		return \"operation \" + getOperation().getName();
 	")
 	derived op String[1] toString();
 }
@@ -180,7 +180,7 @@ class InModuleTarget extends CollectionTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.collection(TargetStringer.MODULE, getModule().getName());
+		return \"components of module \" + getModule().getName();
 	")
 	derived op String[1] toString();	
 }
@@ -192,7 +192,7 @@ class InControllerTarget extends CollectionTarget {
 	
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
-		return TargetStringer.collection(TargetStringer.CONTROLLER, getController().getName());
+		return \"components of controller \" + getController().getName();
 	")
 	derived op String[1] toString();
 }
@@ -654,7 +654,10 @@ abstract class Actor extends robochart.NamedElement {
 @genmodel(documentation="Actor that stands for the current target.")
 class TargetActor extends Actor {
 	@genmodel(body="
-		return ActorStringer.singleton(ActorStringer.TARGET, getName());
+		if (eIsProxy()) return super.toString();
+		var name = getName();
+		if (name == null || name.isEmpty()) name = \"(untitled)\";
+		return \"<<target>> \" + name;
 	")
 	derived op String[1] toString();
 }
@@ -662,7 +665,10 @@ class TargetActor extends Actor {
 @genmodel(documentation="Actor that stands for the environment of the current target.")
 class World extends Actor {
 	@genmodel(body="
-		return ActorStringer.singleton(ActorStringer.WORLD, getName());
+		if (eIsProxy()) return super.toString();
+		var name = getName();
+		if (name == null || name.isEmpty()) name = \"(untitled)\";
+		return \"<<world>> \" + name;
 	")
 	derived op String[1] toString();
 }
@@ -676,7 +682,9 @@ and also ill-formed for the same component to form multiple actors.")
 	ref robochart.ConnectionNode[1] node;
 
 	@genmodel(body="
-		return ActorStringer.multi(ActorStringer.COMPONENT, getName(), getNode().toString());
+		var name = getName();
+		if (name == null || name.isEmpty()) name = \"(untitled)\";
+		return \"<<component>> %s: %s\".formatted(name, getNode());
 	")
 	derived op String[1] toString();
 }
