@@ -110,26 +110,6 @@ SPDX-License-Identifier: EPL-2.0
       </plugin>
 
       <plugin>
-        <groupId>org.eclipse.tycho.extras</groupId>
-        <artifactId>tycho-source-feature-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <executions>
-          <execution>
-            <id>source-feature</id>
-            <phase>package</phase>
-            <goals>
-              <goal>source-feature</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <!-- provide plug-ins not containing any source code -->
-            <plugin id="lang1.update"/>
-          </excludes>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-source-plugin</artifactId>
         <version>${tycho.version}</version>
@@ -140,6 +120,19 @@ SPDX-License-Identifier: EPL-2.0
               <goal>plugin-source</goal>
             </goals>
           </execution>
+          <execution>
+            <id>feature-source</id>
+            <goals>
+              <goal>feature-source</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <!-- provide plug-ins not containing any source code -->
+                <plugin id="robostar.robocert.update"/>
+              </excludes>
+            </configuration>
+          </execution>
+
         </executions>
       </plugin>
 
