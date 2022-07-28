@@ -20,17 +20,23 @@ import circus.robocalc.robochart.Plus;
 import circus.robocalc.robochart.RefExp;
 import circus.robocalc.robochart.RoboChartFactory;
 import com.google.inject.Inject;
+
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
  * Helper factory that uses a {@link RoboChartFactory} to produce specific types of expression.
  *
+ * @param rc  the underlying RoboChart factory.
+ *
  * @author Matt Windsor
  */
-public class ExpressionFactory {
+public record ExpressionFactory(RoboChartFactory rc) {
 
   @Inject
-  private RoboChartFactory rc;
+  public ExpressionFactory {
+	  Objects.requireNonNull(rc);
+  };
 
   /**
    * Creates a {@link BooleanExp} with the given truth value.

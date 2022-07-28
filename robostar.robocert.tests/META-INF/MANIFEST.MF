@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: robostar.robocert.tests
+Bundle-SymbolicName: robostar.robocert.tests; singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: RoboStar
+Automatic-Module-Name: robostar.robocert.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Bundle: robostar.robocert;bundle-version="0.1.0",
+ org.hamcrest;bundle-version="2.2.0",
+ org.junit.jupiter.api;bundle-version="5.8.1",
+ circus.robocalc.robochart;bundle-version="2.0.0"
+Export-Package: robostar.robocert.tests.matchers

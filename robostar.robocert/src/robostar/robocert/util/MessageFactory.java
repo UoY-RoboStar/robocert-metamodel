@@ -18,6 +18,8 @@ import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+
 import robostar.robocert.Actor;
 import robostar.robocert.EventTopic;
 import robostar.robocert.Message;
@@ -31,12 +33,16 @@ import robostar.robocert.World;
 /**
  * High-level factory for message-related objects.
  *
+ * @param rc  underlying RoboCert factory.
+ *
  * @author Matt Windsor
  */
-public class MessageFactory {
+public record MessageFactory(RoboCertFactory rc) {
 
   @Inject
-  private RoboCertFactory rc;
+  public MessageFactory {
+	  Objects.requireNonNull(rc);
+  };
 
   /**
    * Constructs a message spec with the given topic, edge, and arguments.
