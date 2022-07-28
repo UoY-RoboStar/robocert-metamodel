@@ -13,6 +13,15 @@
 
 package robostar.robocert.util.resolve;
 
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import com.google.inject.Inject;
+
 import circus.robocalc.robochart.Connection;
 import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.ControllerDef;
@@ -22,12 +31,6 @@ import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.RoboticPlatform;
 import circus.robocalc.robochart.StateMachineBody;
 import circus.robocalc.robochart.StateMachineRef;
-import com.google.inject.Inject;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.eclipse.xtext.EcoreUtil2;
 import robostar.robocert.Actor;
 import robostar.robocert.CollectionTarget;
 import robostar.robocert.ComponentActor;
@@ -157,11 +160,11 @@ public record EventResolverImpl(ActorNodeResolver actorRes, ControllerResolver c
       return false;
     }
     // TODO(@MattWindsor91): do we need reversibility here?
-    if (!EcoreUtil2.equals(topic.getEfrom(), c.getEfrom())) {
+    if (!EcoreUtil.equals(topic.getEfrom(), c.getEfrom())) {
       return false;
     }
     final var eto = topic.getEto();
-    return eto == null || EcoreUtil2.equals(topic.getEto(), c.getEto());
+    return eto == null || EcoreUtil.equals(topic.getEto(), c.getEto());
   }
 
   private boolean nodesMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {

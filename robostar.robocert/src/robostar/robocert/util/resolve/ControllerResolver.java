@@ -16,7 +16,8 @@ package robostar.robocert.util.resolve;
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.RCModule;
 import java.util.Optional;
-import org.eclipse.xtext.EcoreUtil2;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * Resolves various aspects of controllers.
@@ -35,7 +36,11 @@ public class ControllerResolver implements NameResolver<ControllerDef> {
    * @return the controller's module, if it has one.
    */
   public Optional<RCModule> module(ControllerDef c) {
-    return Optional.ofNullable(EcoreUtil2.getContainerOfType(c, RCModule.class));
+    for (EObject e = c; e != null; e = e.eContainer())
+      if (e instanceof RCModule m)
+        return Optional.of(m);
+
+    return Optional.empty();
   }
 
   @Override

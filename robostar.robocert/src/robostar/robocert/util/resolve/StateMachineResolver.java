@@ -13,16 +13,19 @@
 
 package robostar.robocert.util.resolve;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.eclipse.emf.ecore.EObject;
+
+import com.google.inject.Inject;
+
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.OperationDef;
 import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.StateMachineBody;
 import circus.robocalc.robochart.StateMachineDef;
-import com.google.inject.Inject;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import org.eclipse.xtext.EcoreUtil2;
 
 /**
  * Resolves various aspects of state machines (including operations).
@@ -52,18 +55,25 @@ public record StateMachineResolver(ControllerResolver ctrlRes) implements
    * @return the body's controller, if it has one.
    */
   public Optional<ControllerDef> controller(StateMachineBody b) {
-    return Optional.ofNullable(EcoreUtil2.getContainerOfType(b, ControllerDef.class));
+    for (EObject e = b; e != null; e = e.eContainer())
+      if (e instanceof ControllerDef m)
+    	return Optional.of(m);
+
+    return Optional.empty();
   }
 
   @Override
   public String[] name(StateMachineBody element) {
     final var ctrl = controller(element);
     return ctrl.map(c -> nameInController(element, c)).orElseGet(() -> {
-      final var mod = EcoreUtil2.getContainerOfType(element, RCModule.class);
-      return new String[]{mod.getName(), innerName(element)};
+      // State machine is not inside a controller.
+      for (EObject e = element; e != null; e = e.eContainer())
+        if (e instanceof RCModule mod)
+          return new String[]{mod.getName(), innerName(element)};
+      return null;
     });
   }
-
+  
   private String[] nameInController(StateMachineBody element, ControllerDef c) {
     final var cname = ctrlRes.name(c);
     final var name = Arrays.copyOf(cname, cname.length + 1);
