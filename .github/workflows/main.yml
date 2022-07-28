@@ -54,7 +54,7 @@ jobs:
 
       - if: env.deploy == 'true'
         name: Recompile Textual Editor
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.ROBOSTAR_GITHUB_ACTIONS_TOKEN }}
           repository: UoY-RoboStar/robocert-textual
