@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2021-2022 University of York and others
  *
  * This program and the accompanying materials are made available under the
@@ -9,9 +9,10 @@
  *
  * Contributors:
  *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 package robostar.robocert.util.resolve;
 
+import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.Controller;
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.ControllerRef;
@@ -24,6 +25,7 @@ import circus.robocalc.robochart.RoboticPlatformRef;
 import circus.robocalc.robochart.StateMachine;
 import circus.robocalc.robochart.StateMachineDef;
 import circus.robocalc.robochart.StateMachineRef;
+import circus.robocalc.robochart.util.RoboChartSwitch;
 
 /**
  * Helper class for finding definitions of various RoboChart components.
@@ -31,6 +33,43 @@ import circus.robocalc.robochart.StateMachineRef;
  * @author Matt Windsor
  */
 public class DefinitionResolver {
+
+  /**
+   * If the node is a reference, dereference it.
+   *
+   * @param n the node to normalise.
+   *
+   * @return n if it is not a reference; the result of n.getRef() otherwise.
+   */
+  public ConnectionNode normalise(ConnectionNode n) {
+    return new RoboChartSwitch<ConnectionNode>() {
+      @Override
+      public ConnectionNode caseConnectionNode(ConnectionNode n) {
+        // return the node unchanged
+        return n;
+      }
+
+      @Override
+      public ConnectionNode caseStateMachine(StateMachine s) {
+        return resolve(s);
+      }
+
+      @Override
+      public ConnectionNode caseController(Controller c) {
+        return resolve(c);
+      }
+
+      @Override
+      public ConnectionNode caseOperation(Operation o) {
+        return resolve(o);
+      }
+
+      @Override
+      public ConnectionNode caseRoboticPlatform(RoboticPlatform r) {
+        return resolve(r);
+      }
+    }.doSwitch(n);
+  }
 
   /**
    * Resolves a {@link RoboticPlatform} into a {@link RoboticPlatformDef}.

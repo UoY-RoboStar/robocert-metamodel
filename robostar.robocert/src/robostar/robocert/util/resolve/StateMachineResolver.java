@@ -55,9 +55,11 @@ public record StateMachineResolver(ControllerResolver ctrlRes) implements
    * @return the body's controller, if it has one.
    */
   public Optional<ControllerDef> controller(StateMachineBody b) {
-    for (EObject e = b; e != null; e = e.eContainer())
-      if (e instanceof ControllerDef m)
-    	return Optional.of(m);
+    for (EObject e = b; e != null; e = e.eContainer()) {
+      if (e instanceof ControllerDef m) {
+        return Optional.of(m);
+      }
+    }
 
     return Optional.empty();
   }
@@ -67,13 +69,15 @@ public record StateMachineResolver(ControllerResolver ctrlRes) implements
     final var ctrl = controller(element);
     return ctrl.map(c -> nameInController(element, c)).orElseGet(() -> {
       // State machine is not inside a controller.
-      for (EObject e = element; e != null; e = e.eContainer())
-        if (e instanceof RCModule mod)
+      for (EObject e = element; e != null; e = e.eContainer()) {
+        if (e instanceof RCModule mod) {
           return new String[]{mod.getName(), innerName(element)};
+        }
+      }
       return null;
     });
   }
-  
+
   private String[] nameInController(StateMachineBody element, ControllerDef c) {
     final var cname = ctrlRes.name(c);
     final var name = Arrays.copyOf(cname, cname.length + 1);
