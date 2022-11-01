@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2022 University of York and others
  *
  * This program and the accompanying materials are made available under the
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 
 package robostar.robocert.util.resolve;
 

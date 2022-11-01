@@ -13,6 +13,7 @@
 
 package robostar.robocert.util;
 
+import circus.robocalc.robochart.Controller;
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.OperationDef;
 import circus.robocalc.robochart.RCModule;

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2021, 2022 University of York and others
  *
  * This program and the accompanying materials are made available under the
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 package robostar.robocert.tests.impl;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -34,9 +34,9 @@ import robostar.robocert.util.ExpressionFactory;
  */
 class ConstAssignmentImplTest {
 
-  private ExpressionFactory ef = new ExpressionFactory(RoboChartFactory.eINSTANCE);
+  private final ExpressionFactory ef = new ExpressionFactory(RoboChartFactory.eINSTANCE);
   protected RoboCertFactory rf = RoboCertFactory.eINSTANCE;
-  private RoboChartFactory cf = RoboChartFactory.eINSTANCE;
+  private final RoboChartFactory cf = RoboChartFactory.eINSTANCE;
 
   private Variable x;
   private ConstAssignment asst;

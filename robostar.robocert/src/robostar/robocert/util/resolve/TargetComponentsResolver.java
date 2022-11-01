@@ -16,6 +16,7 @@ import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.RoboticPlatform;
 import com.google.inject.Inject;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import robostar.robocert.CollectionTarget;
@@ -51,18 +52,38 @@ public record TargetComponentsResolver(DefinitionResolver defRes) {
    * @param target    target to search.
    * @param component component for which we are searching.
    * @return true provided that target is a collection target and one of the components resolved by
-   * this resolver is equal to the given component.
+   * this resolver is equal to the given component modulo definition resolving.
    */
   public boolean hasComponent(Target target, ConnectionNode component) {
     if (!(target instanceof CollectionTarget c)) {
       return false;
     }
 
-    // As resolve() turns references into definitions, we need to do the same
-    // to the component we're looking for; normalise() does this.
+    // Equality by structural testing of the underlying definitions.
     final var def = defRes.normalise(component);
 
-    return resolve(c).anyMatch(x -> EcoreUtil.equals(def, x));
+    return resolve(c).anyMatch(x -> EcoreUtil.equals(def, defRes.normalise(x)));
+  }
+
+  /**
+   * Gets, if any, the component in the target that matches the one given.
+   *
+   * <p>This may be either the given component, or a dereference/reference thereof.
+   *
+   * @param target    target to search.
+   * @param component component for which we are searching.
+   * @return any component that is a subcomponent of the target and is equal to the given component
+   * modulo definition resolving.
+   */
+  public Optional<ConnectionNode> find(Target target, ConnectionNode component) {
+    if (!(target instanceof CollectionTarget c)) {
+      return Optional.empty();
+    }
+
+    // As above.
+    final var def = defRes.normalise(component);
+
+    return resolve(c).filter(x -> EcoreUtil.equals(def, defRes.normalise(x))).findFirst();
   }
 
   /*
@@ -89,9 +110,13 @@ public record TargetComponentsResolver(DefinitionResolver defRes) {
 
       @Override
       public Stream<ConnectionNode> caseInControllerTarget(InControllerTarget t) {
+        /* We do not resolve references to definitions.  This is because the CSP emitted at the
+           RoboChart side does not (seemingly) do this resolution either.
+
+           As such, equality/membership testing and other such operations need to be sensitive of
+           whether they are getting a def or a ref. */
         final var ctrl = t.getController();
-        return Stream.concat(ctrl.getLOperations().stream().map(defRes::resolve),
-            ctrl.getMachines().stream().map(defRes::resolve));
+        return Stream.concat(ctrl.getLOperations().stream(), ctrl.getMachines().stream());
       }
     }.doSwitch(t);
 

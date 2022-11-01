@@ -15,15 +15,11 @@ package robostar.robocert.tests.util.resolve;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import circus.robocalc.robochart.RoboChartFactory;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import circus.robocalc.robochart.RoboChartFactory;
-import circus.robocalc.robochart.Variable;
-import circus.robocalc.robochart.VariableModifier;
 import robostar.robocert.RoboCertFactory;
-import robostar.robocert.util.ExpressionFactory;
 import robostar.robocert.util.TargetFactory;
 import robostar.robocert.util.resolve.DefinitionResolver;
 import robostar.robocert.util.resolve.TargetComponentsResolver;
@@ -35,8 +31,6 @@ import robostar.robocert.util.resolve.TargetComponentsResolver;
  */
 class TargetComponentsResolverTest {
 
-  private final ExpressionFactory exprFactory = new ExpressionFactory(RoboChartFactory.eINSTANCE);
-  private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
   private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
   private final TargetFactory tgtFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
@@ -48,7 +42,7 @@ class TargetComponentsResolverTest {
   }
 
   /**
-   * Tests {@code has} on a basic assignment.
+   * Tests {@code hasComponent} on a basic assignment.
    */
   @Test
   void testHasComponent_InController() {
@@ -80,4 +74,45 @@ class TargetComponentsResolverTest {
     assertThat(compRes.hasComponent(target, ref), is(true));
   }
 
+
+  /**
+   * Tests {@code find} on a basic assignment.
+   */
+  @Test
+  void testFind_InController() {
+    final var ctrl = chartFactory.createControllerDef();
+    final var target = tgtFactory.inController(ctrl);
+
+    // Now set up some state machines:
+    final var stm1 = chartFactory.createStateMachineDef();
+    stm1.setName("stm1");
+    final var stm2 = chartFactory.createStateMachineDef();
+    stm1.setName("stm2");
+
+    // And now some refs:
+    final var ref1 = chartFactory.createStateMachineRef();
+    ref1.setRef(stm1);
+    final var ref2 = chartFactory.createStateMachineRef();
+    ref2.setRef(stm2);
+
+    // None of these should be in the controller yet:
+    assertThat(compRes.find(target, stm1), is(Optional.empty()));
+    assertThat(compRes.find(target, ref1), is(Optional.empty()));
+    assertThat(compRes.find(target, stm2), is(Optional.empty()));
+    assertThat(compRes.find(target, ref2), is(Optional.empty()));
+
+    // Add in stm1 directly, and we should see stm1/ref1, but not stm2/ref2:
+    ctrl.getMachines().add(stm1);
+    assertThat(compRes.find(target, stm1), is(Optional.of(stm1)));
+    assertThat(compRes.find(target, ref1), is(Optional.of(stm1)));
+    assertThat(compRes.find(target, stm2), is(Optional.empty()));
+    assertThat(compRes.find(target, ref2), is(Optional.empty()));
+
+    // Add in ref2, and we should see it light up:
+    ctrl.getMachines().add(ref2);
+    assertThat(compRes.find(target, stm1), is(Optional.of(stm1)));
+    assertThat(compRes.find(target, ref1), is(Optional.of(stm1)));
+    assertThat(compRes.find(target, stm2), is(Optional.of(ref2)));
+    assertThat(compRes.find(target, ref2), is(Optional.of(ref2)));
+  }
 }
