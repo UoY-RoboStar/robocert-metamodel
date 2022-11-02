@@ -13,13 +13,14 @@
 
 package robostar.robocert.util;
 
-import circus.robocalc.robochart.Controller;
+import java.util.Objects;
+
+import com.google.inject.Inject;
+
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.OperationDef;
 import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.StateMachineDef;
-import com.google.inject.Inject;
-import java.util.Objects;
 import robostar.robocert.ControllerTarget;
 import robostar.robocert.InControllerTarget;
 import robostar.robocert.InModuleTarget;
