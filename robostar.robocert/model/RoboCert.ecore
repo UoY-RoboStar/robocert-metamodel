@@ -75,6 +75,12 @@
         <details key="documentation" value="The interactions inside this sequence group."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="importedEnums" ordered="false"
+        upperBound="-1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Enumeration">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any enumerations imported into this specification group."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

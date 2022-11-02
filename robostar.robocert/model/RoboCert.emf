@@ -85,6 +85,13 @@ class SpecificationGroup extends Group {
 
 	@genmodel(documentation="The interactions inside this sequence group.")
 	ordered val Interaction[*]#group interactions;
+	
+	//
+	// added 2022-11-02
+	//
+	
+	@genmodel(documentation="Any enumerations imported into this specification group.")
+	!ordered ref robochart.Enumeration[*] importedEnums;
 }
 
 
