@@ -1,0 +1,10 @@
+# Unreleased
+
+## 2022-11-02
+
+- Added `importedEnums` to `SpecificationGroup`, to allow for a scoping
+  workaround in resolving `Enumeration`s that are not otherwise in scope.
+
+# 0.1.0
+
+Initial release.
