@@ -13,19 +13,19 @@
 
 package robostar.robocert.util.resolve;
 
-import circus.robocalc.robochart.ControllerDef;
+import circus.robocalc.robochart.Controller;
 import circus.robocalc.robochart.RCModule;
+import circus.robocalc.robochart.RCPackage;
+import com.google.common.collect.Streams;
 import java.util.Optional;
-
-import org.eclipse.emf.ecore.EObject;
+import java.util.stream.Stream;
 
 /**
  * Resolves various aspects of controllers.
  *
  * @author Matt Windsor
  */
-public class ControllerResolver implements NameResolver<ControllerDef> {
-  // TODO(@MattWindsor91): generalise to Controller?
+public class ControllerResolver implements NameResolver<Controller> {
 
   /**
    * Gets the enclosing module for a RoboChart controller.
@@ -35,17 +35,16 @@ public class ControllerResolver implements NameResolver<ControllerDef> {
    * @param c the RoboChart controller.
    * @return the controller's module, if it has one.
    */
-  public Optional<RCModule> module(ControllerDef c) {
-    for (EObject e = c; e != null; e = e.eContainer())
-      if (e instanceof RCModule m)
-        return Optional.of(m);
-
-    return Optional.empty();
+  public Optional<RCModule> module(Controller c) {
+    return ResolveHelper.containerOfType(c, RCModule.class);
   }
 
   @Override
-  public String[] name(ControllerDef element) {
-    final var base = element.getName();
-    return module(element).map(m -> new String[]{m.getName(), base}).orElse(new String[]{base});
+  public String[] name(Controller element) {
+    final var pkg = ResolveHelper.packageOf(element).map(RCPackage::getName);
+    final var mod = module(element).map(RCModule::getName);
+    final var name = element.getName();
+
+    return Streams.concat(pkg.stream(), mod.stream(), Stream.of(name)).toArray(String[]::new);
   }
 }

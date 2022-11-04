@@ -36,11 +36,6 @@ class TargetComponentsResolverTest {
 
   private final TargetComponentsResolver compRes = new TargetComponentsResolver(new DefinitionResolver());
 
-  @BeforeEach
-  void setUp() {
-    // ?
-  }
-
   /**
    * Tests {@code hasComponent} on a basic assignment.
    */

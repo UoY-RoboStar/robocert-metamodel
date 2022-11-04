@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2022 University of York and others
  *
  * This program and the accompanying materials are made available under the
@@ -9,13 +9,14 @@
  *
  * Contributors:
  *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 
 package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.Controller;
 import circus.robocalc.robochart.RCModule;
+import circus.robocalc.robochart.RCPackage;
 import circus.robocalc.robochart.RoboticPlatform;
 import circus.robocalc.robochart.RoboticPlatformDef;
 import com.google.inject.Inject;
@@ -44,8 +45,11 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
 
   @Override
   public String[] name(RCModule element) {
-    // RCModules are at the top of their namespace.
-    return new String[]{element.getName()};
+    // TODO(@MattWindsor91): this duplicates GeneratorUtils code.
+    final var pkg = ResolveHelper.packageOf(element).map(RCPackage::getName);
+    final var name = element.getName();
+
+    return Stream.concat(pkg.stream(), Stream.of(name)).toArray(String[]::new);
   }
 
   /**
