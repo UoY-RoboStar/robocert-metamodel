@@ -46,7 +46,7 @@ SPDX-License-Identifier: EPL-2.0
     </repository>
     <repository>
       <id>robochart-metamodel</id>
-      <url>https://www.cs.york.ac.uk/robostar/robotool/metamodel/update/</url>
+      <url>https://robostar.cs.york.ac.uk/robotool/metamodel/update/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
