@@ -395,14 +395,6 @@ class DeadlineFragment extends BlockFragment {
 	val robochart.Expression[1] units;
 }
 
-@genmodel(documentation="An interaction fragment blocking the diagram until any occurrence happens on the block.
-
-This is an extension to UML.")
-class UntilFragment extends BlockFragment {
-	@genmodel(documentation="The messages that may occur while waiting for 'body'.")
-	val MessageSet[1] intraMessages;
-}
-
 @genmodel(documentation="A fragment containing one or more sequence elements in loop.")
 class LoopFragment extends BlockFragment {
 	@genmodel(documentation="The loop bound, if there is one.  Evaluated once only.")
@@ -411,6 +403,40 @@ class LoopFragment extends BlockFragment {
 	// TODO: conditionals
 }
 
+
+//
+// Sequential fragments
+//
+
+@genmodel(documentation="Fragment that implies sequentialising of lifelines (ie, strict ordering) within the diagram.
+
+This class serves mainly to allow matching of all sequential fragments with one type rule.")
+abstract class SequentialFragment extends InteractionFragment {
+}
+
+@genmodel(documentation="A sequential fragment that indefinitely performs any message in the attached set.
+
+Note that this is a sequential fragment, but is not a block fragment (it doesn't have a body) or an occurrence (it can take an arbitrary amount of time).
+
+This is an extension to UML.")
+class AnyFragment extends SequentialFragment {
+	// Changed in 2022-12-05: this and UntilFragment used to be merged.
+	@genmodel(documentation="The messages that may occur during this fragment.")
+	val MessageSet[1] intraMessages;
+}
+
+@genmodel(documentation="A sequential block fragment where the body can be interrupted by occurrences in a 'trigger' operand.
+
+This fragment implicitly forces strict ordering in both the body and trigger.  This may change in future revisions of the language. 
+
+This is an extension to UML.")
+class UntilFragment extends SequentialFragment, BlockFragment {
+	// Changed in 2022-12-05: 'trigger' here used to be 'body'.
+	@genmodel(documentation="The trigger for exiting the body.
+
+The intended semantics is that, if any occurrences on the trigger can progress, the body is pre-empted and the trigger runs instead.")
+	val InteractionOperand[1] trigger;
+}
 
 //
 // Discrete bounds

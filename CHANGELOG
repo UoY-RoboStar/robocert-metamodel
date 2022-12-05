@@ -1,9 +1,22 @@
-# Unreleased
+# 0.2.0 (unreleased)
 
-## 2022-11-02
+## Added
 
+- Added `SequentialFragment`, which marks fragments as requiring strict
+  ordering semantics, and `AnyFragment` (which is a `SequentialFragment`).
+  (2022-12-05; github #10)
 - Added `importedEnums` to `SpecificationGroup`, to allow for a scoping
   workaround in resolving `Enumeration`s that are not otherwise in scope.
+  (2022-11-02)
+
+## Changed
+
+- (BREAKING) Separated `UntilFragment` and `AnyFragment`.  The latter retains
+  the `intraMessages` but is not a `BlockFragment`; the former is now a
+  `SequentialFragment` and the erstwhile `body` is now `trigger`.  (`body` now
+  refers to the part of the `UntilFragment` which runs _before_ `trigger`, ie
+  that which was previously implicitly an `AnyFragment`.
+  (2022-11-05; github #1)
 
 # 0.1.0
 

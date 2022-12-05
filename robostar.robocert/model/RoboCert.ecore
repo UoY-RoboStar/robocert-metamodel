@@ -421,17 +421,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UntilFragment" eSuperTypes="#//BlockFragment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An interaction fragment blocking the diagram until any occurrence happens on the block.&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="intraMessages" lowerBound="1"
-        eType="#//MessageSet" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The messages that may occur while waiting for 'body'."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LoopFragment" eSuperTypes="#//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A fragment containing one or more sequence elements in loop."/>
@@ -440,6 +429,34 @@
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The loop bound, if there is one.  Evaluated once only."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SequentialFragment" abstract="true"
+      eSuperTypes="#//InteractionFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fragment that implies sequentialising of lifelines (ie, strict ordering) within the diagram.&#xD;&#xA;&#xD;&#xA;This class serves mainly to allow matching of all sequential fragments with one type rule."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnyFragment" eSuperTypes="#//SequentialFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A sequential fragment that indefinitely performs any message in the attached set.&#xD;&#xA;&#xD;&#xA;Note that this is a sequential fragment, but is not a block fragment (it doesn't have a body) or an occurrence (it can take an arbitrary amount of time).&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="intraMessages" lowerBound="1"
+        eType="#//MessageSet" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The messages that may occur during this fragment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UntilFragment" eSuperTypes="#//SequentialFragment #//BlockFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A sequential block fragment where the body can be interrupted by occurrences in a 'trigger' operand.&#xD;&#xA;&#xD;&#xA;This fragment implicitly forces strict ordering in both the body and trigger.  This may change in future revisions of the language. &#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" lowerBound="1"
+        eType="#//InteractionOperand" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The trigger for exiting the body.&#xD;&#xA;&#xD;&#xA;The intended semantics is that, if any occurrences on the trigger can progress, the body is pre-empted and the trigger runs instead."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

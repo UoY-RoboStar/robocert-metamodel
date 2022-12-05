@@ -11,7 +11,7 @@
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="RoboCert.ecore#/"/>
       </ownedRepresentationDescriptors>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_xVnkwNsOEeuTO4js3GS2GQ" name="Core.Top" repPath="#_xVmWoNsOEeuTO4js3GS2GQ" changeId="8b7ccd57-b596-4a5c-b7e6-69e9da6cc091">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_xVnkwNsOEeuTO4js3GS2GQ" name="Core.Top" repPath="#_xVmWoNsOEeuTO4js3GS2GQ" changeId="e0a79b49-2220-4de3-9496-2b234439563d">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="RoboCert.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -835,6 +835,10 @@
               <styles xmi:type="notation:FontStyle" xmi:id="_VzRtoaEdEeyZV_0q0XerVQ" fontName="Noto Sans" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_VzRtoqEdEeyZV_0q0XerVQ"/>
             </children>
+            <children xmi:type="notation:Node" xmi:id="_0dF-AHRwEe2x6bnG-5DWgw" type="3010" element="_0c6X0nRwEe2x6bnG-5DWgw">
+              <styles xmi:type="notation:FontStyle" xmi:id="_0dF-AXRwEe2x6bnG-5DWgw" fontName="Noto Sans" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_0dF-AnRwEe2x6bnG-5DWgw"/>
+            </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_VzQfhaEdEeyZV_0q0XerVQ"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_VzQfhqEdEeyZV_0q0XerVQ"/>
           </children>
@@ -1206,6 +1210,14 @@
         <target xmi:type="ecore:EReference" href="RoboCert.ecore#//SpecificationGroup/interactions"/>
         <semanticElements xmi:type="ecore:EReference" href="RoboCert.ecore#//SpecificationGroup/interactions"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_VzMOEKEdEeyZV_0q0XerVQ" labelAlignment="LEFT" color="114,159,207">
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_0c6X0nRwEe2x6bnG-5DWgw" name=" importedEnums : Enumeration" tooltipText="">
+        <target xmi:type="ecore:EReference" href="RoboCert.ecore#//SpecificationGroup/importedEnums"/>
+        <semanticElements xmi:type="ecore:EReference" href="RoboCert.ecore#//SpecificationGroup/importedEnums"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_0c7l8HRwEe2x6bnG-5DWgw" labelAlignment="LEFT" color="114,159,207">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
@@ -3705,8 +3717,8 @@
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
       <ownedElements xmi:type="diagram:DNodeListElement" uid="_erWdIqalEey-Cth3z0QmBg" name="lower : EBoolean = false" tooltipText="">
-        <target xmi:type="ecore:EAttribute" href="RoboCert.ecore#//DiscreteBound/lower"/>
-        <semanticElements xmi:type="ecore:EAttribute" href="RoboCert.ecore#//DiscreteBound/lower"/>
+        <target xmi:type="ecore:EReference" href="RoboCert.ecore#//DiscreteBound/lower"/>
+        <semanticElements xmi:type="ecore:EReference" href="RoboCert.ecore#//DiscreteBound/lower"/>
         <ownedStyle xmi:type="diagram:BundledImage" uid="_erWdI6alEey-Cth3z0QmBg" labelAlignment="LEFT">
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
