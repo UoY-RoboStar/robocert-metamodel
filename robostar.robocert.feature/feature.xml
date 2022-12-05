@@ -2,7 +2,7 @@
 <feature
       id="robostar.robocert.feature"
       label="RoboCert Metamodel"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="RoboStar">
 
    <description url="https://www.cs.york.ac.uk/robostar/robotool/">

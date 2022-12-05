@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: robostar.robocert.tests
 Bundle-SymbolicName: robostar.robocert.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: RoboStar
 Automatic-Module-Name: robostar.robocert.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>robostar.robocert</groupId>
 		<artifactId>robostar.robocert.parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>robostar.robocert.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
