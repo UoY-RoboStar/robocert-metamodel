@@ -569,9 +569,9 @@ class Message {
 	@genmodel(documentation="The argument list for the message.")
 	val ValueSpecification[*] arguments;
 	@genmodel(documentation="The source of the message.")
-	ref Endpoint[1] from;
+	val Endpoint[1] from;
 	@genmodel(documentation="The destination of the message.")
-	ref Endpoint[1] to;
+	val Endpoint[1] to;
 	
 	//
 	// Derived properties

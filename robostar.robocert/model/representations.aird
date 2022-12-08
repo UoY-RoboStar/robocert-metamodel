@@ -7,7 +7,7 @@
     <semanticResources>RoboCert.ecore</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_bcnGkNsNEeuTO4js3GS2GQ">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_eGO0MNsNEeuTO4js3GS2GQ" name="Seq.Message" repPath="#_eGCm8NsNEeuTO4js3GS2GQ" changeId="d77fce48-743e-4ce7-836c-3026479bdbb9">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_eGO0MNsNEeuTO4js3GS2GQ" name="Seq.Message" repPath="#_eGCm8NsNEeuTO4js3GS2GQ" changeId="dc5cfbf3-5e97-4bad-bee1-534df6dcb42d">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="RoboCert.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -493,16 +493,6 @@
             <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
           </endLabelStyleDescription>
         </computedStyleDescriptions>
-        <computedStyleDescriptions xmi:type="style:EdgeStyleDescription" xmi:id="_1VrLDXcREe2kIaEQXcooPg" routingStyle="manhattan">
-          <strokeColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-          <centerLabelStyleDescription xmi:type="style:CenterLabelStyleDescription" xmi:id="_1VrLDncREe2kIaEQXcooPg" showIcon="false" labelExpression="service:render">
-            <labelFormat>bold</labelFormat>
-            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-          </centerLabelStyleDescription>
-          <endLabelStyleDescription xmi:type="style:EndLabelStyleDescription" xmi:id="_1VrLD3cREe2kIaEQXcooPg" labelSize="6" showIcon="false" labelExpression="service:eKeysLabel">
-            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
-          </endLabelStyleDescription>
-        </computedStyleDescriptions>
       </data>
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_hn15wNsNEeuTO4js3GS2GQ" name="EventTopic" tooltipText="" outgoingEdges="_homHsNsNEeuTO4js3GS2GQ" width="12" height="10">
@@ -893,26 +883,22 @@
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_1VrLDHcREe2kIaEQXcooPg" name="[1..1] from" sourceNode="_hn6LMNsNEeuTO4js3GS2GQ" targetNode="_1VioIXcREe2kIaEQXcooPg">
       <target xmi:type="ecore:EReference" href="RoboCert.ecore#//Message/from"/>
       <semanticElements xmi:type="ecore:EReference" href="RoboCert.ecore#//Message/from"/>
-      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_1VryEHcREe2kIaEQXcooPg" description="_1VrLDXcREe2kIaEQXcooPg" routingStyle="manhattan" strokeColor="0,0,0">
-        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_1VryEncREe2kIaEQXcooPg" showIcon="false">
-          <customFeatures>labelSize</customFeatures>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_rD5HQHcTEe2kIaEQXcooPg" description="_hoYsUNsNEeuTO4js3GS2GQ" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_rD5HQncTEe2kIaEQXcooPg" showIcon="false">
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
-        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_1VryEXcREe2kIaEQXcooPg" showIcon="false" labelColor="39,76,114">
-          <customFeatures>labelSize</customFeatures>
-        </endLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_rD5HQXcTEe2kIaEQXcooPg" labelSize="6" showIcon="false" labelColor="39,76,114"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" uid="_1VryFncREe2kIaEQXcooPg" name="[1..1] to" sourceNode="_hn6LMNsNEeuTO4js3GS2GQ" targetNode="_1VioIXcREe2kIaEQXcooPg">
       <target xmi:type="ecore:EReference" href="RoboCert.ecore#//Message/to"/>
       <semanticElements xmi:type="ecore:EReference" href="RoboCert.ecore#//Message/to"/>
-      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_1VryF3cREe2kIaEQXcooPg" description="_1VrLDXcREe2kIaEQXcooPg" routingStyle="manhattan" strokeColor="0,0,0">
-        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_1VryGXcREe2kIaEQXcooPg" showIcon="false">
-          <customFeatures>labelSize</customFeatures>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_rD5uUHcTEe2kIaEQXcooPg" description="_hoYsUNsNEeuTO4js3GS2GQ" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_rD5uUncTEe2kIaEQXcooPg" showIcon="false">
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
-        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_1VryGHcREe2kIaEQXcooPg" showIcon="false" labelColor="39,76,114">
-          <customFeatures>labelSize</customFeatures>
-        </endLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_rD5uUXcTEe2kIaEQXcooPg" labelSize="6" showIcon="false" labelColor="39,76,114"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
     </ownedDiagramElements>

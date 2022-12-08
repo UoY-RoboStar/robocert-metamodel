@@ -624,12 +624,14 @@
         <details key="documentation" value="The argument list for the message."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Endpoint">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Endpoint"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The source of the message."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Endpoint">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Endpoint"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The destination of the message."/>
       </eAnnotations>
