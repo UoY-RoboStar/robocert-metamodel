@@ -476,6 +476,12 @@ class XAltFragment extends BranchFragment {
 class ParFragment extends BranchFragment {
 }
 
+@genmodel(documentation="A strict sequencing fragment.
+
+Each branch induces a synchronisation barrier at its end.")
+class StrictFragment extends BranchFragment {
+}
+
 @genmodel(documentation="A potentially-guarded subsequence used in a BranchFragment.")
 class InteractionOperand {
 	@genmodel(documentation="The guard for this operand.")
@@ -563,19 +569,48 @@ class Message {
 	@genmodel(documentation="The argument list for the message.")
 	val ValueSpecification[*] arguments;
 	@genmodel(documentation="The source of the message.")
-	ref Actor[1] from;
+	ref Endpoint[1] from;
 	@genmodel(documentation="The destination of the message.")
-	ref Actor[1] to;
+	ref Endpoint[1] to;
 	
 	//
 	// Derived properties
 	//
 	
 	@genmodel(
-		documentation="Whether this message has at least one Actor that is a World.",
-		get="return getFrom() instanceof robostar.robocert.World || getTo() instanceof robostar.robocert.World;"
+		documentation="Whether this message has at least one Endpoint that is a World.",
+		get="return getFrom().isWorld() || getTo().isWorld();"
 	)
 	derived transient readonly volatile attr boolean outbound;
+}
+
+@genmodel(documentation="An endpoint in a message.")
+abstract class Endpoint {
+	@genmodel(
+		documentation="Whether this endpoint is the World.",
+		get="return this instanceof robostar.robocert.World;"
+	)
+	derived transient readonly volatile attr boolean world;	
+}
+
+@genmodel(documentation="An endpoint referencing an actor (lifeline).")
+class ActorEndpoint extends Endpoint {
+	@genmodel(documentation="The referenced actor.")
+	ref Actor[1] actor;
+
+	@genmodel(body="
+		if (eIsProxy()) return super.toString();
+		var actor = getActor();
+		if (actor == null) return \"(null actor)\";
+		return actor.toString();
+	")
+	derived op String[1] toString();	
+}
+
+@genmodel(documentation="An endpoint referencing the environment outside of the target.")
+class World extends Endpoint {
+	@genmodel(body="return \"<<world>>\";")
+	derived op String[1] toString();
 }
 
 
@@ -691,17 +726,6 @@ class TargetActor extends Actor {
 		var name = getName();
 		if (name == null || name.isEmpty()) name = \"(untitled)\";
 		return \"<<target>> \" + name;
-	")
-	derived op String[1] toString();
-}
-
-@genmodel(documentation="Actor that stands for the environment of the current target.")
-class World extends Actor {
-	@genmodel(body="
-		if (eIsProxy()) return super.toString();
-		var name = getName();
-		if (name == null || name.isEmpty()) name = \"(untitled)\";
-		return \"<<world>> \" + name;
 	")
 	derived op String[1] toString();
 }

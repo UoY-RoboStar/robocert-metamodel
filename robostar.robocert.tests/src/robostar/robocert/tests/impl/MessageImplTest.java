@@ -1,15 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2022 University of York and others
+/* Copyright (c) 2022 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 
 package robostar.robocert.tests.impl;
 
@@ -27,7 +23,6 @@ import circus.robocalc.robochart.StateMachineDef;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
-import robostar.robocert.World;
 import robostar.robocert.util.MessageFactory;
 import robostar.robocert.util.TargetFactory;
 
@@ -38,12 +33,11 @@ import robostar.robocert.util.TargetFactory;
  */
 class MessageImplTest {
 
-  private MessageFactory msgFactory = new MessageFactory(RoboCertFactory.eINSTANCE);
-  private RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
-  private RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
-  private TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
+  private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
+  private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
+  private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
+  private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
-  private World comWorld;
   private TargetActor comTarget;
 
   private ComponentActor c1;
@@ -70,11 +64,9 @@ class MessageImplTest {
     comGrp.setName("ComGroup");
     comGrp.setTarget(comTgt);
 
-    comWorld = msgFactory.world();
-    comWorld.setName("W");
-    comTarget = msgFactory.targetActor();
+    comTarget = msgFac.targetActor();
     comTarget.setName("T");
-    comGrp.getActors().addAll(List.of(comWorld, comTarget));
+    comGrp.getActors().add(comTarget);
   }
 
   private void setUpCollection(StateMachineDef stm1, StateMachineDef stm2, ControllerDef ctrl) {
@@ -83,28 +75,26 @@ class MessageImplTest {
     collGrp.setName("CollGroup");
     collGrp.setTarget(collTgt);
 
-    World collWorld = msgFactory.world();
-    collWorld.setName("W");
     c1 = certFactory.createComponentActor();
     c1.setName("C1");
     c1.setNode(stm1);
     c2 = certFactory.createComponentActor();
     c2.setName("C2");
     c2.setNode(stm2);
-    collGrp.getActors().addAll(List.of(comWorld, c1, c2));
+    collGrp.getActors().addAll(List.of(c1, c2));
   }
 
   @Test
   void testIsOutbound_component() {
     final var e = chartFactory.createEvent();
     e.setName("e");
-    final var topic = msgFactory.eventTopic(e);
+    final var topic = msgFac.eventTopic(e);
 
     // All messages in a component context are outbound.
-    final var msg1 = msgFactory.spec(comTarget, comWorld, topic);
+    final var msg1 = msgFac.spec(msgFac.actor(comTarget), msgFac.world(), topic);
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFactory.spec(comWorld, comTarget, topic);
+    final var msg2 = msgFac.spec(msgFac.world(), msgFac.actor(comTarget), topic);
     assertThat(msg2.isOutbound(), is(true));
   }
 
@@ -112,17 +102,17 @@ class MessageImplTest {
   void testIsOutbound_collection() {
     final var e = chartFactory.createEvent();
     e.setName("e");
-    final var topic = msgFactory.eventTopic(e);
+    final var topic = msgFac.eventTopic(e);
 
     // All messages with a world (and only those) are outbound:
 
-    final var msg1 = msgFactory.spec(c1, comWorld, topic);
+    final var msg1 = msgFac.spec(msgFac.actor(c1), msgFac.world(), topic);
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFactory.spec(comWorld, c2, topic);
+    final var msg2 = msgFac.spec(msgFac.world(), msgFac.actor(c2), topic);
     assertThat(msg2.isOutbound(), is(true));
 
-    final var msg3 = msgFactory.spec(c1, c2, topic);
+    final var msg3 = msgFac.spec(msgFac.actor(c1), msgFac.actor(c2), topic);
     assertThat(msg3.isOutbound(), is(false));
   }
 }

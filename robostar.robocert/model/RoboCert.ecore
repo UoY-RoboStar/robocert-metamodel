@@ -503,6 +503,11 @@
       <details key="documentation" value="An interleaving composition fragment."/>
     </eAnnotations>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StrictFragment" eSuperTypes="#//BranchFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A strict sequencing fragment.&#xD;&#xA;&#xD;&#xA;Each branch induces a synchronisation barrier at its end."/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InteractionOperand">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A potentially-guarded subsequence used in a BranchFragment."/>
@@ -619,12 +624,12 @@
         <details key="documentation" value="The argument list for the message."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Actor">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Endpoint">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The source of the message."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Actor">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Endpoint">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The destination of the message."/>
       </eAnnotations>
@@ -632,10 +637,47 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outbound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether this message has at least one Actor that is a World."/>
-        <details key="get" value="return getFrom() instanceof robostar.robocert.World || getTo() instanceof robostar.robocert.World;"/>
+        <details key="documentation" value="Whether this message has at least one Endpoint that is a World."/>
+        <details key="get" value="return getFrom().isWorld() || getTo().isWorld();"/>
       </eAnnotations>
     </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Endpoint" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An endpoint in a message."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="world" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether this endpoint is the World."/>
+        <details key="get" value="return this instanceof robostar.robocert.World;"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ActorEndpoint" eSuperTypes="#//Endpoint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An endpoint referencing an actor (lifeline)."/>
+    </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;var actor = getActor();&#xD;&#xA;&#x9;&#x9;if (actor == null) return &quot;(null actor)&quot;;&#xD;&#xA;&#x9;&#x9;return actor.toString();&#xD;&#xA;&#x9;"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The referenced actor."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="World" eSuperTypes="#//Endpoint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An endpoint referencing the environment outside of the target."/>
+    </eAnnotations>
+    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return &quot;&lt;&lt;world>>&quot;;"/>
+      </eAnnotations>
+    </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MessageTopic" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -783,16 +825,6 @@
     <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;var name = getName();&#xD;&#xA;&#x9;&#x9;if (name == null || name.isEmpty()) name = &quot;(untitled)&quot;;&#xD;&#xA;&#x9;&#x9;return &quot;&lt;&lt;target>> &quot; + name;&#xD;&#xA;&#x9;"/>
-      </eAnnotations>
-    </eOperations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="World" eSuperTypes="#//Actor">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Actor that stands for the environment of the current target."/>
-    </eAnnotations>
-    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;var name = getName();&#xD;&#xA;&#x9;&#x9;if (name == null || name.isEmpty()) name = &quot;(untitled)&quot;;&#xD;&#xA;&#x9;&#x9;return &quot;&lt;&lt;world>> &quot; + name;&#xD;&#xA;&#x9;"/>
       </eAnnotations>
     </eOperations>
   </eClassifiers>
