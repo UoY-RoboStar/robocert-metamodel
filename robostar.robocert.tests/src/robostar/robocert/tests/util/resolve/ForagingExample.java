@@ -18,6 +18,7 @@ import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.RoboticPlatformDef;
 import circus.robocalc.robochart.StateMachineDef;
+import com.google.inject.Inject;
 
 /**
  * Programmatic encoding of a simplified version of the Buchanan foraging robot case study.
@@ -46,6 +47,7 @@ public class ForagingExample {
    *
    * @param chartFactory RoboChart factory.
    */
+  @Inject
   public ForagingExample(RoboChartFactory chartFactory) {
     platformObstacle = chartFactory.createEvent();
     platformObstacle.setName("obstacle");
