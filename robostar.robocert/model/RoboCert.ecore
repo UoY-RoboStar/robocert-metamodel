@@ -388,14 +388,41 @@
       <details key="documentation" value="A single interaction fragment in a subsequence."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OccurrenceFragment" eSuperTypes="#//InteractionFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="LifelineFragment" abstract="true" eSuperTypes="#//InteractionFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An interaction fragment referring to a particular occurrence in time."/>
+      <details key="documentation" value="Base class of fragments on exactly one lifeline."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="occurrence" lowerBound="1"
-        eType="#//Occurrence" containment="true" eOpposite="#//Occurrence/fragment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The occurrence proper."/>
+        <details key="documentation" value="The actor on which this occurrence is occurring."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//LifelineFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents a wait for some amount of time units."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of units to wait, given as a scalar or a set/range expression."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MessageOccurrence" eSuperTypes="#//InteractionFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An occurrence that represents a message communication.&#xD;&#xA;&#xD;&#xA;Unlike UML, there is only one occurrence for both ends of the message."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="message" lowerBound="1"
+        eType="#//Message" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The message itself."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temperature" lowerBound="1"
+        eType="#//Temperature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The temperature of this message."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -420,15 +447,10 @@
       <details key="documentation" value="An optional fragment."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//BlockFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//LifelineFragment #//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Fragment imposing a deadline constraint on a block."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The lifeline to which we are attaching the constraint."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -567,56 +589,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A guard that is true if all other guards in the BranchFragment are false.&#xD;&#xA;&#xD;&#xA;It is ill-formed to have multiple ElseGuards in a step, or to have both an&#xD;&#xA;ElseGuard and an EmptyGuard in a step."/>
     </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Occurrence" abstract="true">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An occurrence in a sequence."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="fragment" lowerBound="1"
-        eType="#//OccurrenceFragment" eOpposite="#//OccurrenceFragment/occurrence">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The fragment containing this action."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MessageOccurrence" eSuperTypes="#//Occurrence">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An occurrence that represents a message communication.&#xD;&#xA;&#xD;&#xA;Unlike UML, there is only one occurrence for both ends of the message."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="message" lowerBound="1"
-        eType="#//Message" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The message itself."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temperature" lowerBound="1"
-        eType="#//Temperature">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The temperature of this message."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LifelineOccurrence" abstract="true"
-      eSuperTypes="#//Occurrence">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base class of occurrences on exactly one lifeline."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The actor on which this occurrence is occurring."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WaitOccurrence" eSuperTypes="#//LifelineOccurrence">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Represents a wait for some amount of time units."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The number of units to wait, given as a scalar or a set/range expression."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Message">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -2,6 +2,8 @@
 
 ## Added
 
+- Added `Synchronicity` enum and `synchronicity` feature for `Message`s.
+  (2022-12-09)
 - Added `SequentialFragment`, which marks fragments as requiring strict
   ordering semantics, and `AnyFragment` (which is a `SequentialFragment`).
   (2022-12-05; github #10)
@@ -11,6 +13,14 @@
 
 ## Changed
 
+- `DeadlineFragment` is now an instance of `LifelineFragment`.
+  (2022-12-09)
+- (BREAKING) Removed `Occurrence` and `OccurrenceFragment`; anything that was
+  named `*Occurrence` is now `*Fragment` with the exception of
+  `MessageOccurrence`.
+  (2022-12-09)
+- (BREAKING) Removed `DeadlockOccurrence`.
+  (2022-12-09)
 - (BREAKING) Separated `UntilFragment` and `AnyFragment`.  The latter retains
   the `intraMessages` but is not a `BlockFragment`; the former is now a
   `SequentialFragment` and the erstwhile `body` is now `trigger`.  (`body` now

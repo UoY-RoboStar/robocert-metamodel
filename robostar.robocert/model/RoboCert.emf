@@ -360,15 +360,33 @@ The order determines that in which lifelines are shown in the graphical notation
 abstract class InteractionFragment {
 }
 
+@genmodel(documentation="Base class of fragments on exactly one lifeline.")
+abstract class LifelineFragment extends InteractionFragment {
+	@genmodel(documentation="The actor on which this occurrence is occurring.")
+	ref Actor[1] actor;	
+	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
+	// restricts the 0 condition to when we're at the top of a sequential
+	// fragment.  This used to be the case in previous iterations of the
+	// metamodel, but I've rowed back on it to simplify things for v0.1.
+}
 
-//
-// Non-combined fragments
-//
+@genmodel(documentation="Represents a wait for some amount of time units.")
+class WaitFragment extends LifelineFragment {
+	@genmodel(documentation="The number of units to wait, given as a scalar or a set/range expression.")
+	val robochart.Expression[1] units;
+}
 
-@genmodel(documentation="An interaction fragment referring to a particular occurrence in time.")
-class OccurrenceFragment extends InteractionFragment {
-	@genmodel(documentation="The occurrence proper.")
-	val Occurrence[1]#fragment occurrence;
+@genmodel(documentation="An occurrence that represents a message communication.
+
+Unlike UML, there is only one occurrence for both ends of the message.")
+class MessageOccurrence extends InteractionFragment {
+	// Changed 2022-12-09: this is now a form of fragment, not an occurrence.
+
+	@genmodel(documentation="The message itself.")
+	val Message[1] message;
+
+	@genmodel(documentation="The temperature of this message.")
+	attr Temperature[1] temperature;
 }
 
 
@@ -397,10 +415,7 @@ class OptFragment extends BlockFragment {
 }
 
 @genmodel(documentation="Fragment imposing a deadline constraint on a block.")
-class DeadlineFragment extends BlockFragment {
-	@genmodel(documentation="The lifeline to which we are attaching the constraint.")
-	ref Actor[1] actor;
-
+class DeadlineFragment extends LifelineFragment, BlockFragment {
 	@genmodel(documentation="The upper bound on the number of time units that can occur in this block.")
 	val robochart.Expression[1] units;
 }
@@ -521,44 +536,6 @@ class ExprGuard extends Guard {
 It is ill-formed to have multiple ElseGuards in a step, or to have both an
 ElseGuard and an EmptyGuard in a step.")
 class ElseGuard extends Guard {
-}
-
-
-//
-// OCCURRENCES
-//
-
-@genmodel(documentation="An occurrence in a sequence.")
-abstract class Occurrence {
-	@genmodel(documentation="The fragment containing this action.")
-	ref OccurrenceFragment[1]#occurrence fragment;
-}
-
-@genmodel(documentation="An occurrence that represents a message communication.
-
-Unlike UML, there is only one occurrence for both ends of the message.")
-class MessageOccurrence extends Occurrence {
-	@genmodel(documentation="The message itself.")
-	val Message[1] message;
-
-	@genmodel(documentation="The temperature of this message.")
-	attr Temperature[1] temperature;
-}
-
-@genmodel(documentation="Base class of occurrences on exactly one lifeline.")
-abstract class LifelineOccurrence extends Occurrence {
-	@genmodel(documentation="The actor on which this occurrence is occurring.")
-	ref Actor[1] actor;	
-	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
-	// restricts the 0 condition to when we're at the top of a sequential
-	// fragment.  This used to be the case in previous iterations of the
-	// metamodel, but I've rowed back on it to simplify things for v0.1.
-}
-
-@genmodel(documentation="Represents a wait for some amount of time units.")
-class WaitOccurrence extends LifelineOccurrence {
-	@genmodel(documentation="The number of units to wait, given as a scalar or a set/range expression.")
-	val robochart.Expression[1] units;
 }
 
 
