@@ -6,26 +6,12 @@
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *   Matt Windsor - initial definition
  */
 package robostar.robocert.util.resolve;
 
-import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.Controller;
-import circus.robocalc.robochart.ControllerDef;
-import circus.robocalc.robochart.ControllerRef;
-import circus.robocalc.robochart.Operation;
-import circus.robocalc.robochart.OperationDef;
-import circus.robocalc.robochart.OperationRef;
-import circus.robocalc.robochart.RoboticPlatform;
-import circus.robocalc.robochart.RoboticPlatformDef;
-import circus.robocalc.robochart.RoboticPlatformRef;
-import circus.robocalc.robochart.StateMachine;
-import circus.robocalc.robochart.StateMachineDef;
-import circus.robocalc.robochart.StateMachineRef;
+import circus.robocalc.robochart.*;
 import circus.robocalc.robochart.util.RoboChartSwitch;
+import robostar.robocert.ComponentActor;
 
 /**
  * Helper class for finding definitions of various RoboChart components.
@@ -33,6 +19,21 @@ import circus.robocalc.robochart.util.RoboChartSwitch;
  * @author Matt Windsor
  */
 public class DefinitionResolver {
+  /**
+   * Retrieves RoboChart contexts deriving from a {@link ComponentActor} attached to the given
+   * component.
+   *
+   * @param n component for which we are getting contexts.
+   * @return the normalised form of n as a context.
+   */
+  public Context context(ConnectionNode n) {
+    // Hypothesis: Either this node is a definition (and is therefore a context),
+    // or it is a reference (and can be normalised to a context).
+    if (!(normalise(n) instanceof Context c)) {
+      throw new IllegalArgumentException("Node not supported for context finding: %s".formatted(n));
+    }
+    return c;
+  }
 
   /**
    * If the node is a reference, dereference it.
