@@ -545,10 +545,6 @@ abstract class LifelineOccurrence extends Occurrence {
 	// metamodel, but I've rowed back on it to simplify things for v0.1.
 }
 
-@genmodel(documentation="Represents a deadlock event in a sequence.")
-class DeadlockOccurrence extends LifelineOccurrence {
-}
-
 @genmodel(documentation="Represents a wait for some amount of time units.")
 class WaitOccurrence extends LifelineOccurrence {
 	@genmodel(documentation="The number of units to wait.")
