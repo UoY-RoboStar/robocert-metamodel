@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import circus.robocalc.robochart.RoboChartFactory;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.TargetFactory;
