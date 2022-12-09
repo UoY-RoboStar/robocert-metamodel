@@ -19,6 +19,10 @@
       <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//Temperature/COLD"/>
       <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//Temperature/HOT"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="RoboCert.ecore#//Synchronicity">
+      <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//Synchronicity/ASYNCHRONOUS"/>
+      <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//Synchronicity/SYNCHRONOUS"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="RoboCert.ecore#//BinarySetOperator">
       <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//BinarySetOperator/UNION"/>
       <genEnumLiterals ecoreEnumLiteral="RoboCert.ecore#//BinarySetOperator/INTERSECTION"/>
@@ -180,6 +184,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/arguments"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/from"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/to"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//Message/synchronicity"/>
       <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//Message/outbound"
           get="return getFrom().isWorld() || getTo().isWorld();"/>
     </genClasses>

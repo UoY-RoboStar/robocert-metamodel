@@ -540,7 +540,7 @@ abstract class LifelineOccurrence extends Occurrence {
 	@genmodel(documentation="The actor on which this occurrence is occurring.")
 	ref Actor[1] actor;	
 	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
-	// restricts the 0 condition to when we're at the top of an Until
+	// restricts the 0 condition to when we're at the top of a sequential
 	// fragment.  This used to be the case in previous iterations of the
 	// metamodel, but I've rowed back on it to simplify things for v0.1.
 }
@@ -572,6 +572,8 @@ class Message {
 	val Endpoint[1] from;
 	@genmodel(documentation="The destination of the message.")
 	val Endpoint[1] to;
+	@genmodel(documentation="The synchronicity of the message.")
+	attr Synchronicity[1] synchronicity;
 	
 	//
 	// Derived properties
@@ -583,6 +585,20 @@ class Message {
 	)
 	derived transient readonly volatile attr boolean outbound;
 }
+
+@genmodel(documentation="Whether a message is synchronous or asynchronous.
+
+This enumeration may be expanded in future if other forms of semantics become available.")
+enum Synchronicity {
+	@genmodel(documentation="Asynchronous communication.")
+	ASYNCHRONOUS;
+	@genmodel(documentation="Synchronous communication.")
+	SYNCHRONOUS;
+}
+
+//
+// Endpoints
+//
 
 @genmodel(documentation="An endpoint in a message.")
 abstract class Endpoint {
@@ -626,7 +642,7 @@ abstract class MessageTopic {
 	ref Message[1]#topic message;
 }
 
-@genmodel(documentation="An event message topic.")
+@genmodel(documentation="An event message topic (corresponding to a connection).")
 class EventTopic extends MessageTopic {
 	@genmodel(documentation="The from-event specification.")
 	ref robochart.Event[1] efrom;
