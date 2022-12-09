@@ -20,6 +20,7 @@ import circus.robocalc.robochart.ControllerRef;
 import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.RCPackage;
 import circus.robocalc.robochart.RoboChartFactory;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.util.resolve.ControllerResolver;
@@ -128,5 +129,54 @@ class ControllerResolverTest {
     pkg.getModules().add(mod);
     mod.getNodes().add(cref);
     assertThat(ctrlRes.name(cref), is(new String[]{"Pkg", "Mod", "RCtrl"}));
+  }
+
+  /**
+   * Tests that module resolution for controller definitions works properly when there is no module.
+   */
+  @Test
+  void testModule_Def_Absent() {
+    final var result = ctrlRes.module(cdef);
+    assertThat(result.isEmpty(), Matchers.is(true));
+  }
+
+  /**
+   * Tests that module resolution for controller definitions works properly when there is no module.
+   */
+  @Test
+  void testModule_Ref_Absent() {
+    final var result = ctrlRes.module(cref);
+    assertThat(result.isEmpty(), Matchers.is(true));
+  }
+
+  /**
+   * Tests that module resolution for controller definitions works properly.
+   */
+  @Test
+  void testModule_Def_Present() {
+    mod.getNodes().add(cdef);
+    final var result = ctrlRes.module(cdef);
+    assertThat(result.isPresent(), Matchers.is(true));
+    assertThat(result.get(), Matchers.is(mod));
+  }
+
+  /**
+   * Tests that module resolution for controller references works properly.
+   */
+  @Test
+  void testModule_Ref_Present() {
+    mod.getNodes().add(cref);
+    final var result = ctrlRes.module(cref);
+    assertThat(result.isPresent(), Matchers.is(true));
+    assertThat(result.get(), Matchers.is(mod));
+  }
+
+  /**
+   * Tests that module resolution for controllers with no module behaves as expected.
+   */
+  @Test
+  void testModule_noModule() {
+    final var c2 = chartFactory.createControllerDef();
+    assertThat(ctrlRes.module(c2).isEmpty(), Matchers.is(true));
   }
 }

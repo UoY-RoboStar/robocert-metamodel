@@ -29,35 +29,35 @@ import robostar.robocert.util.resolve.ModuleResolver;
  */
 class ModuleResolverTest {
 
-  private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
+    private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
 
-  private final ModuleResolver modRes = new ModuleResolver(new DefinitionResolver());
+    private final ModuleResolver modRes = new ModuleResolver(new DefinitionResolver());
 
-  private RCModule mod;
+    private RCModule mod;
 
-  @BeforeEach
-  void setUp() {
-    mod = chartFactory.createRCModule();
-    mod.setName("Mod");
-  }
+    @BeforeEach
+    void setUp() {
+        mod = chartFactory.createRCModule();
+        mod.setName("Mod");
+    }
 
-  /**
-   * Tests {@code name} on a module with no package.
-   */
-  @Test
-  void testName_Unpackaged() {
-    assertThat(modRes.name(mod), is(new String[]{"Mod"}));
-  }
+    /**
+     * Tests {@code name} on a module with no package.
+     */
+    @Test
+    void testName_Unpackaged() {
+        assertThat(modRes.name(mod), is(new String[]{"Mod"}));
+    }
 
-  /**
-   * Tests {@code name} on a module with a package.
-   */
-  @Test
-  void testName_Packaged() {
-    final var pkg = chartFactory.createRCPackage();
-    pkg.setName("Pkg");
-    pkg.getModules().add(mod);
+    /**
+     * Tests {@code name} on a module with a package.
+     */
+    @Test
+    void testName_Packaged() {
+        final var pkg = chartFactory.createRCPackage();
+        pkg.setName("Pkg");
+        pkg.getModules().add(mod);
 
-    assertThat(modRes.name(mod), is(new String[]{"Pkg", "Mod"}));
-  }
+        assertThat(modRes.name(mod), is(new String[]{"Pkg", "Mod"}));
+    }
 }
