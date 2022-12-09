@@ -10,16 +10,34 @@
 package robostar.robocert.tests.util.resolve;
 
 import circus.robocalc.robochart.RoboChartFactory;
+import com.google.inject.Inject;
 import robostar.robocert.*;
 import robostar.robocert.util.MessageFactory;
+
+import java.util.Objects;
 
 /**
  * Test shim used to make sure that endpoints are nested in a group with a
  * valid target.
  *
+ * @param certFactory RoboCert factory.
+ * @param msgFactory  message factory.
  * @author Matt Windsor
  */
-record EndpointWrapper(RoboCertFactory certFactory, MessageFactory msgFactory) {
+public record EndpointWrapper(RoboCertFactory certFactory, MessageFactory msgFactory) {
+    /**
+     * Constructs an endpoint wrapper
+     *
+     * @param certFactory RoboCert factory.
+     * @param msgFactory  message factory.
+     */
+    @Inject
+    public EndpointWrapper {
+        Objects.requireNonNull(certFactory);
+        Objects.requireNonNull(msgFactory);
+    }
+
+
     /**
      * Ensures that the given world and target actor are located within a group
      * with the given target.
