@@ -339,6 +339,21 @@
       </eAnnotations>
     </eLiterals>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Synchronicity">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Whether a communication is synchronous or asynchronous.&#xD;&#xA;&#xD;&#xA;This enumeration may be expanded in future if other forms of semantics become available."/>
+    </eAnnotations>
+    <eLiterals name="ASYNCHRONOUS">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Asynchronous communication."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="SYNCHRONOUS" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Synchronous communication."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Interaction" eSuperTypes="../../circus.robocalc.robochart/model/robochart.ecore#//NamedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="An interaction spawning a sequence diagram."/>
@@ -355,7 +370,7 @@
         <details key="documentation" value="The variables available for receiving arguments."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actors" lowerBound="2"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actors" lowerBound="1"
         upperBound="-1" eType="#//Actor">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The set of group actors forming lifelines/gates in this diagram.&#xD;&#xA;&#xD;&#xA;The order determines that in which lifelines are shown in the graphical notation."/>
@@ -599,7 +614,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The number of units to wait."/>
+        <details key="documentation" value="The number of units to wait, given as a scalar or a set/range expression."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -644,21 +659,6 @@
         <details key="get" value="return getFrom().isWorld() || getTo().isWorld();"/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="Synchronicity">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Whether a message is synchronous or asynchronous.&#xD;&#xA;&#xD;&#xA;This enumeration may be expanded in future if other forms of semantics become available."/>
-    </eAnnotations>
-    <eLiterals name="ASYNCHRONOUS">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Asynchronous communication."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="SYNCHRONOUS" value="1">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Synchronous communication."/>
-      </eAnnotations>
-    </eLiterals>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Endpoint" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

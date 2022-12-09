@@ -19,7 +19,8 @@ Export-Package: robostar.robocert;uses:="org.eclipse.emf.ecore,
    robostar.robocert",
  robostar.robocert.util.resolve;uses:="robostar.robocert.util,
  circus.robocalc.robochart,
- robostar.robocert"
+ robostar.robocert",
+ robostar.robocert.util.resolve.node
 Require-Bundle: org.eclipse.core.runtime,
   org.eclipse.emf.ecore;visibility:=reexport,
   org.apache.log4j;bundle-version="1.2.15",
