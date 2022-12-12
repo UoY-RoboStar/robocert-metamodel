@@ -18,4 +18,5 @@ Require-Bundle:  org.eclipse.core.runtime,
   robostar.robocert;bundle-version="0.2.0",
   org.hamcrest;bundle-version="2.2.0",
   org.junit.jupiter.api;bundle-version="5.8.1"
-Export-Package: robostar.robocert.tests.matchers
+Export-Package: robostar.robocert.tests.matchers,
+ robostar.robocert.tests.examples

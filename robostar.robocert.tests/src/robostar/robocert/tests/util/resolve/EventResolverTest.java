@@ -16,6 +16,7 @@ import circus.robocalc.robochart.RoboChartFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
+import robostar.robocert.tests.examples.ForagingExample;
 import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.MessageFactory;
 import robostar.robocert.util.TargetFactory;

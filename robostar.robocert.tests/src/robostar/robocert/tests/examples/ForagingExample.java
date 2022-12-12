@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.tests.util.resolve;
+package robostar.robocert.tests.examples;
 
 import circus.robocalc.robochart.Connection;
 import circus.robocalc.robochart.ConnectionNode;
