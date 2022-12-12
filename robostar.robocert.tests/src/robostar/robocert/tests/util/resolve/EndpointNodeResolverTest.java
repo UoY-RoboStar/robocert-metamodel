@@ -69,6 +69,22 @@ class EndpointNodeResolverTest {
         wrapper = new EndpointWrapper(certFactory, msgFactory);
     }
 
+
+    /**
+     * Tests resolving connection nodes on a controller in the example.
+     */
+    @Test
+    void testResolve_controller() {
+        final var stm = targetFactory.controller(example.obstacleAvoidance);
+        wrapper.wrap(stm, world, target);
+
+        final var worldNodes = resolve(world);
+        assertThat(worldNodes, hasItems(example.platform));
+
+        final var targetNodes = resolve(target);
+        assertThat(targetNodes, hasItems(example.obstacleAvoidance));
+    }
+
     /**
      * Tests resolving connection nodes on a state machine in the example.
      */
