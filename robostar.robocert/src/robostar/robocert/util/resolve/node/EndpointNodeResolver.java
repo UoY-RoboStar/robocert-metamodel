@@ -15,9 +15,6 @@ import com.google.inject.Inject;
 import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.*;
 import robostar.robocert.util.RoboCertSwitch;
-import robostar.robocert.util.resolve.ControllerResolver;
-import robostar.robocert.util.resolve.ModuleResolver;
-import robostar.robocert.util.resolve.StateMachineResolver;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -28,8 +25,7 @@ import java.util.stream.Stream;
  * @param aNodeRes helper for resolving actors into connection nodes.
  * @param wNodeRes helper for resolving worlds into connection nodes.
  */
-public record EndpointNodeResolver(ControllerResolver ctrlRes, ModuleResolver modRes, StateMachineResolver stmRes,
-                                   ActorNodeResolver aNodeRes, WorldNodeResolver wNodeRes) {
+public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver wNodeRes) {
 
     /**
      * Constructs an actor resolver.

@@ -60,8 +60,8 @@ class EndpointNodeResolverTest {
         final var modRes = new ModuleResolver(defRes);
         final var stmRes = new StateMachineResolver(ctrlRes);
         final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
-        final var wNodeRes = new WorldNodeResolver(ctrlRes, modRes, stmRes, aNodeRes, groupFinder);
-        resolver = new EndpointNodeResolver(ctrlRes, modRes, stmRes, aNodeRes, wNodeRes);
+        final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
+        resolver = new EndpointNodeResolver(aNodeRes, wNodeRes);
 
         world = msgFactory.world();
         target = msgFactory.actor(msgFactory.targetActor());

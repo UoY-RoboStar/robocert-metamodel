@@ -24,10 +24,6 @@ import com.google.inject.Inject;
 
 import circus.robocalc.robochart.Connection;
 import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.ControllerDef;
-import circus.robocalc.robochart.RCModule;
-import circus.robocalc.robochart.RoboticPlatform;
-import circus.robocalc.robochart.StateMachineBody;
 import robostar.robocert.*;
 import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.resolve.node.EndpointNodeResolver;
@@ -38,18 +34,19 @@ import robostar.robocert.util.resolve.node.TargetNodeResolver;
  *
  * @author Matt Windsor
  */
-public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver tgtRes, DefinitionResolver defRes,
-                                ControllerResolver ctrlRes, StateMachineResolver stmRes,
-                                GroupFinder groupFinder) implements EventResolver {
+public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver tgtRes, ModuleResolver modRes,
+                                ControllerResolver ctrlRes, StateMachineResolver stmRes, GroupFinder groupFinder,
+                                OutboundConnectionResolver outRes) implements EventResolver {
 
     @Inject
     public EventResolverImpl {
-        Objects.requireNonNull(defRes);
-        Objects.requireNonNull(endRes);
-        Objects.requireNonNull(tgtRes);
         Objects.requireNonNull(ctrlRes);
-        Objects.requireNonNull(stmRes);
+        Objects.requireNonNull(endRes);
         Objects.requireNonNull(groupFinder);
+        Objects.requireNonNull(modRes);
+        Objects.requireNonNull(outRes);
+        Objects.requireNonNull(stmRes);
+        Objects.requireNonNull(tgtRes);
     }
 
     @Override
@@ -69,7 +66,7 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
     private Stream<Connection> resolveComponent(EventTopic topic, Endpoint from, Endpoint to, Target t) {
         // Component targets are easy to resolve: all of their connections go from the target to
         // the world, or backwards (and so are outbound in some sense).
-        return outboundConnections(t).filter(x -> matchesComponent(x, topic, endpointNodes(from), endpointNodes(to)));
+        return resolveOutbound(topic, endpointNodes(from), endpointNodes(to), t);
     }
 
     private Stream<Connection> resolveCollection(EventTopic topic, Endpoint from, Endpoint to, CollectionTarget t) {
@@ -80,56 +77,27 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
         //   the target;
         // - from a ComponentActor to a World, in which case we need to proceed as if we were resolving
         //   a component connection from the target to the world instead.
-        if (from instanceof ComponentActor && to instanceof ComponentActor) {
+        if (isComponentActor(from) && isComponentActor(to)) {
             return innerConnections(t).filter(x -> matchesComponent(x, topic, endpointNodes(from), endpointNodes(to)));
         }
 
         // WFC CGsA2 has that at least one of these must be the world.
-        if (from instanceof World) {
+        if (from.isWorld()) {
             return resolveOutbound(topic, endpointNodes(from), targetNodes(t), t);
         }
-        if (to instanceof World) {
+        if (to.isWorld()) {
             return resolveOutbound(topic, targetNodes(t), endpointNodes(to), t);
         }
 
         throw new IllegalArgumentException("tried to resolve collection with TargetActors - violates CGsA2");
     }
 
-    private Stream<Connection> resolveOutbound(EventTopic topic, Set<ConnectionNode> fromNodes, Set<ConnectionNode> toNodes, Target t) {
-        return outboundConnections(t).filter(x -> matchesComponent(x, topic, fromNodes, toNodes));
+    private boolean isComponentActor(Endpoint x) {
+        return x instanceof ActorEndpoint e && e.getActor() != null && e.getActor() instanceof ComponentActor;
     }
 
-
-    /**
-     * Gets the stream of connections that go from this target to its world.
-     *
-     * @param target the target whose connections should be enumerated.
-     * @return the stream of outbound connections.
-     */
-    private Stream<Connection> outboundConnections(Target target) {
-        // We consider the connections from module elements to the platform to be 'outer', here.
-        if (target instanceof InModuleTarget m) {
-            return outboundModuleConnections(m.getModule());
-        }
-        if (target instanceof ModuleTarget m) {
-            return outboundModuleConnections(m.getModule());
-        }
-
-        if (target instanceof InControllerTarget c) {
-            return outboundControllerConnections(c.getController());
-        }
-        if (target instanceof ControllerTarget c) {
-            return outboundControllerConnections(c.getController());
-        }
-
-        if (target instanceof StateMachineTarget s) {
-            return outboundStateMachineBodyConnections(s.getStateMachine());
-        }
-        if (target instanceof OperationTarget o) {
-            return outboundStateMachineBodyConnections(o.getOperation());
-        }
-
-        throw new IllegalArgumentException("can't get outbound connections for target %s".formatted(target));
+    private Stream<Connection> resolveOutbound(EventTopic topic, Set<ConnectionNode> from, Set<ConnectionNode> to, Target t) {
+        return outRes.resolve(t).filter(x -> matchesComponent(x, topic, from, to));
     }
 
     private Set<ConnectionNode> endpointNodes(Endpoint from) {
@@ -141,7 +109,7 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
     }
 
     private boolean matchesComponent(Connection c, EventTopic topic, Set<ConnectionNode> from, Set<ConnectionNode> to) {
-        if (!(nodesMatch(c, from, to) || (c.isBidirec() && nodesMatch(c, to, from)))) {
+        if (!endpointsMatch(c, from, to)) {
             return false;
         }
         // TODO(@MattWindsor91): do we need reversibility here?
@@ -150,6 +118,18 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
         }
         final var eto = topic.getEto();
         return eto == null || EcoreUtil.equals(topic.getEto(), c.getEto());
+    }
+
+    /**
+     * Checks whether this connection connects the two endpoints.
+     *
+     * @param c    connection to investigate.
+     * @param from set of nodes allowed at the 'from' endpoint.
+     * @param to   set of nodes allowed at the 'to' endpoint.
+     * @return whether c connects nodes represented by from and to, in the appropriate direction.
+     */
+    private boolean endpointsMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
+        return nodesMatch(c, from, to) || (c.isBidirec() && nodesMatch(c, to, from));
     }
 
     private boolean nodesMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
@@ -164,58 +144,13 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
      */
     private Stream<Connection> innerConnections(CollectionTarget target) {
         if (target instanceof InModuleTarget m) {
-            return moduleConnections(m.getModule()).filter(x -> !connectsPlatform(x));
+            return modRes.inboundConnections(m.getModule());
         }
         if (target instanceof InControllerTarget c) {
-            return controllerConnections(c.getController());
+            return c.getController().getConnections().stream();
         }
 
         throw new IllegalArgumentException("can't get inner connections of %s".formatted(target));
     }
 
-    //
-    // Utilities
-    //
-
-    private Stream<Connection> moduleConnections(RCModule m) {
-        return m.getConnections().stream();
-    }
-
-    private Stream<Connection> controllerConnections(ControllerDef ctrl) {
-        return ctrl.getConnections().stream();
-    }
-
-    private Stream<Connection> outboundModuleConnections(RCModule m) {
-        return moduleConnections(m).filter(this::connectsPlatform);
-    }
-
-    private Stream<Connection> outboundControllerConnections(ControllerDef ctrl) {
-        // An outbound controller connection is any connection in the module that goes to or from the
-        // controller.
-        return ctrlRes.module(ctrl).stream().flatMap(this::moduleConnections).filter(c -> connectsController(c, ctrl));
-    }
-
-    private Stream<Connection> outboundStateMachineBodyConnections(StateMachineBody smb) {
-        return stmRes.controller(smb).stream().flatMap(this::controllerConnections).filter(c -> connectsStateMachine(c, smb));
-    }
-
-    private boolean connectsController(Connection c, ControllerDef ctrl) {
-        return connectsController(c.getFrom(), ctrl) || connectsController(c.getTo(), ctrl);
-    }
-
-    private boolean connectsController(ConnectionNode n, ControllerDef ctrl) {
-        return defRes.normalise(n) == ctrl;
-    }
-
-    private boolean connectsStateMachine(Connection c, StateMachineBody smb) {
-        return connectsStateMachine(c.getFrom(), smb) || connectsStateMachine(c.getTo(), smb);
-    }
-
-    private boolean connectsStateMachine(ConnectionNode n, StateMachineBody smb) {
-        return defRes.normalise(n) == smb;
-    }
-
-    private boolean connectsPlatform(Connection c) {
-        return c.getFrom() instanceof RoboticPlatform || c.getTo() instanceof RoboticPlatform;
-    }
 }

@@ -10,9 +10,10 @@
 package robostar.robocert.util.resolve.node;
 
 import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.RoboticPlatform;
+import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.*;
+import robostar.robocert.util.RoboCertSwitch;
 
 import java.util.stream.Stream;
 
@@ -32,38 +33,40 @@ public class TargetNodeResolver {
      * @return a stream of connection nodes that can represent the target actor.
      */
     public Stream<ConnectionNode> resolve(Target target) {
-        if (target instanceof ModuleTarget m) {
-            return moduleTarget(m.getModule());
-        }
-        if (target instanceof ControllerTarget c) {
-            return Stream.of(c.getController());
-        }
-        if (target instanceof StateMachineTarget s) {
-            return Stream.of(s.getStateMachine());
-        }
-        if (target instanceof OperationTarget o) {
-            return Stream.of(o.getOperation());
-        }
+        return new RoboCertSwitch<Stream<ConnectionNode>>() {
+            @Override
+            public Stream<ConnectionNode> defaultCase(EObject e) {
+                throw new IllegalArgumentException("can't resolve actor for target %s".formatted(e));
+            }
 
-        // TODO(@MattWindsor91): GitHub #124: these can likely be extended.
+            @Override
+            public Stream<ConnectionNode> caseHasModuleTarget(HasModuleTarget t) {
+                // Modules don't have a single connection node, as they are the top-level container for nodes.
+                // Instead, we note that everything a module connects to the platform is effectively a
+                // surrogate node for the module.
+                // TODO(@MattWindsor91): I don't think this behaviour is ever useful!?
+                return t.getModule().getNodes().stream().filter(x -> !(x instanceof RoboticPlatform));
+            }
 
-        // Despite WFC CGsA2, these can happen if we're resolving namespaces for subcomponent events,
-        // operations etc.
-        if (target instanceof InModuleTarget m) {
-            return moduleTarget(m.getModule());
-        }
-        if (target instanceof InControllerTarget c) {
-            return Stream.of(c.getController());
-        }
+            @Override
+            public Stream<ConnectionNode> caseHasControllerTarget(HasControllerTarget t) {
+                return Stream.of(t.getController());
+            }
 
-        throw new IllegalArgumentException("can't resolve actor for target %s".formatted(target));
-    }
+            @Override
+            public Stream<ConnectionNode> caseStateMachineTarget(StateMachineTarget t) {
+                return Stream.of(t.getStateMachine());
+            }
 
-    private Stream<ConnectionNode> moduleTarget(RCModule m) {
-        // Modules don't have a single connection node, as they are the top-level container for nodes.
-        // Instead, we note that everything a module connects to the platform is effectively a
-        // surrogate node for the module.
-        // TODO(@MattWindsor91): I don't think this behaviour is ever useful!?
-        return m.getNodes().stream().filter(x -> !(x instanceof RoboticPlatform));
+            @Override
+            public Stream<ConnectionNode> caseOperationTarget(OperationTarget t) {
+                return Stream.of(t.getOperation());
+            }
+
+            // TODO(@MattWindsor91): GitHub #124: these can likely be extended.
+        }.doSwitch(target);
+
+        // Despite WFC CGsA2, resolving on collection targets can happen if we're resolving namespaces for subcomponent
+        // events, operations etc.
     }
 }

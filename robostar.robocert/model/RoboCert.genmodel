@@ -56,13 +56,17 @@
     <genClasses image="false" ecoreClass="RoboCert.ecore#//Target">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//Target/group"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="RoboCert.ecore#//HasModuleTarget">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//HasModuleTarget/module"/>
+    </genClasses>
+    <genClasses ecoreClass="RoboCert.ecore#//HasControllerTarget">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//HasControllerTarget/controller"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//ComponentTarget"/>
     <genClasses ecoreClass="RoboCert.ecore#//ModuleTarget">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//ModuleTarget/module"/>
       <genOperations ecoreOperation="RoboCert.ecore#//ModuleTarget/toString" body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return &quot;module &quot; + getModule().getName();&#xD;&#xA;&#x9;"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//ControllerTarget">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//ControllerTarget/controller"/>
       <genOperations ecoreOperation="RoboCert.ecore#//ControllerTarget/toString" body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return &quot;controller &quot; + getController().getName();&#xD;&#xA;&#x9;"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//StateMachineTarget">
@@ -76,11 +80,9 @@
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//CollectionTarget"/>
     <genClasses ecoreClass="RoboCert.ecore#//InModuleTarget">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//InModuleTarget/module"/>
       <genOperations ecoreOperation="RoboCert.ecore#//InModuleTarget/toString" body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return &quot;components of module &quot; + getModule().getName();&#xD;&#xA;&#x9;"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//InControllerTarget">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//InControllerTarget/controller"/>
       <genOperations ecoreOperation="RoboCert.ecore#//InControllerTarget/toString"
           body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;return &quot;components of controller &quot; + getController().getName();&#xD;&#xA;&#x9;"/>
     </genClasses>

@@ -112,6 +112,19 @@ abstract class Target {
 	ref SpecificationGroup[1]#target group;
 }
 
+@genmodel(documentation="A target whose element is a RCModule.")
+abstract class HasModuleTarget extends Target {
+	@genmodel(documentation="The module referred to by this target.")
+	ref robochart.RCModule[1] module;	
+}
+
+@genmodel(documentation="A target whose element is a ControllerDef.")
+abstract class HasControllerTarget extends Target {
+	@genmodel(documentation="The controller referred to by this target.")
+	ref robochart.ControllerDef[1] controller;
+}
+
+
 //
 // Component targets
 //
@@ -122,11 +135,8 @@ abstract class ComponentTarget extends Target {
 
 @genmodel(documentation="A target referring to a RoboChart module.
 
-Such a target has the robotic platform as its context and its element is the module.")
-class ModuleTarget extends ComponentTarget {
-	@genmodel(documentation="The module referred to by this target.")
-	ref robochart.RCModule[1] module;
-	
+Such a target has the robotic platform as its world and its element is the module.")
+class ModuleTarget extends ComponentTarget, HasModuleTarget {
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
 		return \"module \" + getModule().getName();
@@ -135,10 +145,7 @@ class ModuleTarget extends ComponentTarget {
 }
 
 @genmodel(documentation="A target referring to a RoboChart controller.")
-class ControllerTarget extends ComponentTarget {
-	@genmodel(documentation="The controller referred to by this target.")
-	ref robochart.ControllerDef[1] controller;
-	
+class ControllerTarget extends ComponentTarget, HasControllerTarget {
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
 		return \"controller \" + getController().getName();
@@ -181,10 +188,7 @@ abstract class CollectionTarget extends Target {
 }
 
 @genmodel(documentation="A target referring to the contents of a RoboChart module.")
-class InModuleTarget extends CollectionTarget {
-	@genmodel(documentation="The module referred to by this target.")
-	ref robochart.RCModule[1] module;
-	
+class InModuleTarget extends CollectionTarget, HasModuleTarget {
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
 		return \"components of module \" + getModule().getName();
@@ -193,10 +197,7 @@ class InModuleTarget extends CollectionTarget {
 }
 
 @genmodel(documentation="A target referring to the contents of a RoboChart controller.")
-class InControllerTarget extends CollectionTarget {
-	@genmodel(documentation="The controller referred to by this target.")
-	ref robochart.ControllerDef[1] controller;
-	
+class InControllerTarget extends CollectionTarget, HasControllerTarget {
 	@genmodel(body="
 		if (eIsProxy()) return super.toString();
 		return \"components of controller \" + getController().getName();
