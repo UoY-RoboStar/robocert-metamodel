@@ -363,22 +363,32 @@
         <details key="documentation" value="The parent group."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//VariableList"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lifelines" lowerBound="1"
+        upperBound="-1" eType="#//Lifeline" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The variables available for receiving arguments."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actors" lowerBound="1"
-        upperBound="-1" eType="#//Actor">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The set of group actors forming lifelines/gates in this diagram.&#xD;&#xA;&#xD;&#xA;The order determines that in which lifelines are shown in the graphical notation."/>
+        <details key="documentation" value="The set of lifelines in this diagram.&#xD;&#xA;&#xD;&#xA;The order determines that in which lifelines are shown in the graphical notation."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="fragments" lowerBound="1"
         upperBound="-1" eType="#//InteractionFragment" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The fragments of the sequence diagram."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Lifeline">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A lifeline specification."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The actor forming a lifeline."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//VariableList"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The variables available for receiving arguments on this lifeline."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

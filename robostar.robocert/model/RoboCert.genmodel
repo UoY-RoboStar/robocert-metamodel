@@ -117,9 +117,12 @@
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//Interaction">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/group"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/variables"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/actors"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/lifelines"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/fragments"/>
+    </genClasses>
+    <genClasses ecoreClass="RoboCert.ecore#//Lifeline">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/actor"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/variables"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//InteractionFragment"/>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//LifelineFragment">
