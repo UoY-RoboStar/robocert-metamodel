@@ -153,6 +153,13 @@
     <genClasses ecoreClass="RoboCert.ecore#//UntilFragment">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//UntilFragment/trigger"/>
     </genClasses>
+    <genClasses ecoreClass="RoboCert.ecore#//AnyUntilFragment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//AnyUntilFragment/body"/>
+    </genClasses>
+    <genClasses ecoreClass="RoboCert.ecore#//DoUntilFragment"/>
+    <genClasses ecoreClass="RoboCert.ecore#//TimeoutFragment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeoutFragment/trigger"/>
+    </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//DiscreteBound">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//DiscreteBound/lower"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//DiscreteBound/upper"/>

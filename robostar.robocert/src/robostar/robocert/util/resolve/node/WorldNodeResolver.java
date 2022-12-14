@@ -11,6 +11,8 @@
 package robostar.robocert.util.resolve.node;
 
 import circus.robocalc.robochart.ConnectionNode;
+import circus.robocalc.robochart.ControllerDef;
+import circus.robocalc.robochart.RCModule;
 import circus.robocalc.robochart.StateMachineBody;
 import com.google.inject.Inject;
 import org.eclipse.emf.ecore.EObject;
@@ -83,22 +85,12 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
 
             @Override
             public Stream<ConnectionNode> caseHasModuleTarget(HasModuleTarget t) {
-                // The world of a module is just its platform (with some casting to ConnectionNode).
-                return modRes.platform(t.getModule()).stream().map(x -> x);
+                return moduleWorld(t.getModule());
             }
 
             @Override
             public Stream<ConnectionNode> caseHasControllerTarget(HasControllerTarget t) {
-                final var ctrl = t.getController();
-                final var mod = ctrlRes.module(ctrl);
-                // The world of a controller is everything visible inside its module, except the controller
-                // itself.
-                return mod.stream().flatMap(m -> {
-                    // The world of a module is just its platform (with some casting to ConnectionNode).
-                    final var above = modRes.platform(m).stream().<ConnectionNode>map(x1 -> x1);
-                    final var local = m.getNodes().stream();
-                    return Stream.concat(above, local.filter(x -> x != ctrl));
-                });
+                return controllerWorld(t.getController());
             }
 
             @Override
@@ -113,18 +105,28 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
         }.doSwitch(target);
     }
 
+    private Stream<ConnectionNode> moduleWorld(RCModule m) {
+        // The world of a module is just its platform (with some casting to ConnectionNode).
+        return modRes.platform(m).stream().map(x -> x);
+    }
+
+    private Stream<ConnectionNode> controllerWorld(ControllerDef ctrl) {
+        // The world of a controller is everything visible inside its module, except the controller
+        // itself.
+        return ctrlRes.module(ctrl).stream().flatMap(m -> {
+            // Unlike stmBodyWorld, we do not treat the module as part of the controller's world, as it is not a
+            // connection node in its own right.
+            final var above = moduleWorld(m);
+            final var local = m.getNodes().stream();
+            return Stream.concat(above, local.filter(x -> x != ctrl));
+        });
+    }
+
     private Stream<ConnectionNode> stmBodyWorld(StateMachineBody s) {
         // The world of a state machine or operation is everything visible inside its controller,
         // except the state machine body itself.
         return stmRes.controller(s).stream().flatMap(c -> {
-            // The world of a controller is everything visible inside its module, except the controller
-            // itself.
-            final var above = StreamHelper.push(c, ctrlRes.module(c).stream().flatMap(m -> {
-                // The world of a module is just its platform (with some casting to ConnectionNode).
-                final var above1 = modRes.platform(m).stream().<ConnectionNode>map(x1 -> x1);
-                final var local1 = m.getNodes().stream();
-                return Stream.concat(above1, local1.filter(x1 -> x1 != c));
-            }));
+            final var above = StreamHelper.push(c, controllerWorld(c));
             final var local = Stream.concat(c.getLOperations().stream(), c.getMachines().stream());
             return Stream.concat(above, local.filter(x -> x != s));
         });

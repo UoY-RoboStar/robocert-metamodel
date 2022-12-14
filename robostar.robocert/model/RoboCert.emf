@@ -452,9 +452,34 @@ Note that this is a sequential fragment, but is not a block fragment (it doesn't
 
 This is an extension to UML.")
 class AnyFragment extends SequentialFragment {
-	// Changed in 2022-12-05: this and UntilFragment used to be merged.
 	@genmodel(documentation="The messages that may occur during this fragment.")
 	val MessageSet[1] intraMessages;
+}
+
+@genmodel(documentation="A sequential fragment where something can be interrupted by occurrences in a 'trigger' operand.
+
+This fragment implicitly forces strict ordering in the trigger.  This may change in future revisions of the language. 
+
+This is an extension to UML.")
+abstract class UntilFragment extends SequentialFragment {
+	// Changed in 2022-12-05: 'trigger' here used to be 'body'.
+	@genmodel(documentation="The trigger for exiting the body.
+
+The intended semantics is that, if any occurrences on the trigger can progress, the body is pre-empted and the trigger runs instead.")
+	val InteractionOperand[1] trigger;
+}
+
+@genmodel(documentation="An AnyFragment with an attached UntilFragment.
+
+This is an extension to UML.")
+class AnyUntilFragment extends UntilFragment {
+	// Changed in 2022-12-05: this and UntilFragment used to be merged; see AnyUntilFragment
+
+	// Note that we compose in AnyFragment rather than having common
+	// inheritance; this is to allow an easier parse for Xtext rather than any
+	// meaningful semantic reason.
+	@genmodel(documentation="The any-fragment being wrapped inside this any-until fragment.")
+	val AnyFragment[1] body;
 }
 
 @genmodel(documentation="A sequential block fragment where the body can be interrupted by occurrences in a 'trigger' operand.
@@ -462,12 +487,17 @@ class AnyFragment extends SequentialFragment {
 This fragment implicitly forces strict ordering in both the body and trigger.  This may change in future revisions of the language. 
 
 This is an extension to UML.")
-class UntilFragment extends SequentialFragment, BlockFragment {
-	// Changed in 2022-12-05: 'trigger' here used to be 'body'.
-	@genmodel(documentation="The trigger for exiting the body.
+class DoUntilFragment extends UntilFragment, BlockFragment {
+}
 
-The intended semantics is that, if any occurrences on the trigger can progress, the body is pre-empted and the trigger runs instead.")
-	val InteractionOperand[1] trigger;
+@genmodel(documentation="A sequential block fragment where the body can be pre-empted by a timeout.
+
+Semantically equivalent to an UntilFragment with a WaitFragment trigger.
+
+This is an extension to UML.")
+class TimeoutFragment extends BlockFragment {
+	@genmodel(documentation="The wait-fragment being wrapped inside this timeout fragment.")
+	val WaitFragment[1] trigger;
 }
 
 //
