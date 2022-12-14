@@ -131,9 +131,9 @@
     <genClasses ecoreClass="RoboCert.ecore#//WaitFragment">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//WaitFragment/units"/>
     </genClasses>
-    <genClasses ecoreClass="RoboCert.ecore#//MessageOccurrence">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//MessageOccurrence/message"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//MessageOccurrence/temperature"/>
+    <genClasses ecoreClass="RoboCert.ecore#//MessageFragment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//MessageFragment/message"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//MessageFragment/temperature"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//CombinedFragment"/>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//BlockFragment">
@@ -148,7 +148,7 @@
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//SequentialFragment"/>
     <genClasses ecoreClass="RoboCert.ecore#//AnyFragment">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//AnyFragment/intraMessages"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//AnyFragment/allowed"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//UntilFragment">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//UntilFragment/trigger"/>

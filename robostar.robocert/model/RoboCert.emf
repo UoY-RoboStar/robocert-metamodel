@@ -383,10 +383,10 @@ class WaitFragment extends LifelineFragment {
 	val robochart.Expression[1] units;
 }
 
-@genmodel(documentation="An occurrence that represents a message communication.
+@genmodel(documentation="A fragment that represents a message communication.
 
-Unlike UML, there is only one occurrence for both ends of the message.")
-class MessageOccurrence extends InteractionFragment {
+Unlike UML, there is only one element for both ends of the message.")
+class MessageFragment extends InteractionFragment {
 	// Changed 2022-12-09: this is now a form of fragment, not an occurrence.
 
 	@genmodel(documentation="The message itself.")
@@ -453,7 +453,7 @@ Note that this is a sequential fragment, but is not a block fragment (it doesn't
 This is an extension to UML.")
 class AnyFragment extends SequentialFragment {
 	@genmodel(documentation="The messages that may occur during this fragment.")
-	val MessageSet[1] intraMessages;
+	val MessageSet[1] allowed;
 }
 
 @genmodel(documentation="A sequential fragment where something can be interrupted by occurrences in a 'trigger' operand.

@@ -418,9 +418,9 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MessageOccurrence" eSuperTypes="#//InteractionFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="MessageFragment" eSuperTypes="#//InteractionFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An occurrence that represents a message communication.&#xD;&#xA;&#xD;&#xA;Unlike UML, there is only one occurrence for both ends of the message."/>
+      <details key="documentation" value="A fragment that represents a message communication.&#xD;&#xA;&#xD;&#xA;Unlike UML, there is only one element for both ends of the message."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="message" lowerBound="1"
         eType="#//Message" containment="true">
@@ -488,7 +488,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A sequential fragment that indefinitely performs any message in the attached set.&#xD;&#xA;&#xD;&#xA;Note that this is a sequential fragment, but is not a block fragment (it doesn't have a body) or an occurrence (it can take an arbitrary amount of time).&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="intraMessages" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="allowed" lowerBound="1"
         eType="#//MessageSet" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The messages that may occur during this fragment."/>
