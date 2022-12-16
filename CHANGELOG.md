@@ -2,6 +2,12 @@
 
 ## Added
 
+- Added `TimeoutFragment`, equivalent to a `DoUntilFragment` with a
+  `WaitFragment` trigger.
+  (2022-12-14)
+- Added `AnyUntilFragment`, which is semantically equivalent to the
+  old behaviour of `UntilFragment`.
+  (2022-12-14)
 - Added `Synchronicity` enum and `synchronicity` feature for `Message`s.
   (2022-12-09)
 - Added `SequentialFragment`, which marks fragments as requiring strict
@@ -22,10 +28,11 @@
 - (BREAKING) Removed `DeadlockOccurrence`.
   (2022-12-09)
 - (BREAKING) Separated `UntilFragment` and `AnyFragment`.  The latter retains
-  the `intraMessages` but is not a `BlockFragment`; the former is now a
-  `SequentialFragment` and the erstwhile `body` is now `trigger`.  (`body` now
-  refers to the part of the `UntilFragment` which runs _before_ `trigger`, ie
-  that which was previously implicitly an `AnyFragment`.
+  the `intraMessages` (now `allowed`) but is not a `BlockFragment`; the former
+  is now a `SequentialFragment` called `DoUntilFragment` and the old `body` is
+  now `trigger`.  (`body` now refers to the part of the `UntilFragment` which
+  runs _before_ `trigger`, ie that which was previously implicitly an
+  `AnyFragment`.
   (2022-11-05; github #1)
 
 # 0.1.0

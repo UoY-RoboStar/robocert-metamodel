@@ -495,7 +495,7 @@ class DoUntilFragment extends UntilFragment, BlockFragment {
 Semantically equivalent to an UntilFragment with a WaitFragment trigger.
 
 This is an extension to UML.")
-class TimeoutFragment extends BlockFragment {
+class TimeoutFragment extends BlockFragment, SequentialFragment {
 	@genmodel(documentation="The wait-fragment being wrapped inside this timeout fragment.")
 	val WaitFragment[1] trigger;
 }

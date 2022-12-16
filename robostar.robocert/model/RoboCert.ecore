@@ -522,7 +522,7 @@
       <details key="documentation" value="A sequential block fragment where the body can be interrupted by occurrences in a 'trigger' operand.&#xD;&#xA;&#xD;&#xA;This fragment implicitly forces strict ordering in both the body and trigger.  This may change in future revisions of the language. &#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeoutFragment" eSuperTypes="#//BlockFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeoutFragment" eSuperTypes="#//BlockFragment #//SequentialFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A sequential block fragment where the body can be pre-empted by a timeout.&#xD;&#xA;&#xD;&#xA;Semantically equivalent to an UntilFragment with a WaitFragment trigger.&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
     </eAnnotations>
