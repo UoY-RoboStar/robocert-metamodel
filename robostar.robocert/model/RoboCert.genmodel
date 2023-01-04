@@ -41,6 +41,7 @@
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//CertPackage">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//CertPackage/groups"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//CertPackage/importedEnums"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//Group">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//Group/parent"/>
@@ -51,7 +52,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//SpecificationGroup/messageSets"/>
       <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//SpecificationGroup/actors"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//SpecificationGroup/interactions"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//SpecificationGroup/importedEnums"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//Target">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//Target/group"/>
@@ -121,6 +121,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Interaction/fragments"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//Lifeline">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/parent"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/actor"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/variables"/>
     </genClasses>

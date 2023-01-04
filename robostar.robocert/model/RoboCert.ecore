@@ -29,6 +29,12 @@
         <details key="documentation" value="Any groups in this package.&#xD;&#xA;&#xD;&#xA;Groups form an ordered list because they can lexically depend on things&#xD;&#xA;defined in previous groups."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="importedEnums" ordered="false"
+        upperBound="-1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Enumeration">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any enumerations imported into scope in this package."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Group" abstract="true" eSuperTypes="#//OptionallyNamedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -73,12 +79,6 @@
         eType="#//Interaction" containment="true" eOpposite="#//Interaction/group">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The interactions inside this sequence group."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="importedEnums" ordered="false"
-        upperBound="-1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Enumeration">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Any enumerations imported into this specification group."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -364,7 +364,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lifelines" lowerBound="1"
-        upperBound="-1" eType="#//Lifeline" containment="true">
+        upperBound="-1" eType="#//Lifeline" containment="true" eOpposite="#//Lifeline/parent">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The set of lifelines in this diagram.&#xD;&#xA;&#xD;&#xA;The order determines that in which lifelines are shown in the graphical notation."/>
       </eAnnotations>
@@ -380,6 +380,12 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A lifeline specification."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" lowerBound="1"
+        eType="#//Interaction" eOpposite="#//Interaction/lifelines">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The interaction to which this lifeline belongs."/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The actor forming a lifeline."/>
