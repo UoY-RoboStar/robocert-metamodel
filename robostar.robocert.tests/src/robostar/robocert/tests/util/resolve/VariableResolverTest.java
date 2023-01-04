@@ -103,4 +103,24 @@ class VariableResolverTest {
     final var got2 = resolver.resolve(seq).toList();
     assertThat(got2, is(Collections.EMPTY_LIST));
   }
+
+  /**
+   * Checks that finding the lifeline of a variable inside a lifeline works properly.
+   */
+  @Test
+  void testFindLifeline_inLifeline() {
+    assertThat(resolver.findLifeline(wr.var()), is(wr));
+    assertThat(resolver.findLifeline(xr.var()), is(xr));
+    assertThat(resolver.findLifeline(yr.var()), is(yr));
+    assertThat(resolver.findLifeline(zr.var()), is(zr));
+  }
+
+  /**
+   * Checks that finding the lifeline of a variable not inside a lifeline works properly.
+   */
+  @Test
+  void testFindLifeline_notInLifeline() {
+    final var q = varFac.var("q", typeFac.primRef("real"));
+    assertThat(resolver.findLifeline(q), is(new Result(q, Optional.empty())));
+  }
 }

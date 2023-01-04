@@ -57,6 +57,16 @@ public class VariableResolver {
   }
 
   /**
+   * Tries to find the parent lifeline of a variable.
+   * @param var variable whose lifeline is unknown.
+   * @return a resolver result containing {@code var} and, if known, its lifeline.
+   */
+  public Result findLifeline(Variable var) {
+    final var lifeline = ResolveHelper.containerOfType(var, Lifeline.class);
+    return new Result(var, lifeline);
+  }
+
+  /**
    * Wraps a resolved variable with its optional lifeline source.
    *
    * @param var      variable.
