@@ -12,7 +12,7 @@ package robostar.robocert.tests.util.resolve;
 import circus.robocalc.robochart.RoboChartFactory;
 import com.google.inject.Inject;
 import robostar.robocert.*;
-import robostar.robocert.util.MessageFactory;
+import robostar.robocert.util.factory.MessageFactory;
 
 import java.util.Objects;
 

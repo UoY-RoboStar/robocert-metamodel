@@ -19,7 +19,7 @@ import circus.robocalc.robochart.RoboChartFactory;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.RoboCertFactory;
-import robostar.robocert.util.TargetFactory;
+import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.resolve.DefinitionResolver;
 import robostar.robocert.util.resolve.TargetComponentsResolver;
 

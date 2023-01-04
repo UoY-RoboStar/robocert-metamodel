@@ -1,4 +1,13 @@
-package robostar.robocert.util;
+/*
+ * Copyright (c) 2022, 2023 University of York and others
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+package robostar.robocert.util.factory.robochart;
 
 import circus.robocalc.robochart.And;
 import circus.robocalc.robochart.BinaryExpression;
@@ -27,16 +36,15 @@ import java.util.function.Supplier;
 /**
  * Helper factory that uses a {@link RoboChartFactory} to produce specific types of expression.
  *
- * @param rc  the underlying RoboChart factory.
- *
+ * @param rc the underlying RoboChart factory.
  * @author Matt Windsor
  */
 public record ExpressionFactory(RoboChartFactory rc) {
 
   @Inject
   public ExpressionFactory {
-	  Objects.requireNonNull(rc);
-  };
+    Objects.requireNonNull(rc);
+  }
 
   /**
    * Creates a {@link BooleanExp} with the given truth value.

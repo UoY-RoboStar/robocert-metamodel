@@ -1,17 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2022 University of York and others
+/*
+ * Copyright (c) 2022, 2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *   Matt Windsor - initial definition
- ******************************************************************************/
+ */
 
-package robostar.robocert.util;
+package robostar.robocert.util.factory;
 
 import java.util.Objects;
 
@@ -35,8 +32,10 @@ import robostar.robocert.StateMachineTarget;
  * @param certFactory the RoboCert factory.
  */
 public record TargetFactory(RoboCertFactory certFactory) {
+
   /**
    * Constructs a target factory.
+   *
    * @param certFactory the RoboCert factory.
    */
   @Inject
@@ -50,6 +49,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs an in-module target over the given module.
+   *
    * @param module the module in question.
    * @return a target targetting the components of the given module.
    */
@@ -61,6 +61,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs an in-controller target over the given controller.
+   *
    * @param ctrl the controller in question.
    * @return a target targetting the components of the given controller.
    */
@@ -76,6 +77,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs a module target over the given module.
+   *
    * @param module the module in question.
    * @return a target targetting the given module.
    */
@@ -87,6 +89,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs a controller target over the given controller.
+   *
    * @param ctrl the controller in question.
    * @return a target targetting the given controller.
    */
@@ -98,6 +101,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs a state-machine target over the given state machine.
+   *
    * @param stm the state machine in question.
    * @return a target targetting the given state machine.
    */
@@ -109,6 +113,7 @@ public record TargetFactory(RoboCertFactory certFactory) {
 
   /**
    * Constructs an operation target over the given operation.
+   *
    * @param op the operation in question.
    * @return a target targetting the given operation.
    */

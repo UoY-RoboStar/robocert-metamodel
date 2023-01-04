@@ -1,4 +1,5 @@
-/* Copyright (c) 2021, 2022 University of York and others
+/*
+ * Copyright (c) 2021, 2022, 2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -6,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package robostar.robocert.util;
+package robostar.robocert.util.factory;
 
 import circus.robocalc.robochart.Event;
 import circus.robocalc.robochart.OperationSig;

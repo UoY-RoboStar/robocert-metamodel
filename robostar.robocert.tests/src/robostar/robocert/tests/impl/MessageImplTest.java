@@ -23,8 +23,8 @@ import circus.robocalc.robochart.StateMachineDef;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
-import robostar.robocert.util.MessageFactory;
-import robostar.robocert.util.TargetFactory;
+import robostar.robocert.util.factory.MessageFactory;
+import robostar.robocert.util.factory.TargetFactory;
 
 /**
  * Tests custom functionality on Messages.

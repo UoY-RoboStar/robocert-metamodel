@@ -24,7 +24,7 @@ import circus.robocalc.robochart.Variable;
 import circus.robocalc.robochart.VariableModifier;
 import robostar.robocert.ConstAssignment;
 import robostar.robocert.RoboCertFactory;
-import robostar.robocert.util.ExpressionFactory;
+import robostar.robocert.util.factory.robochart.ExpressionFactory;
 
 /**
  * Tests any derived functionality on {@link ConstAssignment}s, and also tests that the factory
