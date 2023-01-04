@@ -56,7 +56,7 @@ class VariableResolverTest {
   private VariableResolver.Result zr;
 
   @BeforeEach
-  void init() {
+  void setUp() {
     final var type = typeFac.primRef("real");
 
     final var w = varFac.var("w", type);
