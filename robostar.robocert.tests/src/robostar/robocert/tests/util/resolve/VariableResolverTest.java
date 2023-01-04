@@ -130,7 +130,6 @@ class VariableResolverTest {
     assertThat(resolver.findLifeline(q), is(new Result(q, Optional.empty())));
   }
 
-
   /**
    * Tests {@code isForActor} works properly on results.
    */
