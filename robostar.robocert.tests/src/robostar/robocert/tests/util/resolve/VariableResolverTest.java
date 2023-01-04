@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import robostar.robocert.Actor;
 import robostar.robocert.Interaction;
 import robostar.robocert.Lifeline;
 import robostar.robocert.RoboCertFactory;
@@ -50,6 +51,8 @@ class VariableResolverTest {
 
   private Interaction seq;
 
+  private Actor wa;
+
   private VariableResolver.Result wr;
   private VariableResolver.Result xr;
   private VariableResolver.Result yr;
@@ -64,8 +67,11 @@ class VariableResolverTest {
     final var y = varFac.var("y", type);
     final var z = varFac.var("z", type);
 
+    wa = certFac.createTargetActor();
+
     line1 = certFac.createLifeline();
     line1.setVariables(varFac.list(VariableModifier.VAR, w, x));
+    line1.setActor(wa);
 
     line2 = certFac.createLifeline();
     line2.setVariables(varFac.list(VariableModifier.VAR, y, z));
@@ -122,5 +128,17 @@ class VariableResolverTest {
   void testFindLifeline_notInLifeline() {
     final var q = varFac.var("q", typeFac.primRef("real"));
     assertThat(resolver.findLifeline(q), is(new Result(q, Optional.empty())));
+  }
+
+
+  /**
+   * Tests {@code isForActor} works properly on results.
+   */
+  @Test
+  void testIsForActor() {
+    assertThat(wr.isForActor(wa), is(true));
+
+    final var other = certFac.createComponentActor();
+    assertThat(wr.isForActor(other), is(false));
   }
 }

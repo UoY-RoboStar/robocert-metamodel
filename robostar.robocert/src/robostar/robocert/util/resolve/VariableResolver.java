@@ -4,6 +4,8 @@ import circus.robocalc.robochart.Variable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import robostar.robocert.Actor;
 import robostar.robocert.Interaction;
 import robostar.robocert.Lifeline;
 
@@ -58,6 +60,7 @@ public class VariableResolver {
 
   /**
    * Tries to find the parent lifeline of a variable.
+   *
    * @param var variable whose lifeline is unknown.
    * @return a resolver result containing {@code var} and, if known, its lifeline.
    */
@@ -74,5 +77,15 @@ public class VariableResolver {
    */
   public record Result(Variable var, Optional<Lifeline> lifeline) {
 
+    /**
+     * Gets whether this result is over a lifeline representing the given actor.
+     *
+     * @param a actor in question.
+     * @return whether the result names a lifeline and that lifeline's nested actor is equal to the
+     * given actor.
+     */
+    public boolean isForActor(Actor a) {
+      return lifeline.stream().anyMatch(l -> EcoreUtil.equals(l.getActor(), a));
+    }
   }
 }
