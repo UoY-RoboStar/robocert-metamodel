@@ -29,10 +29,10 @@
         <details key="documentation" value="Any groups in this package.&#xD;&#xA;&#xD;&#xA;Groups form an ordered list because they can lexically depend on things&#xD;&#xA;defined in previous groups."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="importedEnums" ordered="false"
-        upperBound="-1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Enumeration">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rcImports" ordered="false"
+        upperBound="-1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//RCPackage">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Any enumerations imported into scope in this package."/>
+        <details key="documentation" value="Any RoboChart packages whose contents are to be imported into scope."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -403,9 +403,9 @@
       <details key="documentation" value="A single interaction fragment in a subsequence."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LifelineFragment" abstract="true" eSuperTypes="#//InteractionFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="TimeFragment" abstract="true" eSuperTypes="#//InteractionFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base class of fragments on exactly one lifeline."/>
+      <details key="documentation" value="Base class of fragments imposing time conditions on one lifeline."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -413,7 +413,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//LifelineFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//TimeFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Represents a wait for some amount of time units."/>
     </eAnnotations>
@@ -462,7 +462,7 @@
       <details key="documentation" value="An optional fragment."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//LifelineFragment #//BlockFragment">
+  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//TimeFragment #//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Fragment imposing a deadline constraint on a block."/>
     </eAnnotations>

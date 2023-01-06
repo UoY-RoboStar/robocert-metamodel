@@ -370,8 +370,8 @@ class Lifeline {
 abstract class InteractionFragment {
 }
 
-@genmodel(documentation="Base class of fragments on exactly one lifeline.")
-abstract class LifelineFragment extends InteractionFragment {
+@genmodel(documentation="Base class of fragments imposing time conditions on one lifeline.")
+abstract class TimeFragment extends InteractionFragment {
 	@genmodel(documentation="The actor on which this occurrence is occurring.")
 	ref Actor[1] actor;	
 	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
@@ -381,7 +381,7 @@ abstract class LifelineFragment extends InteractionFragment {
 }
 
 @genmodel(documentation="Represents a wait for some amount of time units.")
-class WaitFragment extends LifelineFragment {
+class WaitFragment extends TimeFragment {
 	@genmodel(documentation="The number of units to wait, given as a scalar or a set/range expression.")
 	val robochart.Expression[1] units;
 }
@@ -425,7 +425,7 @@ class OptFragment extends BlockFragment {
 }
 
 @genmodel(documentation="Fragment imposing a deadline constraint on a block.")
-class DeadlineFragment extends LifelineFragment, BlockFragment {
+class DeadlineFragment extends TimeFragment, BlockFragment {
 	@genmodel(documentation="The upper bound on the number of time units that can occur in this block.")
 	val robochart.Expression[1] units;
 }
