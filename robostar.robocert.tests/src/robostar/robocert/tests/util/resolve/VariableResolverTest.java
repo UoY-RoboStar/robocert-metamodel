@@ -79,10 +79,10 @@ class VariableResolverTest {
     seq = certFac.createInteraction();
     seq.getLifelines().addAll(List.of(line1, line2));
 
-    wr = new Result(w, Optional.of(line1));
-    xr = new Result(x, Optional.of(line1));
-    yr = new Result(y, Optional.of(line2));
-    zr = new Result(z, Optional.of(line2));
+    wr = new Result(w, Optional.of(seq), Optional.of(line1));
+    xr = new Result(x, Optional.of(seq), Optional.of(line1));
+    yr = new Result(y, Optional.of(seq), Optional.of(line2));
+    zr = new Result(z, Optional.of(seq), Optional.of(line2));
   }
 
   /**
@@ -115,10 +115,10 @@ class VariableResolverTest {
    */
   @Test
   void testFindLifeline_inLifeline() {
-    assertThat(resolver.findLifeline(wr.var()), is(wr));
-    assertThat(resolver.findLifeline(xr.var()), is(xr));
-    assertThat(resolver.findLifeline(yr.var()), is(yr));
-    assertThat(resolver.findLifeline(zr.var()), is(zr));
+    assertThat(resolver.findParents(wr.var()), is(wr));
+    assertThat(resolver.findParents(xr.var()), is(xr));
+    assertThat(resolver.findParents(yr.var()), is(yr));
+    assertThat(resolver.findParents(zr.var()), is(zr));
   }
 
   /**
@@ -127,7 +127,7 @@ class VariableResolverTest {
   @Test
   void testFindLifeline_notInLifeline() {
     final var q = varFac.var("q", typeFac.primRef("real"));
-    assertThat(resolver.findLifeline(q), is(new Result(q, Optional.empty())));
+    assertThat(resolver.findParents(q), is(new Result(q, Optional.empty(), Optional.empty())));
   }
 
   /**

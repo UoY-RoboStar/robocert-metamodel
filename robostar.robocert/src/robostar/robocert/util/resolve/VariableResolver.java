@@ -55,27 +55,29 @@ public class VariableResolver {
       return Stream.empty();
     }
 
-    return vars.stream().map(v -> new Result(v, Optional.of(line)));
+    return vars.stream().map(v -> new Result(v, Optional.of(line.getParent()), Optional.of(line)));
   }
 
   /**
-   * Tries to find the parent lifeline of a variable.
+   * Tries to find the parent interaction and lifeline of a variable.
    *
-   * @param var variable whose lifeline is unknown.
-   * @return a resolver result containing {@code var} and, if known, its lifeline.
+   * @param var variable whose parents are unknown.
+   * @return a resolver result containing {@code var} and, if known, its interaction and lifeline.
    */
-  public Result findLifeline(Variable var) {
+  public Result findParents(Variable var) {
+    final var seq = ResolveHelper.containerOfType(var, Interaction.class);
     final var lifeline = ResolveHelper.containerOfType(var, Lifeline.class);
-    return new Result(var, lifeline);
+    return new Result(var, seq, lifeline);
   }
 
   /**
-   * Wraps a resolved variable with its optional lifeline source.
+   * Wraps a resolved variable with all information gathered about it during resolution.
    *
    * @param var      variable.
+   * @param seq      parent interaction, if this came from one (or a lifeline within one).
    * @param lifeline parent lifeline, if this came from one.
    */
-  public record Result(Variable var, Optional<Lifeline> lifeline) {
+  public record Result(Variable var, Optional<Interaction> seq, Optional<Lifeline> lifeline) {
 
     /**
      * Gets whether this result is over a lifeline representing the given actor.
