@@ -20,6 +20,7 @@ Export-Package: robostar.robocert;uses:="org.eclipse.emf.ecore,
  circus.robocalc.robochart,
  robostar.robocert",
  robostar.robocert.util.resolve.node,
+ robostar.robocert.util.resolve.result,
  robostar.robocert.util.factory,
  robostar.robocert.util.factory.robochart,
  robostar.robocert.util.resolve
