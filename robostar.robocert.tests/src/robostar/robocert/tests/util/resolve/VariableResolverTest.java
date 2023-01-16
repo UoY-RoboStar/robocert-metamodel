@@ -16,7 +16,6 @@ import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.VariableModifier;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.Actor;
@@ -26,7 +25,9 @@ import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.factory.robochart.TypeFactory;
 import robostar.robocert.util.factory.robochart.VariableFactory;
 import robostar.robocert.util.resolve.VariableResolver;
-import robostar.robocert.util.resolve.VariableResolver.Result;
+import robostar.robocert.util.resolve.result.LifelineVariableLocation;
+import robostar.robocert.util.resolve.result.NoVariableLocation;
+import robostar.robocert.util.resolve.result.ResolvedVariable;
 
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -53,10 +54,10 @@ class VariableResolverTest {
 
   private Actor wa;
 
-  private VariableResolver.Result wr;
-  private VariableResolver.Result xr;
-  private VariableResolver.Result yr;
-  private VariableResolver.Result zr;
+  private ResolvedVariable wr;
+  private ResolvedVariable xr;
+  private ResolvedVariable yr;
+  private ResolvedVariable zr;
 
   @BeforeEach
   void setUp() {
@@ -79,10 +80,13 @@ class VariableResolverTest {
     seq = certFac.createInteraction();
     seq.getLifelines().addAll(List.of(line1, line2));
 
-    wr = new Result(w, Optional.of(seq), Optional.of(line1));
-    xr = new Result(x, Optional.of(seq), Optional.of(line1));
-    yr = new Result(y, Optional.of(seq), Optional.of(line2));
-    zr = new Result(z, Optional.of(seq), Optional.of(line2));
+    final var ll1 = new LifelineVariableLocation(line1);
+    final var ll2 = new LifelineVariableLocation(line2);
+
+    wr = new ResolvedVariable(w, ll1);
+    xr = new ResolvedVariable(x, ll1);
+    yr = new ResolvedVariable(y, ll2);
+    zr = new ResolvedVariable(z, ll2);
   }
 
   /**
@@ -115,10 +119,10 @@ class VariableResolverTest {
    */
   @Test
   void testFindLifeline_inLifeline() {
-    assertThat(resolver.findParents(wr.var()), is(wr));
-    assertThat(resolver.findParents(xr.var()), is(xr));
-    assertThat(resolver.findParents(yr.var()), is(yr));
-    assertThat(resolver.findParents(zr.var()), is(zr));
+    assertThat(resolver.resolve(wr.var()), is(wr));
+    assertThat(resolver.resolve(xr.var()), is(xr));
+    assertThat(resolver.resolve(yr.var()), is(yr));
+    assertThat(resolver.resolve(zr.var()), is(zr));
   }
 
   /**
@@ -127,7 +131,7 @@ class VariableResolverTest {
   @Test
   void testFindLifeline_notInLifeline() {
     final var q = varFac.var("q", typeFac.primRef("real"));
-    assertThat(resolver.findParents(q), is(new Result(q, Optional.empty(), Optional.empty())));
+    assertThat(resolver.resolve(q), is(new ResolvedVariable(q, new NoVariableLocation())));
   }
 
   /**
