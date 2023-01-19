@@ -378,12 +378,12 @@ abstract class TimeFragment extends InteractionFragment {
 	// restricts the 0 condition to when we're at the top of a sequential
 	// fragment.  This used to be the case in previous iterations of the
 	// metamodel, but I've rowed back on it to simplify things for v0.1.
+	@genmodel(documentation="The number of time units this fragment involves.")
+	val robochart.Expression[1] units;
 }
 
 @genmodel(documentation="Represents a wait for some amount of time units.")
 class WaitFragment extends TimeFragment {
-	@genmodel(documentation="The number of units to wait, given as a scalar or a set/range expression.")
-	val robochart.Expression[1] units;
 }
 
 @genmodel(documentation="A fragment that represents a message communication.
@@ -424,10 +424,10 @@ abstract class BlockFragment extends CombinedFragment {
 class OptFragment extends BlockFragment {
 }
 
-@genmodel(documentation="Fragment imposing a deadline constraint on a block.")
+@genmodel(documentation="Fragment imposing a deadline constraint on a block.
+
+In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block.")
 class DeadlineFragment extends TimeFragment, BlockFragment {
-	@genmodel(documentation="The upper bound on the number of time units that can occur in this block.")
-	val robochart.Expression[1] units;
 }
 
 @genmodel(documentation="A fragment containing one or more sequence elements in loop.")

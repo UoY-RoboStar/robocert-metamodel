@@ -412,17 +412,17 @@
         <details key="documentation" value="The actor on which this occurrence is occurring."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of time units this fragment involves."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//TimeFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Represents a wait for some amount of time units."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The number of units to wait, given as a scalar or a set/range expression."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MessageFragment" eSuperTypes="#//InteractionFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -464,14 +464,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//TimeFragment #//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Fragment imposing a deadline constraint on a block."/>
+      <details key="documentation" value="Fragment imposing a deadline constraint on a block.&#xD;&#xA;&#xD;&#xA;In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The upper bound on the number of time units that can occur in this block."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LoopFragment" eSuperTypes="#//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
