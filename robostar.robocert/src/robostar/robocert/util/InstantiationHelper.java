@@ -1,15 +1,12 @@
-/********************************************************************************
- * Copyright (c) 2022 University of York and others
+/*
+ * Copyright (c) 2022-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *   Matt Windsor - initial definition
- ********************************************************************************/
+ */
 package robostar.robocert.util;
 
 import java.util.List;
@@ -28,12 +25,13 @@ public class InstantiationHelper {
 	/**
 	 * Gets a stream of all constants instantiated by this instantiation.
 	 *
+	 * <p>
 	 * This stream is not deduplicated; we assume that either the
 	 * instantiation is well-formed (no multiple assignments), or that any
 	 * deduplication happens later on.
 	 * 
-	 * @param inst the instantiation to inspect (may be null).
-	 * @return the stream of constants in inst.
+	 * @param inst the instantiation to inspect (can be null)
+	 * @return the stream of constants in inst
 	 */
 	public Stream<Variable> allConstants(List<ConstAssignment> inst) {
 		return nullableInstToStream(inst)
@@ -43,9 +41,9 @@ public class InstantiationHelper {
 	/**
 	 * Tries to get a constant from an instantiation.
 	 *
-	 * @param inst the instantiation to inspect (may be null).
-	 * @param k the constant to find.
-	 * @return the expression corresponding to k, if it is instantiated in inst.
+	 * @param inst the instantiation to inspect (can be null)
+	 * @param k the constant to find
+	 * @return the expression corresponding to k, if it is instantiated in inst
 	 */
 	public Optional<Expression> getConstant(List<ConstAssignment> inst, Variable k) {
 		// TODO(@MattWindsor91): do we need to take Parameter here instead?
@@ -58,8 +56,8 @@ public class InstantiationHelper {
 						})
 				.findFirst();
 	  }
-	
+
 	private Stream<ConstAssignment> nullableInstToStream(List<ConstAssignment> inst) {
-		return Optional.ofNullable(inst).stream().flatMap(List::stream);
+		return Stream.ofNullable(inst).flatMap(List::stream);
 	}
 }

@@ -26,7 +26,7 @@ public class VariableResolver {
    * @param seq interaction being investigated for variables.
    * @return a stream of variables, optionally accompanied by their lifelines.
    */
-  public Stream<ResolvedVariable> resolve(Interaction seq) {
+  public Stream<ResolvedVariable> findAll(Interaction seq) {
     // TODO(@MattWindsor91): non-lifeline variables
     if (seq == null) {
       return Stream.empty();

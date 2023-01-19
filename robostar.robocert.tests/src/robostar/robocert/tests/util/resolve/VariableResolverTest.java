@@ -94,7 +94,7 @@ class VariableResolverTest {
    */
   @Test
   void testResolve_normal() {
-    final var got = resolver.resolve(seq).toList();
+    final var got = resolver.findAll(seq).toList();
 
     assertThat(got, hasItems(wr, xr, yr, zr));
   }
@@ -106,11 +106,11 @@ class VariableResolverTest {
   void testResolve_nullVarList() {
     line1.setVariables(null);
 
-    final var got = resolver.resolve(seq).toList();
+    final var got = resolver.findAll(seq).toList();
     assertThat(got, both(hasItems(yr, zr)).and(not(hasItem(wr))).and(not(hasItem(xr))));
 
     line2.setVariables(null);
-    final var got2 = resolver.resolve(seq).toList();
+    final var got2 = resolver.findAll(seq).toList();
     assertThat(got2, is(Collections.EMPTY_LIST));
   }
 

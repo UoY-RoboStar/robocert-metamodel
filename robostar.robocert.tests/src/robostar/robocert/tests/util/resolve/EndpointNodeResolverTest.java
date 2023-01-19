@@ -65,7 +65,7 @@ class EndpointNodeResolverTest {
         resolver = new EndpointNodeResolver(aNodeRes, wNodeRes);
 
         world = msgFactory.world();
-        target = msgFactory.actor(msgFactory.targetActor());
+        target = msgFactory.actor(msgFactory.targetActor("T"));
 
         wrapper = new EndpointWrapper(certFactory, msgFactory);
     }

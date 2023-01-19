@@ -123,10 +123,16 @@ public record MessageFactory(RoboCertFactory rc) {
   }
 
   /**
-   * @return a target actor.
+   * Creates a target actor.
+   *
+   * @param name the name of the target actor
+   *
+   * @return a target actor
    */
-  public TargetActor targetActor() {
-    return rc.createTargetActor();
+  public TargetActor targetActor(String name) {
+    final var a = rc.createTargetActor();
+    a.setName(name);
+    return a;
   }
 
   /**

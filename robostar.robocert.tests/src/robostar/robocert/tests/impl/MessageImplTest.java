@@ -64,8 +64,7 @@ class MessageImplTest {
     comGrp.setName("ComGroup");
     comGrp.setTarget(comTgt);
 
-    comTarget = msgFac.targetActor();
-    comTarget.setName("T");
+    comTarget = msgFac.targetActor("T");
     comGrp.getActors().add(comTarget);
   }
 

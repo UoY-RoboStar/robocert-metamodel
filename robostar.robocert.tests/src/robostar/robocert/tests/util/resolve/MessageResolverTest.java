@@ -44,8 +44,8 @@ class MessageResolverTest {
 
   @BeforeEach
   void setUp() {
-    act1 = msgFac.targetActor();
-    act2 = msgFac.targetActor();
+    act1 = msgFac.targetActor("A1");
+    act2 = msgFac.targetActor("A2");
 
     var evt1 = chartFac.createEvent();
     evt1.setName("evt1");

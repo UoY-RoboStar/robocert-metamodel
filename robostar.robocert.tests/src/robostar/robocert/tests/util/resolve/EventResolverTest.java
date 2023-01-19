@@ -66,7 +66,7 @@ class EventResolverTest {
         resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
 
         world = msgFactory.world();
-        target = msgFactory.actor(msgFactory.targetActor());
+        target = msgFactory.actor(msgFactory.targetActor("T"));
 
         wrapper = new EndpointWrapper(certFactory, msgFactory);
     }
