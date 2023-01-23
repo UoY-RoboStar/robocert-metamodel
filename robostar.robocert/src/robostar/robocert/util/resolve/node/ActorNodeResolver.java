@@ -13,12 +13,10 @@ import circus.robocalc.robochart.ConnectionNode;
 import com.google.inject.Inject;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import robostar.robocert.Actor;
 import robostar.robocert.ComponentActor;
-import robostar.robocert.Target;
 import robostar.robocert.TargetActor;
 import robostar.robocert.util.GroupFinder;
 
@@ -57,24 +55,11 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFind
         if (actor instanceof ComponentActor c) {
             return Stream.of(c.getNode());
         }
-        return target(actor).stream().flatMap(t -> {
+        return groupFinder.findTarget(actor).stream().flatMap(t -> {
             if (actor instanceof TargetActor) {
                 return tgtRes.resolve(t);
             }
             throw new IllegalArgumentException("can't resolve actor %s".formatted(actor));
         });
-    }
-
-    /**
-     * Tries to get the target underlying an actor.
-     *
-     * <p>Well-formed actors should have a target via their attached specification group.
-     *
-     * @param actor the actor to inspect.
-     * @return the target.
-     */
-    public Optional<Target> target(Actor actor) {
-        // TODO(@MattWindsor91): this should be moved somewhere else, but where?
-        return Optional.ofNullable(actor.getGroup()).flatMap(g -> Optional.ofNullable(g.getTarget()));
     }
 }

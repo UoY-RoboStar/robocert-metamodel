@@ -94,8 +94,9 @@ class EndpointNodeResolverTest {
         final var stm = targetFactory.stateMachine(example.avoid);
         wrapper.wrap(stm, world, target);
 
+        // Since 2023-01-23, the world of a state machine is just the controller and siblings.
         final var worldNodes = resolve(world);
-        assertThat(worldNodes, hasItems(example.platform, example.obstacleAvoidance));
+        assertThat(worldNodes, hasItems(example.obstacleAvoidance));
 
         final var targetNodes = resolve(target);
         assertThat(targetNodes, hasItems(example.avoid));
