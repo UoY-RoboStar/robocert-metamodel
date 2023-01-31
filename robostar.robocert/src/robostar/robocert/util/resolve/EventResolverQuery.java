@@ -11,22 +11,22 @@
 package robostar.robocert.util.resolve;
 
 import java.util.List;
+import robostar.robocert.Actor;
 import robostar.robocert.MessageOccurrence;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.MessageEnd;
 import robostar.robocert.EventTopic;
-import robostar.robocert.Lifeline;
 
 /**
  * A query for event resolution.
  *
- * @param topic     the event topic of the message
- * @param from      the from-endpoint of the message
- * @param to        the to-endpoint of the message
- * @param lifelines the list of lifelines active in this sequence diagram
+ * @param topic  the event topic of the message
+ * @param from   the from-endpoint of the message
+ * @param to     the to-endpoint of the message
+ * @param actors the list of actors active on the specification group
  */
 public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd to,
-                                 List<Lifeline> lifelines) {
+                                 List<Actor> actors) {
 
   /**
    * Gets whether the two endpoints refer to components.

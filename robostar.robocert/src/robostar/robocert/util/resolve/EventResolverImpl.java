@@ -118,7 +118,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
   }
 
   private Set<ConnectionNode> endNodes(EventResolverQuery q, MessageEnd e) {
-    return endRes.resolve(e, q.lifelines()).collect(Collectors.toUnmodifiableSet());
+    return endRes.resolve(e, q.actors()).collect(Collectors.toUnmodifiableSet());
   }
 
   private Set<ConnectionNode> targetNodes(Target t) {

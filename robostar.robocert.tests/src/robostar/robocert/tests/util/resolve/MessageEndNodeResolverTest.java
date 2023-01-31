@@ -52,7 +52,7 @@ class MessageEndNodeResolverTest {
 
   private Gate world;
   private MessageOccurrence target;
-  private List<Lifeline> lines;
+  private Actor actor;
 
   @BeforeEach
   void setUp() {
@@ -68,9 +68,8 @@ class MessageEndNodeResolverTest {
     resolver = new MessageEndNodeResolver(aNodeRes, wNodeRes);
 
     world = msgFac.gate();
-    final var actor = actFac.targetActor("T");
+    actor = actFac.targetActor("T");
     target = msgFac.occurrence(actor);
-    lines = List.of(actFac.lifeline(actor));
   }
 
   /**
@@ -105,6 +104,6 @@ class MessageEndNodeResolverTest {
   }
 
   private Set<ConnectionNode> resolve(MessageEnd a) {
-    return resolver.resolve(a, lines).collect(Collectors.toUnmodifiableSet());
+    return resolver.resolve(a, List.of(actor)).collect(Collectors.toUnmodifiableSet());
   }
 }

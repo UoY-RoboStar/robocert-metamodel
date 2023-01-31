@@ -52,7 +52,7 @@ class EventResolverTest {
   private Gate world;
   private MessageOccurrence target;
   private MessageEndWrapper wrapper;
-  private List<Lifeline> lines;
+  private Actor actor;
 
   @BeforeEach
   void setUp() {
@@ -70,9 +70,8 @@ class EventResolverTest {
     resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
 
     world = msgFac.gate();
-    final var actor = actFac.targetActor("T");
+    actor = actFac.targetActor("T");
     target = msgFac.occurrence(actor);
-    lines = List.of(actFac.lifeline(actor));
 
     wrapper = new MessageEndWrapper(certFactory, msgFac);
   }
@@ -124,7 +123,7 @@ class EventResolverTest {
 
   private Set<Connection> resolve(Event efrom, Event eto, MessageEnd from, MessageEnd to) {
     final var topic = msgFac.eventTopic(efrom, eto);
-    final var query = new EventResolverQuery(topic, from, to, lines);
+    final var query = new EventResolverQuery(topic, from, to, List.of(actor));
     return resolver.resolve(query).collect(Collectors.toUnmodifiableSet());
   }
 }

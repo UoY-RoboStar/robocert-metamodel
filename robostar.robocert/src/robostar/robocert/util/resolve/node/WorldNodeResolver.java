@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 /**
  * Resolves worlds into the connection nodes that can represent them.
  * <p>
- * This resolver does not take into account the fact that some world nodes shadow lifelines already
+ * This resolver does not take into account the fact that some world nodes shadow actors already
  * inside a diagram.  Upstream consumers of this resolver must handle such a situation themselves,
  * by filtering out those nodes.
  *

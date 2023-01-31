@@ -50,13 +50,13 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
    * stand in for the module), or the endpoint is a world (in which case, any of the parent's
    * connection nodes can appear).
    *
-   * @param endpoint  the endpoint to resolve; must be attached to a specification group
-   * @param lifelines the list of lifelines in use in this resolution
+   * @param endpoint the endpoint to resolve; must be attached to a specification group
+   * @param actors   the list of actors to consider for occurrences and exclude for gates
    * @return a stream of connection nodes that can represent this endpoint, given the specified
-   * lifelines
+   * actors
    */
-  public Stream<ConnectionNode> resolve(MessageEnd endpoint, List<Lifeline> lifelines) {
-    final var lifelineNodes = lifelines.stream().flatMap(aNodeRes::resolveInLifeline)
+  public Stream<ConnectionNode> resolve(MessageEnd endpoint, List<Actor> actors) {
+    final var actorNodes = actors.stream().flatMap(aNodeRes::resolve)
         .collect(Collectors.toUnmodifiableSet());
 
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
@@ -71,17 +71,17 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
         // of a better way of doing this without overly complicating the resolver.
         final var allNodes = aNodeRes.resolveInOccurrence(occ);
 
-        // Any actors referenced by an occurrence should be lifelines in the diagram.
+        // Any actors referenced by an occurrence should be actors in the diagram.
         // This should really be guaranteed by well-formedness, but we double-check here anyway.
-        return allNodes.filter(lifelineNodes::contains);
+        return allNodes.filter(actorNodes::contains);
       }
 
       @Override
       public Stream<ConnectionNode> caseGate(Gate g) {
         final var allNodes = wNodeRes.resolveInGate(g);
-        // Any actors referenced by a gate should NOT be lifelines in the diagram.
+        // Any actors referenced by a gate should NOT be actors in the diagram.
         // Unlike above, we absolutely need to filter `allNodes`.
-        return StreamHelper.exclude(allNodes, lifelineNodes::contains);
+        return StreamHelper.exclude(allNodes, actorNodes::contains);
       }
     }.doSwitch(endpoint);
   }
