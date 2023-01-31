@@ -1,4 +1,5 @@
-/* Copyright (c) 2022 University of York and others
+/*
+ * Copyright (c) 2022-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -17,6 +18,8 @@ import java.util.stream.Stream;
 
 import robostar.robocert.Actor;
 import robostar.robocert.ComponentActor;
+import robostar.robocert.Lifeline;
+import robostar.robocert.MessageOccurrence;
 import robostar.robocert.TargetActor;
 import robostar.robocert.util.GroupFinder;
 
@@ -41,6 +44,27 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFind
     }
 
     /**
+     * Resolves a lifeline to a stream of connection nodes that can represent its actor.
+     *
+     * @param l the lifeline to resolve
+     * @return a stream of connection nodes that can represent this actor
+     */
+    public Stream<ConnectionNode> resolveInLifeline(Lifeline l) {
+        // TODO(@MattWindsor91): make abstract class for Lifeline and MessageOccurrence?
+        return Stream.ofNullable(l.getActor()).flatMap(this::resolve);
+    }
+
+    /**
+     * Resolves a message occurrence to a stream of connection nodes that can represent its actor.
+     *
+     * @param occ the occurrence to resolve
+     * @return a stream of connection nodes that can represent this actor
+     */
+    public Stream<ConnectionNode> resolveInOccurrence(MessageOccurrence occ) {
+        return Stream.ofNullable(occ.getActor()).flatMap(this::resolve);
+    }
+
+    /**
      * Resolves an actor to a stream of connection nodes that can represent that actor.
      *
      * <p>The stream may contain more than one node in two situations: either the actor is a target
@@ -48,8 +72,8 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFind
      * for the module), or the actor is a world (in which case, any of the parent's connection nodes
      * can appear).
      *
-     * @param actor the actor to resolve.  Must be attached to a specification group.
-     * @return a stream of connection nodes that can represent this actor.
+     * @param actor the actor to resolve.  Must be attached to a specification group
+     * @return a stream of connection nodes that can represent this actor
      */
     public Stream<ConnectionNode> resolve(Actor actor) {
         if (actor instanceof ComponentActor c) {

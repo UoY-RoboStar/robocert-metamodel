@@ -28,6 +28,10 @@ import java.util.stream.Stream;
 
 /**
  * Resolves worlds into the connection nodes that can represent them.
+ * <p>
+ * This resolver does not take into account the fact that some world nodes shadow lifelines already
+ * inside a diagram.  Upstream consumers of this resolver must handle such a situation themselves,
+ * by filtering out those nodes.
  *
  * @param modRes      helper for resolving aspects of RoboChart modules.
  * @param ctrlRes     helper for resolving aspects of RoboChart controllers.
@@ -41,7 +45,7 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
   // TODO(@MattWindsor91): DRY up with the other NodeResolvers.
 
   /**
-   * Constructs an world resolver.
+   * Constructs a world resolver.
    *
    * @param ctrlRes     helper for resolving aspects of RoboChart controllers.
    * @param modRes      helper for resolving aspects of RoboChart modules.
@@ -59,24 +63,24 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
   }
 
   /**
-   * Resolves a world to a stream of connection nodes that can represent that endpoint.
+   * Resolves a gate to a stream of connection nodes that can represent its target's world.
    *
-   * @param w the world to resolve.  Must be attached to a specification group.
-   * @return a stream of connection nodes that can represent this endpoint.
+   * @param g the gate to resolve; must be attached to a specification group
+   * @return a stream of connection nodes that can represent this endpoint
    */
-  public Stream<ConnectionNode> resolve(Gate w) {
-    return groupFinder.findTarget(w).stream().flatMap(this::resolveFromTarget);
+  public Stream<ConnectionNode> resolveInGate(Gate g) {
+    return groupFinder.findTarget(g).stream().flatMap(this::resolve);
   }
 
   /**
-   * Deduces a stream of connection nodes that can represent the world actor for a target.
+   * Deduces a stream of connection nodes that can represent the world for a target.
    *
    * <p>The stream may contain more than one node.
    *
    * @param target the target for which we are resolving target-relative actors.
    * @return a stream of connection nodes that can represent the target actor.
    */
-  public Stream<ConnectionNode> resolveFromTarget(Target target) {
+  public Stream<ConnectionNode> resolve(Target target) {
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
       @Override
       public Stream<ConnectionNode> defaultCase(EObject e) {

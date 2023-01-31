@@ -56,7 +56,7 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
    * lifelines
    */
   public Stream<ConnectionNode> resolve(MessageEnd endpoint, List<Lifeline> lifelines) {
-    final var lifelineNodes = lifelines.stream().flatMap(l -> aNodeRes.resolve(l.getActor()))
+    final var lifelineNodes = lifelines.stream().flatMap(aNodeRes::resolveInLifeline)
         .collect(Collectors.toUnmodifiableSet());
 
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
@@ -66,18 +66,21 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
       }
 
       @Override
-      public Stream<ConnectionNode> caseMessageOccurrence(MessageOccurrence e) {
-        final var allNodes = aNodeRes.resolve(e.getActor());
-        // Any actors referenced by an endpoint should be lifelines in the diagram.
+      public Stream<ConnectionNode> caseMessageOccurrence(MessageOccurrence occ) {
+        // TODO(@MattWindsor91): technically this is duplicating 'lifelineNodes', but I can't think
+        // of a better way of doing this without overly complicating the resolver.
+        final var allNodes = aNodeRes.resolveInOccurrence(occ);
+
+        // Any actors referenced by an occurrence should be lifelines in the diagram.
         // This should really be guaranteed by well-formedness, but we double-check here anyway.
         return allNodes.filter(lifelineNodes::contains);
       }
 
       @Override
-      public Stream<ConnectionNode> caseGate(Gate w) {
-        final var allNodes = wNodeRes.resolve(w);
-        // Any actors referenced by a world should NOT be lifelines in the diagram.
-        // Unlike above, we absolutely need to filter `allWorld`.
+      public Stream<ConnectionNode> caseGate(Gate g) {
+        final var allNodes = wNodeRes.resolveInGate(g);
+        // Any actors referenced by a gate should NOT be lifelines in the diagram.
+        // Unlike above, we absolutely need to filter `allNodes`.
         return StreamHelper.exclude(allNodes, lifelineNodes::contains);
       }
     }.doSwitch(endpoint);
