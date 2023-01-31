@@ -13,8 +13,8 @@ import circus.robocalc.robochart.Event;
 import circus.robocalc.robochart.OperationSig;
 import com.google.inject.Inject;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import robostar.robocert.*;
@@ -38,21 +38,21 @@ public record MessageFactory(RoboCertFactory certFac) {
   }
 
   /**
-   * Constructs a new endpoint for a given actor.
+   * Constructs a new message occurrence.
    *
-   * @param a actor in question.
-   * @return a wrapping of {@code a} in an endpoint.
+   * @param a the actor being occurred upon
+   * @return a wrapping of {@code a} in a message occurrence
    */
-  public MessageOccurrence actor(Actor a) {
+  public MessageOccurrence occurrence(Actor a) {
     final var e = certFac.createMessageOccurrence();
     e.setActor(a);
     return e;
   }
 
   /**
-   * Constructs a new gate endpoint.
+   * Constructs a new gate.
    *
-   * @return a gate endpoint
+   * @return a gate
    */
   public Gate gate() {
     return certFac.createGate();
@@ -61,25 +61,25 @@ public record MessageFactory(RoboCertFactory certFac) {
   /**
    * Constructs a message with the given topic, edge, and arguments.
    *
-   * @param from  from-end to use for the message spec.
-   * @param to    to-end to use for the message spec.
-   * @param topic topic to use for the message spec.
-   * @param args  arguments to use for the message spec.
-   * @return the specification.
+   * @param from  the from-end to use for the message spec
+   * @param to    the to-end to use for the message spec
+   * @param topic the topic to use for the message spec
+   * @param args  the arguments to use for the message spec
+   * @return the resulting message
    */
   public Message message(MessageEnd from, MessageEnd to, MessageTopic topic,
       ValueSpecification... args) {
-    return message(from, to, topic, Arrays.asList(args));
+    return message(from, to, topic, List.of(args));
   }
 
   /**
    * Constructs a message spec with the given topic, edge, and argument collection.
    *
-   * @param from  from-actor to use for the message spec.
-   * @param to    to-actor to use for the message spec.
-   * @param topic the topic to use for the message spec.
-   * @param args  the arguments to use for the message spec.
-   * @return the specification.
+   * @param from  the from-end to use for the message spec
+   * @param to    the to-end to use for the message spec
+   * @param topic the topic to use for the message spec
+   * @param args  the arguments to use for the message spec
+   * @return the resulting message
    */
   public Message message(MessageEnd from, MessageEnd to, MessageTopic topic,
       Collection<? extends ValueSpecification> args) {

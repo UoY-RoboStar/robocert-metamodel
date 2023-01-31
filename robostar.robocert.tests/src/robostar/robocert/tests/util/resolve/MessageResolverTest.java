@@ -55,8 +55,8 @@ class MessageResolverTest {
     var op1 = chartFac.createOperationSig();
     op1.setName("op1");
 
-    msg1 = msgFac.message(msgFac.actor(act1), msgFac.gate(), msgFac.eventTopic(evt1));
-    msg2 = msgFac.message(msgFac.gate(), msgFac.actor(act2), msgFac.opTopic(op1));
+    msg1 = msgFac.message(msgFac.occurrence(act1), msgFac.gate(), msgFac.eventTopic(evt1));
+    msg2 = msgFac.message(msgFac.gate(), msgFac.occurrence(act2), msgFac.opTopic(op1));
   }
 
   /**

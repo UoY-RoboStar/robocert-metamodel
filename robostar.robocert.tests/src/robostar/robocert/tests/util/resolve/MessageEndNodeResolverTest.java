@@ -69,7 +69,7 @@ class MessageEndNodeResolverTest {
 
     world = msgFac.gate();
     final var actor = actFac.targetActor("T");
-    target = msgFac.actor(actor);
+    target = msgFac.occurrence(actor);
     lines = List.of(actFac.lifeline(actor));
   }
 

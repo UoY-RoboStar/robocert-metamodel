@@ -119,7 +119,7 @@ class FragmentExpressionResolverTest {
     final var arg3 = vsFac.integer(0xF00DF00D);
 
     final var from = msgFac.gate();
-    final var to = msgFac.actor(actFac.targetActor("T"));
+    final var to = msgFac.occurrence(actFac.targetActor("T"));
     final var op = RoboChartFactory.eINSTANCE.createOperationSig();
     op.setName("op");
     final var topic = msgFac.opTopic(op);
