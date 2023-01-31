@@ -28,6 +28,7 @@ import robostar.robocert.RoboCertFactory;
 import robostar.robocert.WaitFragment;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ValueSpecificationFactory;
+import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.factory.robochart.ExpressionFactory;
 import robostar.robocert.util.resolve.FragmentExpressionResolver;
 
@@ -38,10 +39,11 @@ import robostar.robocert.util.resolve.FragmentExpressionResolver;
  */
 class FragmentExpressionResolverTest {
 
-  private final RoboCertFactory rc = RoboCertFactory.eINSTANCE;
-  private final MessageFactory msgFactory = new MessageFactory(RoboCertFactory.eINSTANCE);
-  private final ExpressionFactory exprFactory = new ExpressionFactory(RoboChartFactory.eINSTANCE);
-  private ValueSpecificationFactory vsFactory;
+  private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
+  private final ActorFactory actFac = ActorFactory.DEFAULT;
+  private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
+  private final ExpressionFactory exprFac = new ExpressionFactory(RoboChartFactory.eINSTANCE);
+  private ValueSpecificationFactory vsFac;
 
   private final FragmentExpressionResolver resolver = new FragmentExpressionResolver();
 
@@ -67,17 +69,17 @@ class FragmentExpressionResolverTest {
 
   @BeforeEach
   void setUp() {
-    vsFactory = new ValueSpecificationFactory(exprFactory, RoboChartFactory.eINSTANCE, rc);
+    vsFac = new ValueSpecificationFactory(exprFac, RoboChartFactory.eINSTANCE, certFac);
 
-    units = exprFactory.integer(42);
-    redHerring = exprFactory.integer(0xBAADF00D);
-    guardCond = exprFactory.bool(true);
+    units = exprFac.integer(42);
+    redHerring = exprFac.integer(0xBAADF00D);
+    guardCond = exprFac.bool(true);
 
     // Make sure that we *don't* pick up the red herring, but *do* pick up the guard
-    operand = rc.createInteractionOperand();
+    operand = certFac.createInteractionOperand();
     operand.getFragments().add(wait(redHerring));
 
-    final var guard = rc.createExprGuard();
+    final var guard = certFac.createExprGuard();
     guard.setExpr(guardCond);
     operand.setGuard(guard);
   }
@@ -88,8 +90,8 @@ class FragmentExpressionResolverTest {
   @Test
   void TestExpressionsOf_DeadlineFragment() {
 
-    final var act = msgFactory.targetActor("tgt");
-    final var df = rc.createDeadlineFragment();
+    final var act = actFac.targetActor("tgt");
+    final var df = certFac.createDeadlineFragment();
     df.setActor(act);
     df.setUnits(units);
     df.setBody(operand);
@@ -103,7 +105,7 @@ class FragmentExpressionResolverTest {
    */
   @Test
   void TestExpressionsOf_WaitFragment() {
-    final var units = exprFactory.integer(42);
+    final var units = exprFac.integer(42);
     assertThat(wait(units), hasExpressions(units));
   }
 
@@ -112,18 +114,18 @@ class FragmentExpressionResolverTest {
    */
   @Test
   void TestExpressionsOf_MessageFragment() {
-    final var arg1 = vsFactory.integer(42);
-    final var arg2 = vsFactory.integer(64);
-    final var arg3 = vsFactory.integer(0xF00DF00D);
+    final var arg1 = vsFac.integer(42);
+    final var arg2 = vsFac.integer(64);
+    final var arg3 = vsFac.integer(0xF00DF00D);
 
-    final var from = msgFactory.world();
-    final var to = msgFactory.actor(msgFactory.targetActor("T"));
+    final var from = msgFac.world();
+    final var to = msgFac.actor(actFac.targetActor("T"));
     final var op = RoboChartFactory.eINSTANCE.createOperationSig();
     op.setName("op");
-    final var topic = msgFactory.opTopic(op);
-    final var msg = msgFactory.spec(from, to, topic, arg1, arg2, arg3);
+    final var topic = msgFac.opTopic(op);
+    final var msg = msgFac.spec(from, to, topic, arg1, arg2, arg3);
 
-    final var f = rc.createMessageFragment();
+    final var f = certFac.createMessageFragment();
     f.setMessage(msg);
 
     assertThat(f, hasExpressions(arg1.getExpr(), arg2.getExpr(), arg3.getExpr()));
@@ -135,15 +137,15 @@ class FragmentExpressionResolverTest {
   @Test
   void TestExpressionsOf_AltFragment() {
     // Set up a second branch in the same way as we set up a first one in setUp()
-    final var redHerring2 = exprFactory.integer(0x00BADBAD);
-    final var guardCond2 = exprFactory.bool(false);
-    final var operand2 = rc.createInteractionOperand();
+    final var redHerring2 = exprFac.integer(0x00BADBAD);
+    final var guardCond2 = exprFac.bool(false);
+    final var operand2 = certFac.createInteractionOperand();
     operand2.getFragments().add(wait(redHerring2));
-    final var guard2 = rc.createExprGuard();
+    final var guard2 = certFac.createExprGuard();
     guard2.setExpr(guardCond2);
     operand2.setGuard(guard2);
 
-    final var alt = rc.createAltFragment();
+    final var alt = certFac.createAltFragment();
     alt.getBranches().addAll(List.of(operand, operand2));
 
     assertThat(alt, hasExpressions(guardCond, guardCond2));
@@ -151,8 +153,8 @@ class FragmentExpressionResolverTest {
   }
 
   private WaitFragment wait(Expression units) {
-    final var act = msgFactory.targetActor("tgt");
-    final var wf = rc.createWaitFragment();
+    final var act = actFac.targetActor("tgt");
+    final var wf = certFac.createWaitFragment();
     wf.setActor(act);
     wf.setUnits(units);
     return wf;

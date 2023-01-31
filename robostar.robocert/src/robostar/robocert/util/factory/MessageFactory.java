@@ -22,14 +22,14 @@ import robostar.robocert.*;
 /**
  * High-level factory for message-related objects.
  *
- * @param rc underlying RoboCert factory.
+ * @param certFac the underlying RoboCert factory
  * @author Matt Windsor
  */
-public record MessageFactory(RoboCertFactory rc) {
+public record MessageFactory(RoboCertFactory certFac) {
 
   @Inject
   public MessageFactory {
-    Objects.requireNonNull(rc);
+    Objects.requireNonNull(certFac);
   }
 
   /**
@@ -39,7 +39,7 @@ public record MessageFactory(RoboCertFactory rc) {
    * @return a wrapping of {@code a} in an endpoint.
    */
   public ActorEndpoint actor(Actor a) {
-    final var e = rc.createActorEndpoint();
+    final var e = certFac.createActorEndpoint();
     e.setActor(a);
     return e;
   }
@@ -50,7 +50,7 @@ public record MessageFactory(RoboCertFactory rc) {
    * @return a world endpoint.
    */
   public World world() {
-    return rc.createWorld();
+    return certFac.createWorld();
   }
 
   /**
@@ -77,7 +77,7 @@ public record MessageFactory(RoboCertFactory rc) {
    */
   public Message spec(Endpoint from, Endpoint to, MessageTopic topic,
       Collection<? extends ValueSpecification> args) {
-    final var it = rc.createMessage();
+    final var it = certFac.createMessage();
     it.setFrom(from);
     it.setTo(to);
     it.setTopic(topic);
@@ -92,7 +92,7 @@ public record MessageFactory(RoboCertFactory rc) {
    * @return the event topic.
    */
   public EventTopic eventTopic(Event e) {
-    final var it = rc.createEventTopic();
+    final var it = certFac.createEventTopic();
     it.setEfrom(e);
     return it;
   }
@@ -117,38 +117,27 @@ public record MessageFactory(RoboCertFactory rc) {
    * @return the event topic.
    */
   public OperationTopic opTopic(OperationSig o) {
-    final var it = rc.createOperationTopic();
+    final var it = certFac.createOperationTopic();
     it.setOperation(o);
     return it;
   }
 
   /**
-   * Creates a target actor.
-   *
-   * @param name the name of the target actor
-   *
-   * @return a target actor
-   */
-  public TargetActor targetActor(String name) {
-    final var a = rc.createTargetActor();
-    a.setName(name);
-    return a;
-  }
-
-  /**
    * Constructs a message fragment with the default temperature.
+   *
    * @param m message to wrap in a fragment.
    * @return constructed message fragment.
    */
   public MessageFragment fragment(Message m) {
-    final var frag = rc.createMessageFragment();
+    final var frag = certFac.createMessageFragment();
     frag.setMessage(m);
     return frag;
   }
 
   /**
    * Constructs a message fragment with the given temperature.
-   * @param m message to wrap in a fragment.
+   *
+   * @param m    message to wrap in a fragment.
    * @param temp temperature of the message fragment.
    * @return constructed message fragment.
    */

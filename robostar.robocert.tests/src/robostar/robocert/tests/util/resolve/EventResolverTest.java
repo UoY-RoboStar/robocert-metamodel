@@ -13,6 +13,7 @@ package robostar.robocert.tests.util.resolve;
 import circus.robocalc.robochart.Connection;
 import circus.robocalc.robochart.Event;
 import circus.robocalc.robochart.RoboChartFactory;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
@@ -20,6 +21,7 @@ import robostar.robocert.tests.examples.ForagingExample;
 import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
+import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
 import robostar.robocert.util.resolve.node.EndpointNodeResolver;
@@ -33,87 +35,96 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests that the {@link EventResolverImpl} seems to be resolving things correctly on {@link
- * ForagingExample}.
+ * Tests that the {@link EventResolverImpl} seems to be resolving things correctly on
+ * {@link ForagingExample}.
  *
  * @author Matt Windsor
  */
 class EventResolverTest {
 
-    private EventResolver resolver;
-    private final ForagingExample example = new ForagingExample(RoboChartFactory.eINSTANCE);
-    private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
-    private final MessageFactory msgFactory = new MessageFactory(RoboCertFactory.eINSTANCE);
-    private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
+  private EventResolver resolver;
+  private final ForagingExample example = new ForagingExample(RoboChartFactory.eINSTANCE);
+  private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
+  private final ActorFactory actFac = ActorFactory.DEFAULT;
+  private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
+  private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
-    private World world;
-    private ActorEndpoint target;
-    private EndpointWrapper wrapper;
+  private World world;
+  private ActorEndpoint target;
+  private EndpointWrapper wrapper;
+  private List<Lifeline> lines;
 
-    @BeforeEach
-    void setUp() {
-        // TODO(@MattWindsor91): fix dependency injection here.
-        final var groupFinder = new GroupFinder();
-        final var tgtRes = new TargetNodeResolver();
-        final var defRes = new DefinitionResolver();
-        final var ctrlRes = new ControllerResolver();
-        final var modRes = new ModuleResolver(defRes);
-        final var stmRes = new StateMachineResolver(ctrlRes);
-        final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
-        final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
-        final var endRes = new EndpointNodeResolver(aNodeRes, wNodeRes);
-        final var outRes = new OutboundConnectionResolver(modRes, ctrlRes, stmRes, defRes);
-        resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
+  @BeforeEach
+  void setUp() {
+    // TODO(@MattWindsor91): fix dependency injection here.
+    final var groupFinder = new GroupFinder();
+    final var tgtRes = new TargetNodeResolver();
+    final var defRes = new DefinitionResolver();
+    final var ctrlRes = new ControllerResolver();
+    final var modRes = new ModuleResolver(defRes);
+    final var stmRes = new StateMachineResolver(ctrlRes);
+    final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
+    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
+    final var endRes = new EndpointNodeResolver(aNodeRes, wNodeRes);
+    final var outRes = new OutboundConnectionResolver(modRes, ctrlRes, stmRes, defRes);
+    resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
 
-        world = msgFactory.world();
-        target = msgFactory.actor(msgFactory.targetActor("T"));
+    world = msgFac.world();
+    final var actor = actFac.targetActor("T");
+    target = msgFac.actor(actor);
+    lines = List.of(actFac.lifeline(actor));
 
-        wrapper = new EndpointWrapper(certFactory, msgFactory);
-    }
+    wrapper = new EndpointWrapper(certFactory, msgFac);
+  }
 
 
-    /**
-     * Tests resolving connections on a module in the example.
-     */
-    @Test
-    void testResolve_module() {
-        final var mod = targetFactory.module(example.foraging);
-        wrapper.wrap(mod, world, target);
+  /**
+   * Tests resolving connections on a module in the example.
+   */
+  @Test
+  void testResolve_module() {
+    final var mod = targetFactory.module(example.foraging);
+    wrapper.wrap(mod, world, target);
 
-        final var conns1 = resolve(example.platformObstacle, example.obstacleAvoidanceObstacle, world, target);
-        assertThat(conns1, hasItems(example.obstaclePlatformToObstacleAvoidance));
+    final var conns1 = resolve(example.platformObstacle, example.obstacleAvoidanceObstacle, world,
+        target);
+    assertThat(conns1, hasItems(example.obstaclePlatformToObstacleAvoidance));
 
-        // This connection is not bidirectional, so this should be empty.
-        final var conns2 = resolve(example.obstacleAvoidanceObstacle, example.platformObstacle, target, world);
-        assertThat(conns2, is(empty()));
+    // This connection is not bidirectional, so this should be empty.
+    final var conns2 = resolve(example.obstacleAvoidanceObstacle, example.platformObstacle, target,
+        world);
+    assertThat(conns2, is(empty()));
 
-        // Inferring an eto.
-        final var conns3 = resolve(example.platformObstacle, null, world, target);
-        assertThat(conns3, hasItems(example.obstaclePlatformToObstacleAvoidance));
-    }
+    // Inferring an eto.
+    final var conns3 = resolve(example.platformObstacle, null, world, target);
+    assertThat(conns3, hasItems(example.obstaclePlatformToObstacleAvoidance));
+  }
 
-    /**
-     * Tests resolving connections on a state machine in the example.
-     */
-    @Test
-    void testResolve_stateMachine() {
-        final var stm = targetFactory.stateMachine(example.avoid);
-        wrapper.wrap(stm, world, target);
+  /**
+   * Tests resolving connections on a state machine in the example.
+   */
+  @Test
+  void testResolve_stateMachine() {
+    final var stm = targetFactory.stateMachine(example.avoid);
+    wrapper.wrap(stm, world, target);
 
-        final var conns1 = resolve(example.obstacleAvoidanceObstacle, example.avoidObstacle, world, target);
-        assertThat(conns1, hasItems(example.obstacleObstacleAvoidanceToAvoid));
+    final var conns1 = resolve(example.obstacleAvoidanceObstacle, example.avoidObstacle, world,
+        target);
+    assertThat(conns1, hasItems(example.obstacleObstacleAvoidanceToAvoid));
 
-        // This connection is not bidirectional, so this should be empty.
-        final var conns2 = resolve(example.avoidObstacle, example.obstacleAvoidanceObstacle, target, world);
-        assertThat(conns2, is(empty()));
+    // This connection is not bidirectional, so this should be empty.
+    final var conns2 = resolve(example.avoidObstacle, example.obstacleAvoidanceObstacle, target,
+        world);
+    assertThat(conns2, is(empty()));
 
-        // Inferring an eto.
-        final var conns3 = resolve(example.obstacleAvoidanceObstacle, null, world, target);
-        assertThat(conns3, hasItems(example.obstacleObstacleAvoidanceToAvoid));
-    }
+    // Inferring an eto.
+    final var conns3 = resolve(example.obstacleAvoidanceObstacle, null, world, target);
+    assertThat(conns3, hasItems(example.obstacleObstacleAvoidanceToAvoid));
+  }
 
-    private Set<Connection> resolve(Event efrom, Event eto, Endpoint from, Endpoint to) {
-        final var topic = msgFactory.eventTopic(efrom, eto);
-        return resolver.resolve(topic, from, to).collect(Collectors.toUnmodifiableSet());
-    }
+  private Set<Connection> resolve(Event efrom, Event eto, Endpoint from, Endpoint to) {
+    final var topic = msgFac.eventTopic(efrom, eto);
+    final var query = new EventResolverQuery(topic, from, to, lines);
+    return resolver.resolve(query).collect(Collectors.toUnmodifiableSet());
+  }
 }

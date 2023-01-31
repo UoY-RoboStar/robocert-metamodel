@@ -1,4 +1,5 @@
-/* Copyright (c) 2022 University of York and others
+/*
+ * Copyright (c) 2022-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -11,8 +12,6 @@ package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.Connection;
 import java.util.stream.Stream;
-import robostar.robocert.Endpoint;
-import robostar.robocert.EventTopic;
 
 /**
  * Resolves an event topic to a connection.
@@ -27,10 +26,8 @@ public interface EventResolver {
    * <p>This stream may contain zero, one, or many connections; typically anything other than one
    * is a well-formedness violation.
    *
-   * @param topic the topic of the event to look up.
-   * @param from  the from-endpoint of the event's message.
-   * @param to    the to-endpoint of the event's message.
+   * @param q the resolver query.
    * @return the stream of candidate connections.
    */
-  Stream<Connection> resolve(EventTopic topic, Endpoint from, Endpoint to);
+  Stream<Connection> resolve(EventResolverQuery q);
 }

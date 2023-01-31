@@ -12,12 +12,15 @@ package robostar.robocert.util.resolve.node;
 
 import circus.robocalc.robochart.*;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.*;
 import robostar.robocert.util.RoboCertSwitch;
 
 import java.util.Objects;
 import java.util.stream.Stream;
+import robostar.robocert.util.StreamHelper;
 
 /**
  * Resolves endpoints into the connection nodes that can represent them.
@@ -47,10 +50,15 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
    * stand in for the module), or the endpoint is a world (in which case, any of the parent's
    * connection nodes can appear).
    *
-   * @param endpoint the endpoint to resolve.  Must be attached to a specification group.
-   * @return a stream of connection nodes that can represent this endpoint.
+   * @param endpoint  the endpoint to resolve; must be attached to a specification group
+   * @param lifelines the list of lifelines in use in this resolution
+   * @return a stream of connection nodes that can represent this endpoint, given the specified
+   * lifelines
    */
-  public Stream<ConnectionNode> resolve(Endpoint endpoint) {
+  public Stream<ConnectionNode> resolve(Endpoint endpoint, List<Lifeline> lifelines) {
+    final var lifelineNodes = lifelines.stream().flatMap(l -> aNodeRes.resolve(l.getActor()))
+        .collect(Collectors.toUnmodifiableSet());
+
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
       @Override
       public Stream<ConnectionNode> defaultCase(EObject e) {
@@ -59,12 +67,18 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
 
       @Override
       public Stream<ConnectionNode> caseActorEndpoint(ActorEndpoint e) {
-        return aNodeRes.resolve(e.getActor());
+        final var allNodes = aNodeRes.resolve(e.getActor());
+        // Any actors referenced by an endpoint should be lifelines in the diagram.
+        // This should really be guaranteed by well-formedness, but we double-check here anyway.
+        return allNodes.filter(lifelineNodes::contains);
       }
 
       @Override
       public Stream<ConnectionNode> caseWorld(World w) {
-        return wNodeRes.resolve(w);
+        final var allNodes = wNodeRes.resolve(w);
+        // Any actors referenced by a world should NOT be lifelines in the diagram.
+        // Unlike above, we absolutely need to filter `allWorld`.
+        return StreamHelper.exclude(allNodes, lifelineNodes::contains);
       }
     }.doSwitch(endpoint);
   }

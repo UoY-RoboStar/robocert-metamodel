@@ -24,19 +24,24 @@ import java.util.Objects;
 /**
  * High-level factory for RoboChart variables.
  *
- * @param rc underlying RoboChart factory.
+ * @param chartFac the underlying RoboChart factory
  * @author Matt Windsor
  */
-public record VariableFactory(RoboChartFactory rc) {
+public record VariableFactory(RoboChartFactory chartFac) {
+
+  /**
+   * The default variable factory.
+   */
+  public static final VariableFactory DEFAULT = new VariableFactory(RoboChartFactory.eINSTANCE);
 
   /**
    * Injectable constructor for variable factories.
    *
-   * @param rc underlying RoboChart factory.
+   * @param chartFac underlying RoboChart factory.
    */
   @Inject
   public VariableFactory {
-    Objects.requireNonNull(rc);
+    Objects.requireNonNull(chartFac);
   }
 
   /**
@@ -58,7 +63,7 @@ public record VariableFactory(RoboChartFactory rc) {
    * @return a variable list with the given modifier and variables.
    */
   public VariableList list(VariableModifier modifier, Collection<? extends Variable> vars) {
-    final var result = rc.createVariableList();
+    final var result = chartFac.createVariableList();
     result.setModifier(modifier);
     result.getVars().addAll(vars);
     return result;
@@ -86,7 +91,7 @@ public record VariableFactory(RoboChartFactory rc) {
    * @return a variable with the given name and type.
    */
   public Variable var(String name, Type type) {
-    final var result = rc.createVariable();
+    final var result = chartFac.createVariable();
     result.setName(name);
     result.setType(type);
     return result;

@@ -25,6 +25,7 @@ import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
+import robostar.robocert.util.factory.robochart.ActorFactory;
 
 /**
  * Tests custom functionality on Messages.
@@ -34,9 +35,10 @@ import robostar.robocert.util.factory.TargetFactory;
 class MessageImplTest {
 
   private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
-  private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
-  private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
-  private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
+  private final RoboChartFactory chartFac = RoboChartFactory.eINSTANCE;
+  private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
+  private final TargetFactory tgtFac = new TargetFactory(RoboCertFactory.eINSTANCE);
+  private final ActorFactory actFac = ActorFactory.DEFAULT;
 
   private TargetActor comTarget;
 
@@ -45,12 +47,12 @@ class MessageImplTest {
 
   @BeforeEach
   void setUp() {
-    final var stm1 = chartFactory.createStateMachineDef();
+    final var stm1 = chartFac.createStateMachineDef();
     stm1.setName("Stm1");
-    final var stm2 = chartFactory.createStateMachineDef();
+    final var stm2 = chartFac.createStateMachineDef();
     stm2.setName("Stm1");
 
-    final var ctrl = chartFactory.createControllerDef();
+    final var ctrl = chartFac.createControllerDef();
     ctrl.setName("Ctrl");
     ctrl.getMachines().addAll(List.of(stm1, stm2));
 
@@ -59,25 +61,25 @@ class MessageImplTest {
   }
 
   private void setUpComponent(ControllerDef ctrl) {
-    final var comTgt = targetFactory.controller(ctrl);
-    final var comGrp = certFactory.createSpecificationGroup();
+    final var comTgt = tgtFac.controller(ctrl);
+    final var comGrp = certFac.createSpecificationGroup();
     comGrp.setName("ComGroup");
     comGrp.setTarget(comTgt);
 
-    comTarget = msgFac.targetActor("T");
+    comTarget = actFac.targetActor("T");
     comGrp.getActors().add(comTarget);
   }
 
   private void setUpCollection(StateMachineDef stm1, StateMachineDef stm2, ControllerDef ctrl) {
-    final var collTgt = targetFactory.inController(ctrl);
-    final var collGrp = certFactory.createSpecificationGroup();
+    final var collTgt = tgtFac.inController(ctrl);
+    final var collGrp = certFac.createSpecificationGroup();
     collGrp.setName("CollGroup");
     collGrp.setTarget(collTgt);
 
-    c1 = certFactory.createComponentActor();
+    c1 = certFac.createComponentActor();
     c1.setName("C1");
     c1.setNode(stm1);
-    c2 = certFactory.createComponentActor();
+    c2 = certFac.createComponentActor();
     c2.setName("C2");
     c2.setNode(stm2);
     collGrp.getActors().addAll(List.of(c1, c2));
@@ -85,7 +87,7 @@ class MessageImplTest {
 
   @Test
   void testIsOutbound_component() {
-    final var e = chartFactory.createEvent();
+    final var e = chartFac.createEvent();
     e.setName("e");
     final var topic = msgFac.eventTopic(e);
 
@@ -99,7 +101,7 @@ class MessageImplTest {
 
   @Test
   void testIsOutbound_collection() {
-    final var e = chartFactory.createEvent();
+    final var e = chartFac.createEvent();
     e.setName("e");
     final var topic = msgFac.eventTopic(e);
 

@@ -20,6 +20,7 @@ import robostar.robocert.Actor;
 import robostar.robocert.Message;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.factory.MessageFactory;
+import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.resolve.MessageResolver;
 
 /**
@@ -29,6 +30,7 @@ import robostar.robocert.util.resolve.MessageResolver;
  */
 class MessageResolverTest {
 
+  private final ActorFactory actFac = ActorFactory.DEFAULT;
   private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
 
   private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
@@ -44,8 +46,8 @@ class MessageResolverTest {
 
   @BeforeEach
   void setUp() {
-    act1 = msgFac.targetActor("A1");
-    act2 = msgFac.targetActor("A2");
+    act1 = actFac.targetActor("A1");
+    act2 = actFac.targetActor("A2");
 
     var evt1 = chartFac.createEvent();
     evt1.setName("evt1");
