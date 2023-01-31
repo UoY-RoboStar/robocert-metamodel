@@ -12,8 +12,8 @@ package robostar.robocert.util.resolve;
 import com.google.common.collect.Streams;
 import java.util.stream.Stream;
 import robostar.robocert.Actor;
-import robostar.robocert.ActorEndpoint;
-import robostar.robocert.Endpoint;
+import robostar.robocert.MessageOccurrence;
+import robostar.robocert.MessageEnd;
 import robostar.robocert.Interaction;
 import robostar.robocert.Message;
 import robostar.robocert.util.StreamHelper;
@@ -28,8 +28,8 @@ public class MessageResolver {
   /**
    * Gets the messages referenced by fragments in an interaction.
    *
-   * @param seq interaction for which we are getting messages.
-   * @return all messages contained in the interaction (recursively considering fragments).
+   * @param seq the interaction for which we are getting messages
+   * @return all messages contained in the interaction (recursively considering fragments)
    */
   @SuppressWarnings("UnstableApiUsage")
   public Stream<Message> messages(Interaction seq) {
@@ -39,20 +39,20 @@ public class MessageResolver {
   /**
    * Gets all actors referenced by a message.
    *
-   * @param m message to inspect.
-   * @return stream of actors referenced within actor endpoints in the given message.
+   * @param m the message to inspect
+   * @return a stream of actors referenced within actor endpoints in the given message
    */
   public Stream<Actor> actors(Message m) {
-    return StreamHelper.filter(endpoints(m), ActorEndpoint.class).map(ActorEndpoint::getActor);
+    return StreamHelper.filter(ends(m), MessageOccurrence.class).map(MessageOccurrence::getActor);
   }
 
   /**
-   * Gets all endpoints referenced by a message.
+   * Gets all message ends referenced by a message.
    *
-   * @param m message to inspect.
-   * @return stream of (from, to) endpoints.
+   * @param m the message to inspect
+   * @return a stream of (from, to) endpoints
    */
-  public Stream<Endpoint> endpoints(Message m) {
+  public Stream<MessageEnd> ends(Message m) {
     return Stream.of(m.getFrom(), m.getTo());
   }
 

@@ -41,7 +41,7 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
   // TODO(@MattWindsor91): DRY up with the other NodeResolvers.
 
   /**
-   * Constructs an actor resolver.
+   * Constructs an world resolver.
    *
    * @param ctrlRes     helper for resolving aspects of RoboChart controllers.
    * @param modRes      helper for resolving aspects of RoboChart modules.
@@ -64,7 +64,7 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
    * @param w the world to resolve.  Must be attached to a specification group.
    * @return a stream of connection nodes that can represent this endpoint.
    */
-  public Stream<ConnectionNode> resolve(World w) {
+  public Stream<ConnectionNode> resolve(Gate w) {
     return groupFinder.findTarget(w).stream().flatMap(this::resolveFromTarget);
   }
 

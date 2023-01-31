@@ -30,7 +30,7 @@ import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
-import robostar.robocert.util.resolve.node.EndpointNodeResolver;
+import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.node.WorldNodeResolver;
 
@@ -40,19 +40,18 @@ import robostar.robocert.util.resolve.node.WorldNodeResolver;
  *
  * @author Matt Windsor
  */
-class EndpointNodeResolverTest {
+class MessageEndNodeResolverTest {
 
 
-  private EndpointNodeResolver resolver;
+  private MessageEndNodeResolver resolver;
   private final ForagingExample example = new ForagingExample(RoboChartFactory.eINSTANCE);
-  private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
   private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
   private final TargetFactory tgtFac = new TargetFactory(RoboCertFactory.eINSTANCE);
   private final ActorFactory actFac = ActorFactory.DEFAULT;
+  private final MessageEndWrapper wrapper = MessageEndWrapper.DEFAULT;
 
-  private World world;
-  private ActorEndpoint target;
-  private EndpointWrapper wrapper;
+  private Gate world;
+  private MessageOccurrence target;
   private List<Lifeline> lines;
 
   @BeforeEach
@@ -66,14 +65,12 @@ class EndpointNodeResolverTest {
     final var stmRes = new StateMachineResolver(ctrlRes);
     final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
     final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
-    resolver = new EndpointNodeResolver(aNodeRes, wNodeRes);
+    resolver = new MessageEndNodeResolver(aNodeRes, wNodeRes);
 
-    world = msgFac.world();
+    world = msgFac.gate();
     final var actor = actFac.targetActor("T");
     target = msgFac.actor(actor);
     lines = List.of(actFac.lifeline(actor));
-
-    wrapper = new EndpointWrapper(certFac, msgFac);
   }
 
   /**
@@ -107,7 +104,7 @@ class EndpointNodeResolverTest {
     assertThat(targetNodes, hasItems(example.avoid));
   }
 
-  private Set<ConnectionNode> resolve(Endpoint a) {
+  private Set<ConnectionNode> resolve(MessageEnd a) {
     return resolver.resolve(a, lines).collect(Collectors.toUnmodifiableSet());
   }
 }

@@ -188,18 +188,19 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/to"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//Message/synchronicity"/>
       <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//Message/outbound"
-          get="return getFrom().isWorld() || getTo().isWorld();"/>
+          get="return getFrom().isGate() || getTo().isGate();"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="RoboCert.ecore#//Endpoint">
-      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//Endpoint/world"
-          get="return this instanceof robostar.robocert.World;"/>
+    <genClasses image="false" ecoreClass="RoboCert.ecore#//MessageEnd">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//MessageEnd/gate"
+          get="return this instanceof robostar.robocert.Gate;"/>
     </genClasses>
-    <genClasses ecoreClass="RoboCert.ecore#//ActorEndpoint">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//ActorEndpoint/actor"/>
-      <genOperations ecoreOperation="RoboCert.ecore#//ActorEndpoint/toString" body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;var actor = getActor();&#xD;&#xA;&#x9;&#x9;if (actor == null) return &quot;(null actor)&quot;;&#xD;&#xA;&#x9;&#x9;return actor.toString();&#xD;&#xA;&#x9;"/>
+    <genClasses ecoreClass="RoboCert.ecore#//MessageOccurrence">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//MessageOccurrence/actor"/>
+      <genOperations ecoreOperation="RoboCert.ecore#//MessageOccurrence/toString"
+          body="&#xD;&#xA;&#x9;&#x9;if (eIsProxy()) return super.toString();&#xD;&#xA;&#x9;&#x9;var actor = getActor();&#xD;&#xA;&#x9;&#x9;if (actor == null) return &quot;(null actor)&quot;;&#xD;&#xA;&#x9;&#x9;return actor.toString();&#xD;&#xA;&#x9;"/>
     </genClasses>
-    <genClasses ecoreClass="RoboCert.ecore#//World">
-      <genOperations ecoreOperation="RoboCert.ecore#//World/toString" body="return &quot;&lt;&lt;world>>&quot;;"/>
+    <genClasses ecoreClass="RoboCert.ecore#//Gate">
+      <genOperations ecoreOperation="RoboCert.ecore#//Gate/toString" body="return &quot;&lt;&lt;gate>>&quot;;"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//MessageTopic">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference RoboCert.ecore#//MessageTopic/message"/>

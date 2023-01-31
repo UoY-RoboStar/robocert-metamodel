@@ -27,6 +27,11 @@ import robostar.robocert.*;
  */
 public record MessageFactory(RoboCertFactory certFac) {
 
+  /**
+   * The default message factory.
+   */
+  public static MessageFactory DEFAULT = new MessageFactory(RoboCertFactory.eINSTANCE);
+
   @Inject
   public MessageFactory {
     Objects.requireNonNull(certFac);
@@ -38,32 +43,33 @@ public record MessageFactory(RoboCertFactory certFac) {
    * @param a actor in question.
    * @return a wrapping of {@code a} in an endpoint.
    */
-  public ActorEndpoint actor(Actor a) {
-    final var e = certFac.createActorEndpoint();
+  public MessageOccurrence actor(Actor a) {
+    final var e = certFac.createMessageOccurrence();
     e.setActor(a);
     return e;
   }
 
   /**
-   * Constructs a new endpoint for the world.
+   * Constructs a new gate endpoint.
    *
-   * @return a world endpoint.
+   * @return a gate endpoint
    */
-  public World world() {
-    return certFac.createWorld();
+  public Gate gate() {
+    return certFac.createGate();
   }
 
   /**
-   * Constructs a message spec with the given topic, edge, and arguments.
+   * Constructs a message with the given topic, edge, and arguments.
    *
-   * @param from  from-actor to use for the message spec.
-   * @param to    to-actor to use for the message spec.
+   * @param from  from-end to use for the message spec.
+   * @param to    to-end to use for the message spec.
    * @param topic topic to use for the message spec.
    * @param args  arguments to use for the message spec.
    * @return the specification.
    */
-  public Message spec(Endpoint from, Endpoint to, MessageTopic topic, ValueSpecification... args) {
-    return spec(from, to, topic, Arrays.asList(args));
+  public Message message(MessageEnd from, MessageEnd to, MessageTopic topic,
+      ValueSpecification... args) {
+    return message(from, to, topic, Arrays.asList(args));
   }
 
   /**
@@ -75,7 +81,7 @@ public record MessageFactory(RoboCertFactory certFac) {
    * @param args  the arguments to use for the message spec.
    * @return the specification.
    */
-  public Message spec(Endpoint from, Endpoint to, MessageTopic topic,
+  public Message message(MessageEnd from, MessageEnd to, MessageTopic topic,
       Collection<? extends ValueSpecification> args) {
     final var it = certFac.createMessage();
     it.setFrom(from);

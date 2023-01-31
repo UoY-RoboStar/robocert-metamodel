@@ -92,10 +92,10 @@ class MessageImplTest {
     final var topic = msgFac.eventTopic(e);
 
     // All messages in a component context are outbound.
-    final var msg1 = msgFac.spec(msgFac.actor(comTarget), msgFac.world(), topic);
+    final var msg1 = msgFac.message(msgFac.actor(comTarget), msgFac.gate(), topic);
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFac.spec(msgFac.world(), msgFac.actor(comTarget), topic);
+    final var msg2 = msgFac.message(msgFac.gate(), msgFac.actor(comTarget), topic);
     assertThat(msg2.isOutbound(), is(true));
   }
 
@@ -107,13 +107,13 @@ class MessageImplTest {
 
     // All messages with a world (and only those) are outbound:
 
-    final var msg1 = msgFac.spec(msgFac.actor(c1), msgFac.world(), topic);
+    final var msg1 = msgFac.message(msgFac.actor(c1), msgFac.gate(), topic);
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFac.spec(msgFac.world(), msgFac.actor(c2), topic);
+    final var msg2 = msgFac.message(msgFac.gate(), msgFac.actor(c2), topic);
     assertThat(msg2.isOutbound(), is(true));
 
-    final var msg3 = msgFac.spec(msgFac.actor(c1), msgFac.actor(c2), topic);
+    final var msg3 = msgFac.message(msgFac.actor(c1), msgFac.actor(c2), topic);
     assertThat(msg3.isOutbound(), is(false));
   }
 }

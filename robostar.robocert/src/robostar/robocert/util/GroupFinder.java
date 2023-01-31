@@ -2,7 +2,7 @@ package robostar.robocert.util;
 
 import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.Actor;
-import robostar.robocert.ActorEndpoint;
+import robostar.robocert.MessageOccurrence;
 import robostar.robocert.SpecificationGroup;
 import robostar.robocert.Target;
 import robostar.robocert.util.resolve.ResolveHelper;
@@ -50,7 +50,7 @@ public class GroupFinder {
             }
 
             @Override
-            public Optional<SpecificationGroup> caseActorEndpoint(ActorEndpoint e) {
+            public Optional<SpecificationGroup> caseMessageOccurrence(MessageOccurrence e) {
                 return Optional.ofNullable(e).flatMap(x -> caseActor(x.getActor()));
             }
         }.doSwitch(e);

@@ -55,8 +55,8 @@ class MessageResolverTest {
     var op1 = chartFac.createOperationSig();
     op1.setName("op1");
 
-    msg1 = msgFac.spec(msgFac.actor(act1), msgFac.world(), msgFac.eventTopic(evt1));
-    msg2 = msgFac.spec(msgFac.world(), msgFac.actor(act2), msgFac.opTopic(op1));
+    msg1 = msgFac.message(msgFac.actor(act1), msgFac.gate(), msgFac.eventTopic(evt1));
+    msg2 = msgFac.message(msgFac.gate(), msgFac.actor(act2), msgFac.opTopic(op1));
   }
 
   /**
@@ -93,8 +93,8 @@ class MessageResolverTest {
    * Tests that the endpoint resolution for messages works properly.
    */
   @Test
-  void testEndpoint() {
-    assertThat(resolver.endpoints(msg1).toList(), containsInAnyOrder(msg1.getFrom(), msg1.getTo()));
-    assertThat(resolver.endpoints(msg2).toList(), containsInAnyOrder(msg2.getFrom(), msg2.getTo()));
+  void testMessageEnd() {
+    assertThat(resolver.ends(msg1).toList(), containsInAnyOrder(msg1.getFrom(), msg1.getTo()));
+    assertThat(resolver.ends(msg2).toList(), containsInAnyOrder(msg2.getFrom(), msg2.getTo()));
   }
 }

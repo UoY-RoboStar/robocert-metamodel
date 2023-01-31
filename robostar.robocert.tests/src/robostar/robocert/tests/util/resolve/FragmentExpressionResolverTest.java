@@ -118,12 +118,12 @@ class FragmentExpressionResolverTest {
     final var arg2 = vsFac.integer(64);
     final var arg3 = vsFac.integer(0xF00DF00D);
 
-    final var from = msgFac.world();
+    final var from = msgFac.gate();
     final var to = msgFac.actor(actFac.targetActor("T"));
     final var op = RoboChartFactory.eINSTANCE.createOperationSig();
     op.setName("op");
     final var topic = msgFac.opTopic(op);
-    final var msg = msgFac.spec(from, to, topic, arg1, arg2, arg3);
+    final var msg = msgFac.message(from, to, topic, arg1, arg2, arg3);
 
     final var f = certFac.createMessageFragment();
     f.setMessage(msg);

@@ -590,9 +590,9 @@ class Message {
 	@genmodel(documentation="The argument list for the message.")
 	val ValueSpecification[*] arguments;
 	@genmodel(documentation="The source of the message.")
-	val Endpoint[1] from;
+	val MessageEnd[1] from;
 	@genmodel(documentation="The destination of the message.")
-	val Endpoint[1] to;
+	val MessageEnd[1] to;
 	@genmodel(documentation="The synchronicity of the message.")
 	attr Synchronicity[1] synchronicity;
 	
@@ -601,28 +601,28 @@ class Message {
 	//
 	
 	@genmodel(
-		documentation="Whether this message has at least one Endpoint that is a World.",
-		get="return getFrom().isWorld() || getTo().isWorld();"
+		documentation="Whether this message has at least one MessageEnd that is a Gate.",
+		get="return getFrom().isGate() || getTo().isGate();"
 	)
 	derived transient readonly volatile attr boolean outbound;
 }
 
 //
-// Endpoints
+// Message ends
 //
 
 @genmodel(documentation="An endpoint in a message.")
-abstract class Endpoint {
+abstract class MessageEnd {
 	@genmodel(
-		documentation="Whether this endpoint is the World.",
-		get="return this instanceof robostar.robocert.World;"
+		documentation="Whether this end is a Gate.",
+		get="return this instanceof robostar.robocert.Gate;"
 	)
-	derived transient readonly volatile attr boolean world;	
+	derived transient readonly volatile attr boolean gate;	
 }
 
-@genmodel(documentation="An endpoint referencing an actor (lifeline).")
-class ActorEndpoint extends Endpoint {
-	@genmodel(documentation="The referenced actor.")
+@genmodel(documentation="A message end representing the occurrence of a message on a lifeline.")
+class MessageOccurrence extends MessageEnd {
+	@genmodel(documentation="The actor on whose lifeline this occurrence occurs.")
 	ref Actor[1] actor;
 
 	@genmodel(body="
@@ -634,9 +634,9 @@ class ActorEndpoint extends Endpoint {
 	derived op String[1] toString();	
 }
 
-@genmodel(documentation="An endpoint referencing the environment outside of the target.")
-class World extends Endpoint {
-	@genmodel(body="return \"<<world>>\";")
+@genmodel(documentation="A message end that lies somewhere outside of the target (that is, in its world).")
+class Gate extends MessageEnd {
+	@genmodel(body="return \"<<gate>>\";")
 	derived op String[1] toString();
 }
 

@@ -22,8 +22,7 @@
 - `DeadlineFragment` is now an instance of `LifelineFragment`.
   (2022-12-09)
 - (BREAKING) Removed `Occurrence` and `OccurrenceFragment`; anything that was
-  named `*Occurrence` is now `*Fragment` with the exception of
-  `MessageOccurrence`.
+  named `*Occurrence` is now `*Fragment`.
   (2022-12-09)
 - (BREAKING) Removed `DeadlockOccurrence`.
   (2022-12-09)
@@ -34,6 +33,21 @@
   runs _before_ `trigger`, ie that which was previously implicitly an
   `AnyFragment`.
   (2022-11-05; github #1)
+- (BREAKING) Distinction made between `Actor`s and `Lifeline`s.  Lifelines
+  contain information about an `Actor` that is forming a lifeline on a diagram,
+  alongside information about variables defined on it.  Conversely,
+  `Interaction`s may no longer have directly-defined variables.
+  (some time before 2023-01-31)
+- (BREAKING) Distinction made between `Actor`s and `MessageEnd`s.  The
+  erstwhile `World` actor is now a `MessageEnd` called `Gate`.  A new
+  `MessageOccurrence` (not to be confused with the now-renamed
+  `MessageFragment`) is a `MessageEnd` over an `Actor`.  This new
+  naming convention better reflects UML.
+  (2023-01-31)
+- (BREAKING) Node resolution for ends and worlds now requires the set of
+  active lifelines.  The world calculation has changed to allow any components
+  of the target that are not active lifelines to be considered.
+  (2023-01-31)
 
 # 0.1.0
 

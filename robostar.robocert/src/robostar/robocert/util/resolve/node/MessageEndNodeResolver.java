@@ -23,12 +23,12 @@ import java.util.stream.Stream;
 import robostar.robocert.util.StreamHelper;
 
 /**
- * Resolves endpoints into the connection nodes that can represent them.
+ * Resolves message ends into the connection nodes that can represent them.
  *
  * @param aNodeRes helper for resolving actors into connection nodes.
  * @param wNodeRes helper for resolving worlds into connection nodes.
  */
-public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver wNodeRes) {
+public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver wNodeRes) {
 
   /**
    * Constructs an actor resolver.
@@ -37,13 +37,13 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
    * @param wNodeRes helper for resolving worlds into connection nodes.
    */
   @Inject
-  public EndpointNodeResolver {
+  public MessageEndNodeResolver {
     Objects.requireNonNull(aNodeRes);
     Objects.requireNonNull(wNodeRes);
   }
 
   /**
-   * Resolves an endpoint to a stream of connection nodes that can represent that endpoint.
+   * Resolves an end to a stream of connection nodes that can represent that endpoint.
    *
    * <p>The stream may contain more than one node in two situations: either the endpoint is a
    * target endpoint and the target is a module (in which case, the module's non-platform components
@@ -55,7 +55,7 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
    * @return a stream of connection nodes that can represent this endpoint, given the specified
    * lifelines
    */
-  public Stream<ConnectionNode> resolve(Endpoint endpoint, List<Lifeline> lifelines) {
+  public Stream<ConnectionNode> resolve(MessageEnd endpoint, List<Lifeline> lifelines) {
     final var lifelineNodes = lifelines.stream().flatMap(l -> aNodeRes.resolve(l.getActor()))
         .collect(Collectors.toUnmodifiableSet());
 
@@ -66,7 +66,7 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
       }
 
       @Override
-      public Stream<ConnectionNode> caseActorEndpoint(ActorEndpoint e) {
+      public Stream<ConnectionNode> caseMessageOccurrence(MessageOccurrence e) {
         final var allNodes = aNodeRes.resolve(e.getActor());
         // Any actors referenced by an endpoint should be lifelines in the diagram.
         // This should really be guaranteed by well-formedness, but we double-check here anyway.
@@ -74,7 +74,7 @@ public record EndpointNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver
       }
 
       @Override
-      public Stream<ConnectionNode> caseWorld(World w) {
+      public Stream<ConnectionNode> caseGate(Gate w) {
         final var allNodes = wNodeRes.resolve(w);
         // Any actors referenced by a world should NOT be lifelines in the diagram.
         // Unlike above, we absolutely need to filter `allWorld`.

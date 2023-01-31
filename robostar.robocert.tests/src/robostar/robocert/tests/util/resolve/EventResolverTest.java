@@ -24,7 +24,7 @@ import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
-import robostar.robocert.util.resolve.node.EndpointNodeResolver;
+import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.node.WorldNodeResolver;
 
@@ -49,9 +49,9 @@ class EventResolverTest {
   private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
   private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
-  private World world;
-  private ActorEndpoint target;
-  private EndpointWrapper wrapper;
+  private Gate world;
+  private MessageOccurrence target;
+  private MessageEndWrapper wrapper;
   private List<Lifeline> lines;
 
   @BeforeEach
@@ -65,16 +65,16 @@ class EventResolverTest {
     final var stmRes = new StateMachineResolver(ctrlRes);
     final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
     final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
-    final var endRes = new EndpointNodeResolver(aNodeRes, wNodeRes);
+    final var endRes = new MessageEndNodeResolver(aNodeRes, wNodeRes);
     final var outRes = new OutboundConnectionResolver(modRes, ctrlRes, stmRes, defRes);
     resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
 
-    world = msgFac.world();
+    world = msgFac.gate();
     final var actor = actFac.targetActor("T");
     target = msgFac.actor(actor);
     lines = List.of(actFac.lifeline(actor));
 
-    wrapper = new EndpointWrapper(certFactory, msgFac);
+    wrapper = new MessageEndWrapper(certFactory, msgFac);
   }
 
 
@@ -122,7 +122,7 @@ class EventResolverTest {
     assertThat(conns3, hasItems(example.obstacleObstacleAvoidanceToAvoid));
   }
 
-  private Set<Connection> resolve(Event efrom, Event eto, Endpoint from, Endpoint to) {
+  private Set<Connection> resolve(Event efrom, Event eto, MessageEnd from, MessageEnd to) {
     final var topic = msgFac.eventTopic(efrom, eto);
     final var query = new EventResolverQuery(topic, from, to, lines);
     return resolver.resolve(query).collect(Collectors.toUnmodifiableSet());

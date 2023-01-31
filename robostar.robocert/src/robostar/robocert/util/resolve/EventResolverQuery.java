@@ -11,9 +11,9 @@
 package robostar.robocert.util.resolve;
 
 import java.util.List;
-import robostar.robocert.ActorEndpoint;
+import robostar.robocert.MessageOccurrence;
 import robostar.robocert.ComponentActor;
-import robostar.robocert.Endpoint;
+import robostar.robocert.MessageEnd;
 import robostar.robocert.EventTopic;
 import robostar.robocert.Lifeline;
 
@@ -25,20 +25,36 @@ import robostar.robocert.Lifeline;
  * @param to        the to-endpoint of the message
  * @param lifelines the list of lifelines active in this sequence diagram
  */
-public record EventResolverQuery(EventTopic topic, Endpoint from, Endpoint to,
+public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd to,
                                  List<Lifeline> lifelines) {
 
   /**
    * Gets whether the two endpoints refer to components.
    *
-   * @return true iff both endpoints are ActorEndpoints pointing to ComponentActors.
+   * @return true iff both endpoints are MessageOccurrences pointing to ComponentActors.
    */
   public boolean endpointsAreComponents() {
     return endpointIsComponent(from) && endpointIsComponent(to);
   }
 
-  private static boolean endpointIsComponent(Endpoint c) {
-    return c instanceof ActorEndpoint e && e.getActor() != null
-        && e.getActor() instanceof ComponentActor;
+  private static boolean endpointIsComponent(MessageEnd c) {
+    if (!(c instanceof MessageOccurrence e)) {
+      return false;
+    }
+    return e.getActor() instanceof ComponentActor;
+  }
+
+  /**
+   * @return true if, and only if, the from-end is a gate.
+   */
+  public boolean isFromGate() {
+    return from.isGate();
+  }
+
+  /**
+   * @return true if, and only if, the to-end is a gate.
+   */
+  public boolean isToGate() {
+    return to.isGate();
   }
 }

@@ -25,7 +25,7 @@ import circus.robocalc.robochart.ConnectionNode;
 import robostar.robocert.*;
 import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.RoboCertSwitch;
-import robostar.robocert.util.resolve.node.EndpointNodeResolver;
+import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 
 /**
@@ -33,7 +33,7 @@ import robostar.robocert.util.resolve.node.TargetNodeResolver;
  *
  * @author Matt Windsor
  */
-public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver tgtRes,
+public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolver tgtRes,
                                 ModuleResolver modRes, ControllerResolver ctrlRes,
                                 StateMachineResolver stmRes, GroupFinder groupFinder,
                                 OutboundConnectionResolver outRes) implements EventResolver {
@@ -89,37 +89,35 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
     //    the target;
     if (q.endpointsAreComponents()) {
       return innerConnections.filter(
-          x -> matchesComponent(q, x, endpointNodes(q, q.from()),
-              endpointNodes(q, q.to())));
+          x -> matchesComponent(q, x, endNodes(q, q.from()), endNodes(q, q.to())));
     }
 
-    // 2. from a ComponentActor to a World, in which case we need to proceed as if we were resolving
+    // 2. from a ComponentActor to a Gate, in which case we need to proceed as if we were resolving
     //    a component connection from the target to the world instead.
     return resolveOutboundInCollection(q, t);
   }
 
   private Stream<Connection> resolveOutboundInCollection(EventResolverQuery q, Target t) {
-    // WFC CGsA2 has that at least one of these must be the world.
-    boolean fromWorld = q.from().isWorld();
-    boolean toWorld = q.to().isWorld();
+    // WFC CGsA2 has that at least one of these must be a gate.
+    boolean fromGate = q.isFromGate();
+    boolean toGate = q.isToGate();
 
-    if (fromWorld && toWorld) {
-      throw new IllegalArgumentException(
-          "tried to resolve connection with two Worlds");
+    if (fromGate && toGate) {
+      throw new IllegalArgumentException("tried to resolve connection with two Gates");
     }
-    if (!fromWorld && !toWorld) {
+    if (!fromGate && !toGate) {
       throw new IllegalArgumentException(
-          "tried to resolve connection with only two TargetActors - violates CGsA2");
+          "tried to resolve connection with two TargetActors - violates CGsA2");
     }
 
     final var tnodes = targetNodes(t);
-    final var from = fromWorld ? endpointNodes(q, q.from()) : tnodes;
-    final var to = toWorld ? tnodes : endpointNodes(q, q.to());
+    final var from = fromGate ? endNodes(q, q.from()) : tnodes;
+    final var to = toGate ? tnodes : endNodes(q, q.to());
 
     return outRes.resolve(t).filter(x -> matchesComponent(q, x, from, to));
   }
 
-  private Set<ConnectionNode> endpointNodes(EventResolverQuery q, Endpoint e) {
+  private Set<ConnectionNode> endNodes(EventResolverQuery q, MessageEnd e) {
     return endRes.resolve(e, q.lifelines()).collect(Collectors.toUnmodifiableSet());
   }
 
@@ -129,7 +127,7 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
 
   private boolean matchesComponent(EventResolverQuery q, Connection c, Set<ConnectionNode> from,
       Set<ConnectionNode> to) {
-    if (!endpointsMatch(c, from, to)) {
+    if (!endsMatch(c, from, to)) {
       return false;
     }
     // TODO(@MattWindsor91): do we need reversibility here?
@@ -148,7 +146,7 @@ public record EventResolverImpl(EndpointNodeResolver endRes, TargetNodeResolver 
    * @param to   set of nodes allowed at the 'to' endpoint.
    * @return whether c connects nodes represented by from and to, in the appropriate direction.
    */
-  private boolean endpointsMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
+  private boolean endsMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
     return nodesMatch(c, from, to) || (c.isBidirec() && nodesMatch(c, to, from));
   }
 
