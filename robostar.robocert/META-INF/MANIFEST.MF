@@ -23,7 +23,9 @@ Export-Package: robostar.robocert;uses:="org.eclipse.emf.ecore,
  robostar.robocert.util.resolve.result,
  robostar.robocert.util.factory,
  robostar.robocert.util.factory.robochart,
- robostar.robocert.util.resolve
+ robostar.robocert.util.resolve,
+ robostar.robocert.wfc,
+ robostar.robocert.wfc.seq
 Require-Bundle: org.eclipse.core.runtime,
   org.eclipse.emf.ecore;visibility:=reexport,
   org.apache.log4j;bundle-version="1.2.15",

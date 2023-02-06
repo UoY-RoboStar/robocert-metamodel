@@ -1,8 +1,27 @@
-# robocert-metamodel
+# RoboCert Metamodel
 
-This repository contains the Eclipse plugins that implement that metamodel of
-RoboCert.  It also includes Java code that implements custom functionality on
-the model, as well as common helper functionality.
+This repository contains the Eclipse plugins that implement that metamodel of RoboCert.
+
+_This is pre-release material._  We greatly appreciate any suggestions,
+comments, and issues.
+
+
+## What this repository contains
+
+This repository contains:
+
+- the `robostar.robocert` project, containing:
+  - the metamodel;
+  - utility classes;
+  - well-formedness condition checks;
+- the `robostar.robocert.tests` project, containing unit tests;
+- various other projects either generated from the metamodel or used to support deployment.
+
+
+### Metamodel
+
+Packages `robostar.robocert` and `robostar.robocert.impl` contain the metamodel proper.
+The EMF tooling generates this semi-automatically from the model files.
 
 The main representation of the metamodel is
 `robostar.robocert/model/RoboCert.emf`.  From this, one can generate
@@ -10,8 +29,22 @@ The main representation of the metamodel is
 selecting 'Generate Ecore Model'.  The two files _must_ be kept in sync, and
 the Emfatic version _must_ remain the primary source of truth.
 
-_This is pre-release material._  We greatly appreciate any suggestions,
-comments, and issues.
+
+### Utility classes
+
+Package `robostar.robocert.util` contains various utility classes and methods for both RoboChart
+and RoboCert, assisting in:
+
+- resolving and finding various aspects of a model from other parts of a model;
+- constructing synthetic pieces of model (especially for testing purposes);
+- other miscellaneous activities (such as stream construction).
+
+
+### Well-formedness conditions
+
+Package `robostar.robocert.wfc` contains logic for checking well-formedness of RoboCert model
+elements.  We intend this to be connected to the Xtext validator logic in the textual plugin, but
+keep it in the metamodel so that it can be tested alongside the metamodel.
 
 
 ## Dependencies
