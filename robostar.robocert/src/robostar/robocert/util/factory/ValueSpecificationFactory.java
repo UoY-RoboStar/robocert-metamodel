@@ -10,6 +10,7 @@
 
 package robostar.robocert.util.factory;
 
+import circus.robocalc.robochart.Expression;
 import com.google.inject.Inject;
 
 import circus.robocalc.robochart.RoboChartFactory;
@@ -45,8 +46,28 @@ public record ValueSpecificationFactory(ExpressionFactory exprFactory,
    * @return the given integer value specification.
    */
   public ExpressionValueSpecification integer(int v) {
+    return expr(exprFactory.integer(v));
+  }
+
+  /**
+   * Constructs a value specification for the given variable.
+   *
+   * @param v the variable to lift to a value specification.
+   * @return the given variable value specification.
+   */
+  public ExpressionValueSpecification var(Variable v) {
+    return expr(exprFactory.ref(v));
+  }
+
+  /**
+   * Constructs a value specification for the given expression.
+   *
+   * @param expr the expression to lift to a value specification.
+   * @return the given expression value specification.
+   */
+  public ExpressionValueSpecification expr(Expression expr) {
     final var spec = rcertFactory.createExpressionValueSpecification();
-    spec.setExpr(exprFactory.integer(v));
+    spec.setExpr(expr);
     return spec;
   }
 
@@ -66,21 +87,8 @@ public record ValueSpecificationFactory(ExpressionFactory exprFactory,
    * @return a bound value specification.
    */
   public WildcardValueSpecification bound(Variable bnd) {
-    final var spec = rcertFactory.createWildcardValueSpecification();
+    final var spec = wildcard();
     spec.setDestination(bnd);
     return spec;
-  }
-
-  /**
-   * Constructs a throwaway binding (generally useful for testing only).
-   *
-   * @param name the name of the binding.
-   * @return the binding.
-   */
-  public Variable binding(String name) {
-    final var bnd = rchartFactory.createVariable();
-    bnd.setName(name);
-    bnd.setType(rchartFactory.createAnyType());
-    return bnd;
   }
 }

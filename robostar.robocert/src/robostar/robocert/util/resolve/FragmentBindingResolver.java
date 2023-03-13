@@ -35,7 +35,7 @@ public class FragmentBindingResolver {
    * @param fragment the fragment being searched for variable bindings.
    * @return the stream of variable bindings within the given fragment.
    */
-  public Stream<Variable> resolve(InteractionFragment fragment) {
+  public Stream<Variable> bindingsOf(InteractionFragment fragment) {
     return new RoboCertSwitch<Stream<Variable>>(){
       @Override
       public Stream<Variable> defaultCase(EObject object) {
