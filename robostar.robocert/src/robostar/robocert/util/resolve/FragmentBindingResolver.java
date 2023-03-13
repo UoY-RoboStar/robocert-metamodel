@@ -29,14 +29,13 @@ public class FragmentBindingResolver {
    * Resolves the variable bindings within the given fragment.
    *
    * <p>
-   * Presently, the only variable bindings are those within message
-   * value specifications.
+   * Presently, the only variable bindings are those within message value specifications.
    *
    * @param fragment the fragment being searched for variable bindings.
    * @return the stream of variable bindings within the given fragment.
    */
   public Stream<Variable> bindingsOf(InteractionFragment fragment) {
-    return new RoboCertSwitch<Stream<Variable>>(){
+    return new RoboCertSwitch<Stream<Variable>>() {
       @Override
       public Stream<Variable> defaultCase(EObject object) {
         return Stream.empty();

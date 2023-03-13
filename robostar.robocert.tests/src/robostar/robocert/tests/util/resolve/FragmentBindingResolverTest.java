@@ -53,10 +53,10 @@ class FragmentBindingResolverTest {
   }
 
   /**
-   * Tests {@code expressionsOf} on a {@link robostar.robocert.MessageFragment}.
+   * Tests {@code bindingsOf} on a {@link robostar.robocert.MessageFragment}.
    */
   @Test
-  void TestExpressionsOf_MessageFragment() {
+  void TestBindingsOf_MessageFragment() {
     final var arg1 = vsFac.integer(42);
     final var arg2 = vsFac.bound(varFac.var("x", tyFac.primRef("int")));
 

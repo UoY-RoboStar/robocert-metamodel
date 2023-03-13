@@ -16,6 +16,7 @@ import circus.robocalc.robochart.Type;
 import circus.robocalc.robochart.Variable;
 import circus.robocalc.robochart.VariableList;
 import circus.robocalc.robochart.VariableModifier;
+import circus.robocalc.robochart.impl.RoboChartFactoryImplCustom;
 import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +33,8 @@ public record VariableFactory(RoboChartFactory chartFac) {
   /**
    * The default variable factory.
    */
-  public static final VariableFactory DEFAULT = new VariableFactory(RoboChartFactory.eINSTANCE);
+  public static final VariableFactory DEFAULT = new VariableFactory(
+      new RoboChartFactoryImplCustom());
 
   /**
    * Injectable constructor for variable factories.

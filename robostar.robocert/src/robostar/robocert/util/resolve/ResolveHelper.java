@@ -13,8 +13,12 @@
 package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.RCPackage;
+import com.google.common.collect.Streams;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import robostar.robocert.util.StreamHelper;
 
 /**
  * As-of-yet unsorted helper methods for resolution.
@@ -54,5 +58,20 @@ public class ResolveHelper {
       }
     }
     return Optional.empty();
+  }
+
+  /**
+   * Gets all direct and indirect contents of the given object that matches the given class.
+   *
+   * @param e      object to inspect.
+   * @param tClass reification of T.
+   * @param <T>    class of container desired.
+   * @return the first container assignable from T.
+   */
+  public static <T> Stream<T> allContentsOfType(EObject e, Class<T> tClass) {
+    @SuppressWarnings("UnstableApiUsage") final var contents = Streams.stream(
+        EcoreUtil.getAllContents(e, true));
+
+    return StreamHelper.filter(contents, tClass);
   }
 }
