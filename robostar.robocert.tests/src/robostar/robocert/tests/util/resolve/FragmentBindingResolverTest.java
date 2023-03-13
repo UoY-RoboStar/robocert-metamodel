@@ -11,17 +11,15 @@
 package robostar.robocert.tests.util.resolve;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.Variable;
-import org.hamcrest.CustomTypeSafeMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.InteractionFragment;
 import robostar.robocert.RoboCertFactory;
+import robostar.robocert.tests.matchers.Matchers;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ValueSpecificationFactory;
 import robostar.robocert.util.factory.robochart.ActorFactory;
@@ -79,17 +77,6 @@ class FragmentBindingResolverTest {
   }
 
   private Matcher<InteractionFragment> hasBindings(Variable... xs) {
-    return new CustomTypeSafeMatcher<>("has the given bindings") {
-      @Override
-      protected boolean matchesSafely(InteractionFragment f) {
-        return contains(xs).matches(resolver.bindingsOf(f).toList());
-      }
-
-      @Override
-      protected void describeMismatchSafely(InteractionFragment f,
-          Description mismatchDescription) {
-        contains(xs).describeMismatch(resolver.bindingsOf(f).toList(), mismatchDescription);
-      }
-    };
+    return Matchers.resolvesTo(resolver::bindingsOf, xs);
   }
 }

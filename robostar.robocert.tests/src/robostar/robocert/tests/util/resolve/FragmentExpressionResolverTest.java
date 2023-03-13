@@ -11,14 +11,11 @@
 package robostar.robocert.tests.util.resolve;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.not;
 
 import circus.robocalc.robochart.Expression;
 import circus.robocalc.robochart.RoboChartFactory;
 import java.util.List;
-import org.hamcrest.CustomTypeSafeMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +23,7 @@ import robostar.robocert.InteractionFragment;
 import robostar.robocert.InteractionOperand;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.WaitFragment;
+import robostar.robocert.tests.matchers.Matchers;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ValueSpecificationFactory;
 import robostar.robocert.util.factory.robochart.ActorFactory;
@@ -161,17 +159,6 @@ class FragmentExpressionResolverTest {
   }
 
   private Matcher<InteractionFragment> hasExpressions(Expression... xs) {
-    return new CustomTypeSafeMatcher<>("has the given expressions") {
-      @Override
-      protected boolean matchesSafely(InteractionFragment f) {
-        return contains(xs).matches(resolver.expressionsOf(f).toList());
-      }
-
-      @Override
-      protected void describeMismatchSafely(InteractionFragment f,
-          Description mismatchDescription) {
-        contains(xs).describeMismatch(resolver.expressionsOf(f).toList(), mismatchDescription);
-      }
-    };
+    return Matchers.resolvesTo(resolver::expressionsOf, xs);
   }
 }

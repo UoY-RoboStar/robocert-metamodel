@@ -11,16 +11,13 @@
 package robostar.robocert.tests.util.resolve;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
 
 import circus.robocalc.robochart.Expression;
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.Variable;
-import org.hamcrest.CustomTypeSafeMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
+import robostar.robocert.tests.matchers.Matchers;
 import robostar.robocert.util.factory.robochart.ExpressionFactory;
 import robostar.robocert.util.factory.robochart.TypeFactory;
 import robostar.robocert.util.factory.robochart.VariableFactory;
@@ -62,20 +59,6 @@ class ExpressionVariableReferenceResolverTest {
   }
 
   private Matcher<Expression> hasVariables(Variable... xs) {
-    return new CustomTypeSafeMatcher<>("has the given referenced variables") {
-      @Override
-      protected boolean matchesSafely(Expression e) {
-        return matcher().matches(resolver.variablesReferencedBy(e).toList());
-      }
-
-      @Override
-      protected void describeMismatchSafely(Expression e, Description mismatchDescription) {
-        matcher().describeMismatch(resolver.variablesReferencedBy(e).toList(), mismatchDescription);
-      }
-
-      private Matcher<? extends Iterable<? extends Variable>> matcher() {
-        return xs.length == 0 ? empty() : contains(xs);
-      }
-    };
+    return Matchers.resolvesTo(resolver::variablesReferencedBy, xs);
   }
 }
