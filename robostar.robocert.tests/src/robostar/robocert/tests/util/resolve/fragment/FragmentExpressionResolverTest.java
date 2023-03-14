@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.tests.util.resolve;
+package robostar.robocert.tests.util.resolve.fragment;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
@@ -28,7 +28,7 @@ import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ValueSpecificationFactory;
 import robostar.robocert.util.factory.robochart.ActorFactory;
 import robostar.robocert.util.factory.robochart.ExpressionFactory;
-import robostar.robocert.util.resolve.FragmentExpressionResolver;
+import robostar.robocert.util.resolve.fragment.FragmentExpressionResolver;
 
 /**
  * Tests fragment expression resolution.

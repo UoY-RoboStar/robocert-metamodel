@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.resolve;
+package robostar.robocert.util.resolve.fragment;
 
 import circus.robocalc.robochart.Expression;
 import java.util.Objects;
