@@ -11,6 +11,7 @@
 package robostar.robocert.util.resolve;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +28,8 @@ import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.RoboCertSwitch;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
+import robostar.robocert.util.resolve.result.ResolvedEvent;
+import robostar.robocert.util.resolve.result.ResolvedEvent.Direction;
 
 /**
  * Resolves an event topic to a connection.
@@ -50,37 +53,40 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
   }
 
   @Override
-  public Stream<Connection> resolve(EventResolverQuery q) {
+  public Stream<ResolvedEvent> resolve(EventResolverQuery q) {
+    // Throw if the query is ill-formed:
+    q.checkWellFormedness();
+
     final var target = groupFinder.findTarget(q.from()).orElseThrow(() -> {
       throw new IllegalArgumentException(
           "can't resolve event if endpoints not within SpecificationGroup");
     });
-    return new RoboCertSwitch<Stream<Connection>>() {
+    return new RoboCertSwitch<Stream<ResolvedEvent>>() {
       @Override
-      public Stream<Connection> defaultCase(EObject t) {
+      public Stream<ResolvedEvent> defaultCase(EObject t) {
         throw new IllegalArgumentException("unexpected target type: %s".formatted(t));
       }
 
       @Override
-      public Stream<Connection> caseComponentTarget(ComponentTarget t) {
+      public Stream<ResolvedEvent> caseComponentTarget(ComponentTarget t) {
         // Component targets are easy to resolve: all of their connections go from the target to
         // the world, or backwards (and so are outbound in some sense).
         return resolveOutboundInCollection(q, t);
       }
 
       @Override
-      public Stream<Connection> caseInModuleTarget(InModuleTarget t) {
+      public Stream<ResolvedEvent> caseInModuleTarget(InModuleTarget t) {
         return resolveCollection(q, t, modRes.inboundConnections(t.getModule()));
       }
 
       @Override
-      public Stream<Connection> caseInControllerTarget(InControllerTarget t) {
+      public Stream<ResolvedEvent> caseInControllerTarget(InControllerTarget t) {
         return resolveCollection(q, t, t.getController().getConnections().stream());
       }
     }.doSwitch(target);
   }
 
-  private Stream<Connection> resolveCollection(EventResolverQuery q, CollectionTarget t,
+  private Stream<ResolvedEvent> resolveCollection(EventResolverQuery q, CollectionTarget t,
       Stream<Connection> innerConnections) {
     // Collection target connections are more complicated than component target connections, as
     // there are two situations:
@@ -89,7 +95,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     //    the target;
     if (q.endpointsAreComponents()) {
       return innerConnections.filter(
-          x -> matchesComponent(q, x, endNodes(q, q.from()), endNodes(q, q.to())));
+          x -> match(q, x, endNodes(q, q.from()), endNodes(q, q.to())));
     }
 
     // 2. from a ComponentActor to a Gate, in which case we need to proceed as if we were resolving
@@ -97,24 +103,16 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     return resolveOutboundInCollection(q, t);
   }
 
-  private Stream<Connection> resolveOutboundInCollection(EventResolverQuery q, Target t) {
+  private Stream<ResolvedEvent> resolveOutboundInCollection(EventResolverQuery q, Target t) {
     // WFC CGsA2 has that at least one of these must be a gate.
     boolean fromGate = q.isFromGate();
     boolean toGate = q.isToGate();
-
-    if (fromGate && toGate) {
-      throw new IllegalArgumentException("tried to resolve connection with two Gates");
-    }
-    if (!fromGate && !toGate) {
-      throw new IllegalArgumentException(
-          "tried to resolve connection with two TargetActors - violates CGsA2");
-    }
 
     final var tnodes = targetNodes(t);
     final var from = fromGate ? endNodes(q, q.from()) : tnodes;
     final var to = toGate ? tnodes : endNodes(q, q.to());
 
-    return outRes.resolve(t).filter(x -> matchesComponent(q, x, from, to));
+    return outRes.resolve(t).filter(x -> match(q, x, from, to));
   }
 
   private Set<ConnectionNode> endNodes(EventResolverQuery q, MessageEnd e) {
@@ -125,17 +123,21 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     return tgtRes.resolve(t).collect(Collectors.toUnmodifiableSet());
   }
 
-  private boolean matchesComponent(EventResolverQuery q, Connection c, Set<ConnectionNode> from,
+  private Optional<Direction> match(EventResolverQuery q, Connection c, Set<ConnectionNode> from,
       Set<ConnectionNode> to) {
-    if (!endsMatch(c, from, to)) {
-      return false;
-    }
-    // TODO(@MattWindsor91): do we need reversibility here?
-    if (!EcoreUtil.equals(q.topic().getEfrom(), c.getEfrom())) {
+    return matchEnds(c, from, to).filter(dir -> matchEvents(q, c, dir));
+  }
+
+  private boolean matchEvents(EventResolverQuery q, Connection c, Direction dir) {
+    // TODO(@MattWindsor91): do we need this reversibility here?
+    final var cFrom = dir == Direction.FORWARDS ? c.getEfrom() : c.getEto();
+    final var cTo = dir == Direction.FORWARDS ? c.getEto() : c.getEfrom();
+
+    if (!EcoreUtil.equals(q.topic().getEfrom(), cFrom)) {
       return false;
     }
     final var eto = q.topic().getEto();
-    return eto == null || EcoreUtil.equals(eto, c.getEto());
+    return eto == null || EcoreUtil.equals(eto, cTo);
   }
 
   /**
@@ -144,10 +146,19 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
    * @param c    connection to investigate.
    * @param from set of nodes allowed at the 'from' endpoint.
    * @param to   set of nodes allowed at the 'to' endpoint.
-   * @return whether c connects nodes represented by from and to, in the appropriate direction.
+   *
+   * @return the direction in which c connects nodes represented by from and to, if any.
    */
-  private boolean endsMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
-    return nodesMatch(c, from, to) || (c.isBidirec() && nodesMatch(c, to, from));
+  private Optional<Direction> matchEnds(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
+    if (nodesMatch(c, from, to)) {
+      return Optional.of(Direction.FORWARDS);
+    }
+
+    if (c.isBidirec() && nodesMatch(c, to, from)) {
+      return Optional.of(Direction.BACKWARDS);
+    }
+
+    return Optional.empty();
   }
 
   private boolean nodesMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {

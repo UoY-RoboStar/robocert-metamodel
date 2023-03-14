@@ -12,6 +12,7 @@ package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.Connection;
 import java.util.stream.Stream;
+import robostar.robocert.util.resolve.result.ResolvedEvent;
 
 /**
  * Resolves an event topic to a connection.
@@ -26,8 +27,8 @@ public interface EventResolver {
    * <p>This stream may contain zero, one, or many connections; typically anything other than one
    * is a well-formedness violation.
    *
-   * @param q the resolver query.
-   * @return the stream of candidate connections.
+   * @param query the resolver query
+   * @return the stream of candidate connections alongside auxiliary information
    */
-  Stream<Connection> resolve(EventResolverQuery q);
+  Stream<ResolvedEvent> resolve(EventResolverQuery query);
 }

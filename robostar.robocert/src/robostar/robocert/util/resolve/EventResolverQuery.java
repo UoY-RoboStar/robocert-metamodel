@@ -57,4 +57,38 @@ public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd t
   public boolean isToGate() {
     return to.isGate();
   }
+
+  /**
+   * Checks whether this query has potential well-formedness issues.
+   *
+   * @throws IllegalArgumentException if the query is ill-formed (for instance, both its ends are
+   *                                  gates, or both name target actors)
+   */
+  public void checkWellFormedness() {
+    // TODO(@MattWindsor91): it's unclear as to whether we should treat these as well-formedness
+    // conditions to break the generator on, or just reasons to (silently) abandon resolution.
+
+    final var fromGate = isFromGate();
+    final var toGate = isToGate();
+
+    if (fromGate && toGate) {
+      throw new IllegalArgumentException("tried to resolve connection with two Gates");
+    }
+
+    final var fromComp = endpointIsComponent(from);
+    final var fromCompOrGate = fromComp || fromGate;
+    final var fromTarget = !fromCompOrGate;
+
+    final var toComp = endpointIsComponent(to);
+    final var toCompOrGate = toComp || toGate;
+    final var toTarget = !toCompOrGate;
+
+    if ((fromComp && toTarget) || (toComp && fromTarget)) {
+      throw new IllegalArgumentException("tried to mix target and component actors");
+    }
+
+    if (toTarget && fromTarget) {
+      throw new IllegalArgumentException("tried to resolve connection with two TargetActors");
+    }
+  }
 }
