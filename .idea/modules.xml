@@ -3,7 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/robostar.robocert/robostar.robocert.iml" filepath="$PROJECT_DIR$/robostar.robocert/robostar.robocert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robostar.robocert.edit/robostar.robocert.edit.iml" filepath="$PROJECT_DIR$/robostar.robocert.edit/robostar.robocert.edit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robostar.robocert.editor/robostar.robocert.editor.iml" filepath="$PROJECT_DIR$/robostar.robocert.editor/robostar.robocert.editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robostar.robocert.feature/robostar.robocert.feature.iml" filepath="$PROJECT_DIR$/robostar.robocert.feature/robostar.robocert.feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robostar.robocert.parent.iml" filepath="$PROJECT_DIR$/robostar.robocert.parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/robostar.robocert.tests/robostar.robocert.tests.iml" filepath="$PROJECT_DIR$/robostar.robocert.tests/robostar.robocert.tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robostar.robocert.update/robostar.robocert.update.iml" filepath="$PROJECT_DIR$/robostar.robocert.update/robostar.robocert.update.iml" />
     </modules>
   </component>
 </project>
