@@ -77,27 +77,10 @@ public record SetFactory(RoboCertFactory rf) {
   }
 
   /**
-   * @param element the content to put into the set.
-   * @return a singleton extensional set with the given element.
-   */
-  public ExtensionalMessageSet singleton(Message element) {
-    final var it = rf.createExtensionalMessageSet();
-    it.getMessages().add(element);
-    return it;
-  }
-
-  /**
    * @return a universe set.
    */
   public UniverseMessageSet universe() {
     return rf.createUniverseMessageSet();
-  }
-
-  /**
-   * @return an empty set.
-   */
-  public ExtensionalMessageSet empty() {
-    return rf.createExtensionalMessageSet();
   }
 
   /**
