@@ -12,8 +12,6 @@ package robostar.robocert.util.resolve;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.ecore.EObject;
@@ -22,12 +20,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import com.google.inject.Inject;
 
 import circus.robocalc.robochart.Connection;
-import circus.robocalc.robochart.ConnectionNode;
 import robostar.robocert.*;
 import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.RoboCertSwitch;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
+import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 import robostar.robocert.util.resolve.result.ResolvedEvent;
 import robostar.robocert.util.resolve.result.ResolvedEvent.Direction;
 
@@ -94,8 +92,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     // 1. from a ComponentActor to another ComponentActor, in which case the connection is inside
     //    the target;
     if (q.endpointsAreComponents()) {
-      return innerConnections.filter(
-          x -> match(q, x, endNodes(q, q.from()), endNodes(q, q.to())));
+      return MatchAttempt.tryMatchMany(q, innerConnections, q.endNodes(endRes));
     }
 
     // 2. from a ComponentActor to a Gate, in which case we need to proceed as if we were resolving
@@ -104,64 +101,71 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
   }
 
   private Stream<ResolvedEvent> resolveOutboundInCollection(EventResolverQuery q, Target t) {
-    // WFC CGsA2 has that at least one of these must be a gate.
-    boolean fromGate = q.isFromGate();
-    boolean toGate = q.isToGate();
-
-    final var tnodes = targetNodes(t);
-    final var from = fromGate ? endNodes(q, q.from()) : tnodes;
-    final var to = toGate ? tnodes : endNodes(q, q.to());
-
-    return outRes.resolve(t).filter(x -> match(q, x, from, to));
-  }
-
-  private Set<ConnectionNode> endNodes(EventResolverQuery q, MessageEnd e) {
-    return endRes.resolve(e, q.actors()).collect(Collectors.toUnmodifiableSet());
-  }
-
-  private Set<ConnectionNode> targetNodes(Target t) {
-    return tgtRes.resolve(t).collect(Collectors.toUnmodifiableSet());
-  }
-
-  private Optional<Direction> match(EventResolverQuery q, Connection c, Set<ConnectionNode> from,
-      Set<ConnectionNode> to) {
-    return matchEnds(c, from, to).filter(dir -> matchEvents(q, c, dir));
-  }
-
-  private boolean matchEvents(EventResolverQuery q, Connection c, Direction dir) {
-    // TODO(@MattWindsor91): do we need this reversibility here?
-    final var cFrom = dir == Direction.FORWARDS ? c.getEfrom() : c.getEto();
-    final var cTo = dir == Direction.FORWARDS ? c.getEto() : c.getEfrom();
-
-    if (!EcoreUtil.equals(q.topic().getEfrom(), cFrom)) {
-      return false;
-    }
-    final var eto = q.topic().getEto();
-    return eto == null || EcoreUtil.equals(eto, cTo);
+    // TODO(@MattWindsor91): make sure we don't need to have a special case for resolving nodes here
+    return MatchAttempt.tryMatchMany(q, outRes.resolve(t), q.endNodes(endRes));
   }
 
   /**
-   * Checks whether this connection connects the two endpoints.
+   * Captures an attempt to match a query to a connection.
    *
-   * @param c    connection to investigate.
-   * @param from set of nodes allowed at the 'from' endpoint.
-   * @param to   set of nodes allowed at the 'to' endpoint.
-   *
-   * @return the direction in which c connects nodes represented by from and to, if any.
+   * @param query the original resolver query
+   * @param conn  the candidate connection
+   * @param nodes the pair of sets of nodes representing the ends of the message
    */
-  private Optional<Direction> matchEnds(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
-    if (nodesMatch(c, from, to)) {
-      return Optional.of(Direction.FORWARDS);
+  private record MatchAttempt(EventResolverQuery query, Connection conn,
+                              MessageEndNodesPair nodes) {
+
+    /**
+     * Tries to match a query against multiple possible connections.
+     *
+     * @param query      the original resolver query
+     * @param candidates the stream of connections to consider
+     * @param nodes the pair of sets of nodes representing the ends of the message
+     * @return a stream of successfully-matched connections
+     */
+    public static Stream<ResolvedEvent> tryMatchMany(EventResolverQuery query,
+        Stream<Connection> candidates, MessageEndNodesPair nodes) {
+      return candidates.flatMap(
+          conn -> new MatchAttempt(query, conn, nodes).tryMatch().stream());
     }
 
-    if (c.isBidirec() && nodesMatch(c, to, from)) {
-      return Optional.of(Direction.BACKWARDS);
+    /**
+     * Tries to perform the match described by this attempt record.
+     *
+     * @return the resolved event, if this match attempt was successful
+     */
+    public Optional<ResolvedEvent> tryMatch() {
+      return matchEnds().filter(this::eventsMatch).map(d -> new ResolvedEvent(query, d, conn));
     }
 
-    return Optional.empty();
-  }
+    /**
+     * Checks whether this connection connects the two endpoints.
+     *
+     * @return the direction in which the connection connects its endpoints, if any.
+     */
+    private Optional<Direction> matchEnds() {
+      if (nodes.matches(conn)) {
+        return Optional.of(Direction.FORWARDS);
+      }
 
-  private boolean nodesMatch(Connection c, Set<ConnectionNode> from, Set<ConnectionNode> to) {
-    return from.contains(c.getFrom()) && to.contains(c.getTo());
+      if (conn.isBidirec() && nodes.swap().matches(conn)) {
+        return Optional.of(Direction.BACKWARDS);
+      }
+
+      return Optional.empty();
+    }
+
+    private boolean eventsMatch(Direction dir) {
+      // TODO(@MattWindsor91): do we need this reversibility here?
+      final var cFrom = dir == Direction.FORWARDS ? conn.getEfrom() : conn.getEto();
+      final var cTo = dir == Direction.FORWARDS ? conn.getEto() : conn.getEfrom();
+
+      if (!EcoreUtil.equals(query.topic().getEfrom(), cFrom)) {
+        return false;
+      }
+      final var eto = query.topic().getEto();
+      return eto == null || EcoreUtil.equals(eto, cTo);
+    }
+
   }
 }

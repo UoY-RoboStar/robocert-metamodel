@@ -11,11 +11,14 @@ package robostar.robocert.util.factory;
 
 import com.google.inject.Inject;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import robostar.robocert.BinaryMessageSet;
 import robostar.robocert.BinarySetOperator;
 import robostar.robocert.ExtensionalMessageSet;
 import robostar.robocert.Message;
 import robostar.robocert.MessageSet;
+import robostar.robocert.NamedMessageSet;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.UniverseMessageSet;
 
@@ -27,12 +30,40 @@ import robostar.robocert.UniverseMessageSet;
 public record SetFactory(RoboCertFactory rf) {
 
   /**
+   * The default set factory.
+   */
+  public static SetFactory DEFAULT = new SetFactory(RoboCertFactory.eINSTANCE);
+
+  /**
    * Constructs a set factory.
    *
    * @param rf the underlying RoboCert factory.
    */
   @Inject
   public SetFactory {
+    Objects.requireNonNull(rf);
+  }
+
+  /**
+   * Creates a named message set.
+   *
+   * @param name the name of the message set
+   * @param set  the underlying message set
+   * @return the named message set
+   */
+  public NamedMessageSet named(String name, MessageSet set) {
+    final var it = rf.createNamedMessageSet();
+    it.setName(name);
+    it.setSet(set);
+    return it;
+  }
+
+  /**
+   * @param elements the contents to put into the set
+   * @return an extensional set with the given contents
+   */
+  public ExtensionalMessageSet extensional(Message... elements) {
+    return extensional(List.of(elements));
   }
 
   /**

@@ -21,6 +21,7 @@ import robostar.robocert.util.RoboCertSwitch;
 import java.util.Objects;
 import java.util.stream.Stream;
 import robostar.robocert.util.StreamHelper;
+import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 
 /**
  * Resolves message ends into the connection nodes that can represent them.
@@ -40,6 +41,21 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
   public MessageEndNodeResolver {
     Objects.requireNonNull(aNodeRes);
     Objects.requireNonNull(wNodeRes);
+  }
+
+  /**
+   * Resolves a message to a pair of sets of connection nodes that can represent its endpoints.
+   *
+   * @param message the message to resolve; must be attached to a specification group
+   * @param actors  the list of actors to consider for occurrences and exclude for gates
+   * @return a pair of sets of connection nodes that can represent the message's endpoints, given
+   * the specified actors
+   */
+  public MessageEndNodesPair resolvePair(Message message, List<Actor> actors) {
+    final var from = resolve(message.getFrom(), actors).collect(Collectors.toUnmodifiableSet());
+    final var to = resolve(message.getTo(), actors).collect(Collectors.toUnmodifiableSet());
+
+    return new MessageEndNodesPair(from, to);
   }
 
   /**

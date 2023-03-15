@@ -50,15 +50,19 @@ public record MessageEndWrapper(RoboCertFactory certFac, MessageFactory msgFac) 
    *
    * <p>The way this happens is not very sophisticated, but should suffice.
    *
-   * @param t      target on which we will create a specification group.
-   * @param world  world endpoint.
-   * @param target actor endpoint wrapping a target actor.
+   * @param t      the target on which we will create a specification group
+   * @param world  the world endpoint
+   * @param target the actor endpoint wrapping a target actor
+   *
+   * @return the wrapping specification group
    */
-  public void wrap(Target t, Gate world, MessageOccurrence target) {
+  public SpecificationGroup wrap(Target t, Gate world, MessageOccurrence target) {
     final var grp = certFac.createSpecificationGroup();
     grp.setName("Grp");
     grp.setTarget(t);
     wrap(grp, world, target);
+
+    return grp;
   }
 
   /**

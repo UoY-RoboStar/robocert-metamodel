@@ -67,11 +67,16 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFind
     if (actor instanceof ComponentActor c) {
       return Stream.of(c.getNode());
     }
-    return groupFinder.findTarget(actor).stream().flatMap(t -> {
-      if (actor instanceof TargetActor) {
-        return tgtRes.resolve(t);
-      }
-      throw new IllegalArgumentException("can't resolve actor %s".formatted(actor));
-    });
+    if (actor instanceof TargetActor t) {
+      return resolveTarget(t);
+    }
+    throw new IllegalArgumentException("can't resolve actor %s".formatted(actor));
+  }
+
+  private Stream<ConnectionNode> resolveTarget(TargetActor actor) {
+    final var tgt = groupFinder.findTarget(actor).orElseThrow(() -> new IllegalArgumentException(
+        "tried to resolve actor nodes of a TargetActor with no Target"));
+
+    return tgtRes.resolve(tgt);
   }
 }

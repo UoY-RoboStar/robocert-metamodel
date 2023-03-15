@@ -12,29 +12,44 @@ package robostar.robocert.util.resolve;
 
 import java.util.List;
 import robostar.robocert.Actor;
+import robostar.robocert.Message;
 import robostar.robocert.MessageOccurrence;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.MessageEnd;
 import robostar.robocert.EventTopic;
+import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
+import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 
 /**
  * A query for event resolution.
  *
- * @param topic  the event topic of the message
- * @param from   the from-endpoint of the message
- * @param to     the to-endpoint of the message
- * @param actors the list of actors active on the specification group
+ * @param message the message
+ * @param topic   the pre-selected event topic of the message
+ * @param actors  the list of actors active on the specification group
  */
-public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd to,
-                                 List<Actor> actors) {
+public record EventResolverQuery(Message message, EventTopic topic, List<Actor> actors) {
+
+  /**
+   * @return the from-end of the message
+   */
+  public MessageEnd from() {
+    return message.getFrom();
+  }
+
+  /**
+   * @return the to-end of the message
+   */
+  public MessageEnd to() {
+    return message.getTo();
+  }
 
   /**
    * Gets whether the two endpoints refer to components.
    *
-   * @return true iff both endpoints are MessageOccurrences pointing to ComponentActors.
+   * @return true iff both endpoints are MessageOccurrences pointing to ComponentActors
    */
   public boolean endpointsAreComponents() {
-    return endpointIsComponent(from) && endpointIsComponent(to);
+    return endpointIsComponent(from()) && endpointIsComponent(to());
   }
 
   private static boolean endpointIsComponent(MessageEnd c) {
@@ -48,14 +63,14 @@ public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd t
    * @return true if, and only if, the from-end is a gate.
    */
   public boolean isFromGate() {
-    return from.isGate();
+    return from().isGate();
   }
 
   /**
    * @return true if, and only if, the to-end is a gate.
    */
   public boolean isToGate() {
-    return to.isGate();
+    return to().isGate();
   }
 
   /**
@@ -75,11 +90,11 @@ public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd t
       throw new IllegalArgumentException("tried to resolve connection with two Gates");
     }
 
-    final var fromComp = endpointIsComponent(from);
+    final var fromComp = endpointIsComponent(from());
     final var fromCompOrGate = fromComp || fromGate;
     final var fromTarget = !fromCompOrGate;
 
-    final var toComp = endpointIsComponent(to);
+    final var toComp = endpointIsComponent(to());
     final var toCompOrGate = toComp || toGate;
     final var toTarget = !toCompOrGate;
 
@@ -90,5 +105,15 @@ public record EventResolverQuery(EventTopic topic, MessageEnd from, MessageEnd t
     if (toTarget && fromTarget) {
       throw new IllegalArgumentException("tried to resolve connection with two TargetActors");
     }
+  }
+
+  /**
+   * Resolves the message end nodes pair for this query.
+   *
+   * @param res the resolver to use
+   * @return the message end nodes pair for the query's message considering the current actors
+   */
+  public MessageEndNodesPair endNodes(MessageEndNodeResolver res) {
+    return res.resolvePair(message, actors);
   }
 }
