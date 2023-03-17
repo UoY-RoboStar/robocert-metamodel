@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.factory.robochart;
+package robostar.robocert.util.factory;
 
 import circus.robocalc.robochart.Variable;
 import circus.robocalc.robochart.VariableModifier;
@@ -18,6 +18,7 @@ import robostar.robocert.Actor;
 import robostar.robocert.Lifeline;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
+import robostar.robocert.util.factory.robochart.VariableFactory;
 
 /**
  * A factory for creating {@link Actor}s.

@@ -19,7 +19,7 @@ import robostar.robocert.Actor;
 import robostar.robocert.Interaction;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.GroupFinder;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.wfc.seq.LifelineChecker;
 
 /**

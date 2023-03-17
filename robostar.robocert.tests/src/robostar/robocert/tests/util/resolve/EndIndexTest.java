@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import robostar.robocert.Message;
 import robostar.robocert.MessageEnd;
 import robostar.robocert.util.factory.MessageFactory;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.resolve.EndIndex;
 
 class EndIndexTest {

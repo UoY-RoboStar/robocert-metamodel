@@ -25,7 +25,7 @@ import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 
 /**
  * Tests custom functionality on Messages.

@@ -20,7 +20,7 @@ import robostar.robocert.Actor;
 import robostar.robocert.Message;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.factory.MessageFactory;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.resolve.MessageResolver;
 
 /**

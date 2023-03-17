@@ -21,7 +21,7 @@ import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.SetFactory;
 import robostar.robocert.util.factory.TargetFactory;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;

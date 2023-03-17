@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ValueSpecificationFactory;
-import robostar.robocert.util.factory.robochart.ActorFactory;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.factory.robochart.ExpressionFactory;
 import robostar.robocert.util.factory.robochart.TypeFactory;
 import robostar.robocert.util.factory.robochart.VariableFactory;
