@@ -10,11 +10,13 @@
 
 package robostar.robocert.util.factory;
 
+import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.Variable;
 import circus.robocalc.robochart.VariableModifier;
 import com.google.inject.Inject;
 import java.util.Objects;
 import robostar.robocert.Actor;
+import robostar.robocert.ComponentActor;
 import robostar.robocert.Lifeline;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
@@ -50,6 +52,20 @@ public record ActorFactory(RoboCertFactory certFac, VariableFactory varFac) {
   public TargetActor targetActor(String name) {
     final var a = certFac.createTargetActor();
     a.setName(name);
+    return a;
+  }
+
+  /**
+   * Creates a component actor.
+   *
+   * @param name the name of the component actor
+   * @param node the component being referenced
+   * @return a component actor
+   */
+  public ComponentActor componentActor(String name, ConnectionNode node) {
+    final var a = certFac.createComponentActor();
+    a.setName(name);
+    a.setNode(node);
     return a;
   }
 
