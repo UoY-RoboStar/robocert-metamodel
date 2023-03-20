@@ -1,3 +1,10 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 # 0.2.0 (unreleased)
 
 ## Added
@@ -21,11 +28,6 @@
 
 - `DeadlineFragment` is now an instance of `LifelineFragment`.
   (2022-12-09)
-- (BREAKING) Removed `Occurrence` and `OccurrenceFragment`; anything that was
-  named `*Occurrence` is now `*Fragment`.
-  (2022-12-09)
-- (BREAKING) Removed `DeadlockOccurrence`.
-  (2022-12-09)
 - (BREAKING) Separated `UntilFragment` and `AnyFragment`.  The latter retains
   the `intraMessages` (now `allowed`) but is not a `BlockFragment`; the former
   is now a `SequentialFragment` called `DoUntilFragment` and the old `body` is
@@ -48,6 +50,14 @@
   active lifelines.  The world calculation has changed to allow any components
   of the target that are not active lifelines to be considered.
   (2023-01-31)
+
+## Removed
+
+- (BREAKING) Removed `Occurrence` and `OccurrenceFragment`; anything that was
+  named `*Occurrence` is now `*Fragment`.
+  (2022-12-09)
+- (BREAKING) Removed `DeadlockOccurrence`.
+  (2022-12-09)
 
 # 0.1.0
 
