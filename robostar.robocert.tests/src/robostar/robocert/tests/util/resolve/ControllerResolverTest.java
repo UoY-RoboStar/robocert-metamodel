@@ -65,11 +65,27 @@ class ControllerResolverTest {
   }
 
   /**
+   * Tests {@code unqualifiedName} on a lone controller definition.
+   */
+  @Test
+  void testUnqualifiedName_LooseDef() {
+    assertThat(ctrlRes.unqualifiedName(cdef), is("Ctrl"));
+  }
+
+  /**
    * Tests {@code name} on a lone controller reference.
    */
   @Test
   void testName_LooseRef() {
     assertThat(ctrlRes.name(cref), is(new String[]{"RCtrl"}));
+  }
+
+  /**
+   * Tests {@code unqualifiedName} on a lone controller reference.
+   */
+  @Test
+  void testUnqualifiedName_LooseRef() {
+    assertThat(ctrlRes.unqualifiedName(cref), is("RCtrl"));
   }
 
   /**
@@ -79,6 +95,15 @@ class ControllerResolverTest {
   void testName_DefInMod() {
     mod.getNodes().add(cdef);
     assertThat(ctrlRes.name(cdef), is(new String[]{"Mod", "Ctrl"}));
+  }
+
+  /**
+   * Tests {@code unqualifiedName} on a module-bound controller definition.
+   */
+  @Test
+  void testUnqualifiedName_DefInMod() {
+    mod.getNodes().add(cdef);
+    assertThat(ctrlRes.unqualifiedName(cdef), is("Ctrl"));
   }
 
   /**
@@ -92,12 +117,30 @@ class ControllerResolverTest {
   }
 
   /**
+   * Tests {@code unqualifiedName} on a module-bound controller reference.
+   */
+  @Test
+  void testUnqualifiedName_RefInMod() {
+    mod.getNodes().add(cref);
+    assertThat(ctrlRes.unqualifiedName(cref), is("RCtrl"));
+  }
+
+  /**
    * Tests {@code name} on a package-bound controller definition.
    */
   @Test
   void testName_DefInPkg() {
     pkg.getControllers().add(cdef);
     assertThat(ctrlRes.name(cdef), is(new String[]{"Pkg", "Ctrl"}));
+  }
+
+  /**
+   * Tests {@code unqualifiedName} on a package-bound controller definition.
+   */
+  @Test
+  void testUnqualifiedName_DefInPkg() {
+    pkg.getControllers().add(cdef);
+    assertThat(ctrlRes.unqualifiedName(cdef), is("Ctrl"));
   }
 
   /**
@@ -112,6 +155,17 @@ class ControllerResolverTest {
   }
 
   /**
+   * Tests {@code unqualifiedName} on a module-bound controller reference where the definition is in a package.
+   */
+  @Test
+  void testUnqualifiedName_RefInModDefInPkg() {
+    // note that the definition is not in the module
+    mod.getNodes().add(cref);
+    pkg.getControllers().add(cdef);
+    assertThat(ctrlRes.unqualifiedName(cref), is("RCtrl"));
+  }
+
+  /**
    * Tests {@code name} on a packaged-module-bound controller definition.
    */
   @Test
@@ -122,6 +176,16 @@ class ControllerResolverTest {
   }
 
   /**
+   * Tests {@code unqualifiedName} on a packaged-module-bound controller definition.
+   */
+  @Test
+  void testUnqualifiedName_DefInPkgMod() {
+    pkg.getModules().add(mod);
+    mod.getNodes().add(cdef);
+    assertThat(ctrlRes.unqualifiedName(cdef), is("Ctrl"));
+  }
+
+  /**
    * Tests {@code name} on a packaged-module-bound controller reference.
    */
   @Test
@@ -129,6 +193,16 @@ class ControllerResolverTest {
     pkg.getModules().add(mod);
     mod.getNodes().add(cref);
     assertThat(ctrlRes.name(cref), is(new String[]{"Pkg", "Mod", "RCtrl"}));
+  }
+
+  /**
+   * Tests {@code unqualifiedName} on a packaged-module-bound controller reference.
+   */
+  @Test
+  void testUnqualifiedName_RefInPkgMod() {
+    pkg.getModules().add(mod);
+    mod.getNodes().add(cref);
+    assertThat(ctrlRes.unqualifiedName(cref), is("RCtrl"));
   }
 
   /**

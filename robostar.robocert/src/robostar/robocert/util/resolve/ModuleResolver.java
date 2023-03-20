@@ -1,14 +1,11 @@
 /*
- * Copyright (c) 2022 University of York and others
+ * Copyright (c) 2022-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *   Matt Windsor - initial definition
  */
 
 package robostar.robocert.util.resolve;
@@ -39,12 +36,17 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
   }
 
   @Override
-  public String[] name(RCModule m) {
+  public String[] name(RCModule mod) {
     // TODO(@MattWindsor91): this duplicates GeneratorUtils code.
-    final var pkg = ResolveHelper.packageOf(m).map(RCPackage::getName);
-    final var name = m.getName();
+    final var pkg = ResolveHelper.packageOf(mod).map(RCPackage::getName);
+    final var name = unqualifiedName(mod);
 
     return Stream.concat(pkg.stream(), Stream.of(name)).toArray(String[]::new);
+  }
+
+  @Override
+  public String unqualifiedName(RCModule mod) {
+    return mod.getName();
   }
 
   /**
@@ -60,8 +62,8 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
   /**
    * Gets the controller definitions for a RoboChart module.
    *
-   * @param it the RoboChart module.
-   * @return the module's controllers.
+   * @param it the RoboChart module
+   * @return the module's controllers
    */
   public Stream<Controller> controllers(RCModule it) {
     return nodes(it, Controller.class);
@@ -69,20 +71,23 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
 
   /**
    * Gets all connections in m that are not connected to the robotic platform.
-   * @param m module in question.
-   * @return stream of connections connecting something in the module to something else not in the robotic platform.
+   *
+   * @param mod the module in question
+   * @return a stream of connections connecting something in the module to something else not in the
+   * robotic platform
    */
-  public Stream<Connection> inboundConnections(RCModule m) {
-    return m.getConnections().stream().filter(x -> !connectsPlatform(x));
+  public Stream<Connection> inboundConnections(RCModule mod) {
+    return mod.getConnections().stream().filter(x -> !connectsPlatform(x));
   }
 
   /**
    * Gets all connections in m that are connected to the robotic platform.
-   * @param m module in question.
-   * @return stream of connections connecting the robotic platform to something in the module.
+   *
+   * @param mod the module in question
+   * @return a stream of connections connecting the robotic platform to something in the module
    */
-  public Stream<Connection> outboundConnections(RCModule m) {
-    return m.getConnections().stream().filter(this::connectsPlatform);
+  public Stream<Connection> outboundConnections(RCModule mod) {
+    return mod.getConnections().stream().filter(this::connectsPlatform);
   }
 
 
@@ -90,11 +95,8 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
     return c.getFrom() instanceof RoboticPlatform || c.getTo() instanceof RoboticPlatform;
   }
 
-  private <T extends ConnectionNode> Stream<T> nodes(RCModule m, Class<T> clazz) {
-    if (m == null) {
-      return Stream.empty();
-    }
-    return StreamHelper.filter(m.getNodes().parallelStream(), clazz);
+  private <T extends ConnectionNode> Stream<T> nodes(RCModule mod, Class<T> tClass) {
+    final var nodes = Stream.ofNullable(mod).flatMap(m -> m.getNodes().parallelStream());
+    return StreamHelper.filter(nodes, tClass);
   }
-
 }
