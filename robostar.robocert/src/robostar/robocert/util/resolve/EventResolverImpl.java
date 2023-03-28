@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import circus.robocalc.robochart.Connection;
 import robostar.robocert.*;
 import robostar.robocert.util.RoboCertSwitch;
-import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.result.MessageEndNodesPair;
@@ -36,14 +35,13 @@ import robostar.robocert.util.resolve.result.ResolvedEvent.Direction;
  */
 public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolver tgtRes,
                                 ModuleResolver modRes, ControllerResolver ctrlRes,
-                                StateMachineResolver stmRes, TargetFinder targetFinder,
+                                StateMachineResolver stmRes,
                                 OutboundConnectionResolver outRes) implements EventResolver {
 
   @Inject
   public EventResolverImpl {
     Objects.requireNonNull(ctrlRes);
     Objects.requireNonNull(endRes);
-    Objects.requireNonNull(targetFinder);
     Objects.requireNonNull(modRes);
     Objects.requireNonNull(outRes);
     Objects.requireNonNull(stmRes);
@@ -55,10 +53,6 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     // Throw if the query is ill-formed:
     q.checkWellFormedness();
 
-    final var target = targetFinder.findOnObject(q.from()).orElseThrow(() -> {
-      throw new IllegalArgumentException(
-          "can't resolve event if endpoints not within SpecificationGroup");
-    });
     return new RoboCertSwitch<Stream<ResolvedEvent>>() {
       @Override
       public Stream<ResolvedEvent> defaultCase(EObject t) {
@@ -81,7 +75,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
       public Stream<ResolvedEvent> caseInControllerTarget(InControllerTarget t) {
         return resolveCollection(q, t, t.getController().getConnections().stream());
       }
-    }.doSwitch(target);
+    }.doSwitch(q.ctx().target());
   }
 
   private Stream<ResolvedEvent> resolveCollection(EventResolverQuery q, CollectionTarget t,

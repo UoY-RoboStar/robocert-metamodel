@@ -31,8 +31,7 @@ public class TargetFinder extends GroupElementFinder<Target> {
 
   @Inject
   public TargetFinder(GroupFinder groupFinder) {
-    Objects.requireNonNull(groupFinder);
-    this.groupFinder = groupFinder;
+    this.groupFinder = Objects.requireNonNull(groupFinder);
   }
 
   @Override

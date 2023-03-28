@@ -26,9 +26,8 @@ public class MessageChecker extends CheckerGroup<Message> {
   private final MessageArgumentsChecker argCheck;
 
   @Inject
-  public MessageChecker(MessageArgumentsChecker ac) {
-    Objects.requireNonNull(ac);
-    argCheck = ac;
+  public MessageChecker(MessageArgumentsChecker argCheck) {
+    this.argCheck = Objects.requireNonNull(argCheck);
   }
 
   @Override

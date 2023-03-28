@@ -10,14 +10,13 @@
 
 package robostar.robocert.util.resolve;
 
-import java.util.List;
-import robostar.robocert.Actor;
-import robostar.robocert.Message;
-import robostar.robocert.MessageOccurrence;
 import robostar.robocert.ComponentActor;
-import robostar.robocert.MessageEnd;
 import robostar.robocert.EventTopic;
+import robostar.robocert.Message;
+import robostar.robocert.MessageEnd;
+import robostar.robocert.MessageOccurrence;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
+import robostar.robocert.util.resolve.node.ResolveContext;
 import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 
 /**
@@ -25,9 +24,9 @@ import robostar.robocert.util.resolve.result.MessageEndNodesPair;
  *
  * @param message the message
  * @param topic   the pre-selected event topic of the message
- * @param actors  the list of actors active on the specification group
+ * @param ctx     a resolver context containing the target and live actor list
  */
-public record EventResolverQuery(Message message, EventTopic topic, List<Actor> actors) {
+public record EventResolverQuery(Message message, EventTopic topic, ResolveContext ctx) {
 
   /**
    * @return the from-end of the message
@@ -114,6 +113,6 @@ public record EventResolverQuery(Message message, EventTopic topic, List<Actor> 
    * @return the message end nodes pair for the query's message considering the current actors
    */
   public MessageEndNodesPair endNodes(MessageEndNodeResolver res) {
-    return res.resolvePair(message, actors);
+    return res.resolvePair(message, ctx);
   }
 }

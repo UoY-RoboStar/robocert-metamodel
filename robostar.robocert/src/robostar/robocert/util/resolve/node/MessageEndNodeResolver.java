@@ -10,32 +10,33 @@
 
 package robostar.robocert.util.resolve.node;
 
-import circus.robocalc.robochart.*;
+import circus.robocalc.robochart.ConnectionNode;
 import com.google.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.eclipse.emf.ecore.EObject;
-import robostar.robocert.*;
-import robostar.robocert.util.RoboCertSwitch;
-
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.emf.ecore.EObject;
+import robostar.robocert.Gate;
+import robostar.robocert.Message;
+import robostar.robocert.MessageEnd;
+import robostar.robocert.MessageOccurrence;
+import robostar.robocert.util.RoboCertSwitch;
 import robostar.robocert.util.StreamHelper;
 import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 
 /**
  * Resolves message ends into the connection nodes that can represent them.
  *
- * @param aNodeRes helper for resolving actors into connection nodes.
- * @param wNodeRes helper for resolving worlds into connection nodes.
+ * @param aNodeRes a helper for resolving actors into connection nodes
+ * @param wNodeRes a helper for resolving worlds into connection nodes
  */
 public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolver wNodeRes) {
 
   /**
    * Constructs an actor resolver.
    *
-   * @param aNodeRes helper for resolving actors into connection nodes.
-   * @param wNodeRes helper for resolving worlds into connection nodes.
+   * @param aNodeRes a helper for resolving actors into connection nodes
+   * @param wNodeRes a helper for resolving worlds into connection nodes
    */
   @Inject
   public MessageEndNodeResolver {
@@ -46,14 +47,14 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
   /**
    * Resolves a message to a pair of sets of connection nodes that can represent its endpoints.
    *
-   * @param message the message to resolve; must be attached to a specification group
-   * @param actors  the list of actors to consider for occurrences and exclude for gates
+   * @param message the message to resolve
+   * @param ctx     the resolve context holding the target and actors
    * @return a pair of sets of connection nodes that can represent the message's endpoints, given
    * the specified actors
    */
-  public MessageEndNodesPair resolvePair(Message message, List<Actor> actors) {
-    final var from = resolve(message.getFrom(), actors).collect(Collectors.toUnmodifiableSet());
-    final var to = resolve(message.getTo(), actors).collect(Collectors.toUnmodifiableSet());
+  public MessageEndNodesPair resolvePair(Message message, ResolveContext ctx) {
+    final var from = resolve(message.getFrom(), ctx).collect(Collectors.toUnmodifiableSet());
+    final var to = resolve(message.getTo(), ctx).collect(Collectors.toUnmodifiableSet());
 
     return new MessageEndNodesPair(from, to);
   }
@@ -66,13 +67,13 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
    * stand in for the module), or the endpoint is a world (in which case, any of the parent's
    * connection nodes can appear).
    *
-   * @param endpoint the endpoint to resolve; must be attached to a specification group
-   * @param actors   the list of actors to consider for occurrences and exclude for gates
+   * @param endpoint the endpoint to resolve
+   * @param ctx      the resolve context holding the target and actors
    * @return a stream of connection nodes that can represent this endpoint, given the specified
    * actors
    */
-  public Stream<ConnectionNode> resolve(MessageEnd endpoint, List<Actor> actors) {
-    final var actorNodes = actors.stream().flatMap(aNodeRes::resolve)
+  public Stream<ConnectionNode> resolve(MessageEnd endpoint, ResolveContext ctx) {
+    final var actorNodes = ctx.actors().stream().flatMap(a -> aNodeRes.resolve(a, ctx.target()))
         .collect(Collectors.toUnmodifiableSet());
 
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
@@ -85,7 +86,7 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
       public Stream<ConnectionNode> caseMessageOccurrence(MessageOccurrence occ) {
         // TODO(@MattWindsor91): technically this is duplicating 'lifelineNodes', but I can't think
         // of a better way of doing this without overly complicating the resolver.
-        final var allNodes = aNodeRes.resolveInOccurrence(occ);
+        final var allNodes = aNodeRes.resolveInOccurrence(occ, ctx.target());
 
         // Any actors referenced by an occurrence should be actors in the diagram.
         // This should really be guaranteed by well-formedness, but we double-check here anyway.
@@ -94,7 +95,7 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
 
       @Override
       public Stream<ConnectionNode> caseGate(Gate g) {
-        final var allNodes = wNodeRes.resolveInGate(g);
+        final var allNodes = wNodeRes.resolve(ctx.target());
         // Any actors referenced by a gate should NOT be actors in the diagram.
         // Unlike above, we absolutely need to filter `allNodes`.
         return StreamHelper.exclude(allNodes, actorNodes::contains);

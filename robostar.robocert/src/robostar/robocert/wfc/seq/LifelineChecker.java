@@ -35,9 +35,8 @@ public class LifelineChecker extends CheckerGroup<Lifeline> {
   private final GroupFinder groupFinder;
 
   @Inject
-  public LifelineChecker(GroupFinder gf) {
-    Objects.requireNonNull(gf);
-    groupFinder = gf;
+  public LifelineChecker(GroupFinder groupFinder) {
+    this.groupFinder = Objects.requireNonNull(groupFinder);
   }
 
   @Override

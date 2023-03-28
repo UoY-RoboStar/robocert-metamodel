@@ -20,38 +20,36 @@ import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.Actor;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.MessageOccurrence;
+import robostar.robocert.Target;
 import robostar.robocert.TargetActor;
 import robostar.robocert.util.RoboCertSwitch;
-import robostar.robocert.util.TargetFinder;
 
 /**
  * Resolves actors into the connection nodes that can represent them.
  *
  * @param tgtRes       resolves targets to connection nodes.
- * @param targetFinder finds groups of objects.
  */
-public record ActorNodeResolver(TargetNodeResolver tgtRes, TargetFinder targetFinder) {
+public record ActorNodeResolver(TargetNodeResolver tgtRes) {
 
   /**
    * Constructs an actor resolver.
    *
    * @param tgtRes       resolves targets to connection nodes.
-   * @param targetFinder finds targets of objects.
    */
   @Inject
   public ActorNodeResolver {
     Objects.requireNonNull(tgtRes);
-    Objects.requireNonNull(targetFinder);
   }
 
   /**
    * Resolves a message occurrence to a stream of connection nodes that can represent its actor.
    *
-   * @param occ the occurrence to resolve
+   * @param occ    the occurrence to resolv
+   * @param target the target, used if the actor is a {@link TargetActor}
    * @return a stream of connection nodes that can represent this actor
    */
-  public Stream<ConnectionNode> resolveInOccurrence(MessageOccurrence occ) {
-    return Stream.ofNullable(occ.getActor()).flatMap(this::resolve);
+  public Stream<ConnectionNode> resolveInOccurrence(MessageOccurrence occ, Target target) {
+    return Stream.ofNullable(occ.getActor()).flatMap(a -> resolve(a, target));
   }
 
   /**
@@ -62,10 +60,11 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, TargetFinder targetFi
    * for the module), or the actor is a world (in which case, any of the parent's connection nodes
    * can appear).
    *
-   * @param actor the actor to resolve.  Must be attached to a specification group
+   * @param actor  the actor to resolve
+   * @param target the target, used if the actor is a {@link TargetActor}
    * @return a stream of connection nodes that can represent this actor
    */
-  public Stream<ConnectionNode> resolve(Actor actor) {
+  public Stream<ConnectionNode> resolve(Actor actor, Target target) {
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
       @Override
       public Stream<ConnectionNode> defaultCase(EObject object) {
@@ -79,15 +78,8 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, TargetFinder targetFi
 
       @Override
       public Stream<ConnectionNode> caseTargetActor(TargetActor t) {
-        return resolveTarget(t);
+        return tgtRes.resolve(target);
       }
     }.doSwitch(actor);
-  }
-
-  private Stream<ConnectionNode> resolveTarget(TargetActor actor) {
-    final var tgt = targetFinder.findOnActor(actor).orElseThrow(() -> new IllegalArgumentException(
-        "tried to resolve actor nodes of a TargetActor with no Target"));
-
-    return tgtRes.resolve(tgt);
   }
 }

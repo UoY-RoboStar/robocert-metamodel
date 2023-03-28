@@ -24,14 +24,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
 import robostar.robocert.tests.examples.ForagingExample;
-import robostar.robocert.util.GroupFinder;
-import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
+import robostar.robocert.util.resolve.node.ResolveContext;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.node.WorldNodeResolver;
 
@@ -49,7 +48,6 @@ class MessageEndNodeResolverTest {
   private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
   private final TargetFactory tgtFac = new TargetFactory(RoboCertFactory.eINSTANCE);
   private final ActorFactory actFac = ActorFactory.DEFAULT;
-  private final MessageEndWrapper wrapper = MessageEndWrapper.DEFAULT;
 
   private Gate world;
   private MessageOccurrence target;
@@ -58,14 +56,13 @@ class MessageEndNodeResolverTest {
   @BeforeEach
   void setUp() {
     // TODO(@MattWindsor91): fix dependency injection here.
-    final var tgtFind = new TargetFinder(new GroupFinder());
     final var tgtRes = new TargetNodeResolver();
     final var defRes = new DefinitionResolver();
     final var ctrlRes = new ControllerResolver();
     final var modRes = new ModuleResolver(defRes);
     final var stmRes = new StateMachineResolver(ctrlRes);
-    final var aNodeRes = new ActorNodeResolver(tgtRes, tgtFind);
-    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, tgtFind);
+    final var aNodeRes = new ActorNodeResolver(tgtRes);
+    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes);
     resolver = new MessageEndNodeResolver(aNodeRes, wNodeRes);
 
     world = msgFac.gate();
@@ -79,12 +76,11 @@ class MessageEndNodeResolverTest {
   @Test
   void testResolve_controller() {
     final var stm = tgtFac.controller(example.obstacleAvoidance);
-    wrapper.wrap(stm, world, target);
 
-    final var worldNodes = resolve(world);
+    final var worldNodes = resolve(world, stm);
     assertThat(worldNodes, hasItems(example.platform));
 
-    final var targetNodes = resolve(target);
+    final var targetNodes = resolve(target, stm);
     assertThat(targetNodes, hasItems(example.obstacleAvoidance));
   }
 
@@ -94,17 +90,17 @@ class MessageEndNodeResolverTest {
   @Test
   void testResolve_stateMachine() {
     final var stm = tgtFac.stateMachine(example.avoid);
-    wrapper.wrap(stm, world, target);
 
     // Since 2023-01-23, the world of a state machine is just the controller and siblings.
-    final var worldNodes = resolve(world);
+    final var worldNodes = resolve(world, stm);
     assertThat(worldNodes, hasItems(example.obstacleAvoidance));
 
-    final var targetNodes = resolve(target);
+    final var targetNodes = resolve(target, stm);
     assertThat(targetNodes, hasItems(example.avoid));
   }
 
-  private Set<ConnectionNode> resolve(MessageEnd a) {
-    return resolver.resolve(a, List.of(actor)).collect(Collectors.toUnmodifiableSet());
+  private Set<ConnectionNode> resolve(MessageEnd a, Target t) {
+    final var ctx = new ResolveContext(t, List.of(actor));
+    return resolver.resolve(a, ctx).collect(Collectors.toUnmodifiableSet());
   }
 }

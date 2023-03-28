@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.*;
 import robostar.robocert.util.RoboCertSwitch;
-import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.resolve.ControllerResolver;
 import robostar.robocert.util.resolve.ModuleResolver;
 import robostar.robocert.util.resolve.StateMachineResolver;
@@ -37,11 +36,9 @@ import java.util.stream.Stream;
  * @param ctrlRes      helper for resolving aspects of RoboChart controllers.
  * @param stmRes       helper for resolving aspects of RoboChart state machines and operations.
  * @param aNodeRes     helper for resolving actors into connection nodes.
- * @param targetFinder helper for finding enclosing targets of endpoints.
  */
 public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRes,
-                                StateMachineResolver stmRes, ActorNodeResolver aNodeRes,
-                                TargetFinder targetFinder) {
+                                StateMachineResolver stmRes, ActorNodeResolver aNodeRes) {
   // TODO(@MattWindsor91): DRY up with the other NodeResolvers.
 
   /**
@@ -51,7 +48,6 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
    * @param modRes       helper for resolving aspects of RoboChart modules.
    * @param stmRes       helper for resolving aspects of RoboChart state machines and operations.
    * @param aNodeRes     helper for resolving actors into connection nodes.
-   * @param targetFinder helper for finding enclosing targets of endpoints.
    */
   @Inject
   public WorldNodeResolver {
@@ -59,17 +55,6 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
     Objects.requireNonNull(ctrlRes);
     Objects.requireNonNull(stmRes);
     Objects.requireNonNull(aNodeRes);
-    Objects.requireNonNull(targetFinder);
-  }
-
-  /**
-   * Resolves a gate to a stream of connection nodes that can represent its target's world.
-   *
-   * @param g the gate to resolve; must be attached to a specification group
-   * @return a stream of connection nodes that can represent this endpoint
-   */
-  public Stream<ConnectionNode> resolveInGate(Gate g) {
-    return targetFinder.findOnObject(g).stream().flatMap(this::resolve);
   }
 
   /**
