@@ -12,6 +12,7 @@ package robostar.robocert.util.resolve.result;
 
 import circus.robocalc.robochart.Connection;
 import robostar.robocert.MessageEnd;
+import robostar.robocert.util.resolve.EndIndex;
 import robostar.robocert.util.resolve.EventResolverQuery;
 
 /**
@@ -39,16 +40,16 @@ public record ResolvedEvent(EventResolverQuery query, Direction direction, Conne
    * @return the effective from-end.
    */
   public MessageEnd effectiveFrom() {
-    var swap = false;
+    return EndIndex.From.oppositeIf(effectiveFromIsTo()).of(query.message());
+  }
 
+  private boolean effectiveFromIsTo() {
     if (query.endpointsAreComponents()) {
       // TODO: It is unclear whether the semantics for BACKWARDS matches is correct.
-      swap = direction == Direction.BACKWARDS;
+      return direction == Direction.BACKWARDS;
     } else {
-      swap = query.isFromGate();
+      return query.isFromGate();
     }
-
-    return swap ? query.to() : query.from();
   }
 
   /**
@@ -64,6 +65,6 @@ public record ResolvedEvent(EventResolverQuery query, Direction direction, Conne
     /**
      * The query matched this (bidirectional) event by swapping direction.
      */
-    BACKWARDS;
+    BACKWARDS
   }
 }
