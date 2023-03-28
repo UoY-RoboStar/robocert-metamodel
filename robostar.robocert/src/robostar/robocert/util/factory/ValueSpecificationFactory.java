@@ -30,6 +30,12 @@ public record ValueSpecificationFactory(ExpressionFactory exprFactory,
                                         RoboCertFactory rcertFactory) {
 
   /**
+   * The default factory instance.
+   */
+  public static final ValueSpecificationFactory DEFAULT = new ValueSpecificationFactory(
+      ExpressionFactory.DEFAULT, RoboChartFactory.eINSTANCE, RoboCertFactory.eINSTANCE);
+
+  /**
    * Constructs a value specification factory.
    *
    * @param exprFactory  the expression factory to which we delegate.

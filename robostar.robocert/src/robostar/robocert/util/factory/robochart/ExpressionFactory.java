@@ -41,6 +41,11 @@ import java.util.function.Supplier;
  */
 public record ExpressionFactory(RoboChartFactory rc) {
 
+  /**
+   * The default factory instance.
+   */
+  public static final ExpressionFactory DEFAULT = new ExpressionFactory(RoboChartFactory.eINSTANCE);
+
   @Inject
   public ExpressionFactory {
     Objects.requireNonNull(rc);
