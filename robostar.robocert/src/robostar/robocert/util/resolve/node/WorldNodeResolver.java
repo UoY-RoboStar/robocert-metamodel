@@ -17,8 +17,8 @@ import circus.robocalc.robochart.StateMachineBody;
 import com.google.inject.Inject;
 import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.*;
-import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.RoboCertSwitch;
+import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.resolve.ControllerResolver;
 import robostar.robocert.util.resolve.ModuleResolver;
 import robostar.robocert.util.resolve.StateMachineResolver;
@@ -33,25 +33,25 @@ import java.util.stream.Stream;
  * inside a diagram.  Upstream consumers of this resolver must handle such a situation themselves,
  * by filtering out those nodes.
  *
- * @param modRes      helper for resolving aspects of RoboChart modules.
- * @param ctrlRes     helper for resolving aspects of RoboChart controllers.
- * @param stmRes      helper for resolving aspects of RoboChart state machines and operations.
- * @param aNodeRes    helper for resolving actors into connection nodes.
- * @param groupFinder helper for finding enclosing groups of endpoints.
+ * @param modRes       helper for resolving aspects of RoboChart modules.
+ * @param ctrlRes      helper for resolving aspects of RoboChart controllers.
+ * @param stmRes       helper for resolving aspects of RoboChart state machines and operations.
+ * @param aNodeRes     helper for resolving actors into connection nodes.
+ * @param targetFinder helper for finding enclosing targets of endpoints.
  */
 public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRes,
                                 StateMachineResolver stmRes, ActorNodeResolver aNodeRes,
-                                GroupFinder groupFinder) {
+                                TargetFinder targetFinder) {
   // TODO(@MattWindsor91): DRY up with the other NodeResolvers.
 
   /**
    * Constructs a world resolver.
    *
-   * @param ctrlRes     helper for resolving aspects of RoboChart controllers.
-   * @param modRes      helper for resolving aspects of RoboChart modules.
-   * @param stmRes      helper for resolving aspects of RoboChart state machines and operations.
-   * @param aNodeRes    helper for resolving actors into connection nodes.
-   * @param groupFinder helper for finding enclosing groups of endpoints.
+   * @param ctrlRes      helper for resolving aspects of RoboChart controllers.
+   * @param modRes       helper for resolving aspects of RoboChart modules.
+   * @param stmRes       helper for resolving aspects of RoboChart state machines and operations.
+   * @param aNodeRes     helper for resolving actors into connection nodes.
+   * @param targetFinder helper for finding enclosing targets of endpoints.
    */
   @Inject
   public WorldNodeResolver {
@@ -59,7 +59,7 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
     Objects.requireNonNull(ctrlRes);
     Objects.requireNonNull(stmRes);
     Objects.requireNonNull(aNodeRes);
-    Objects.requireNonNull(groupFinder);
+    Objects.requireNonNull(targetFinder);
   }
 
   /**
@@ -69,7 +69,7 @@ public record WorldNodeResolver(ModuleResolver modRes, ControllerResolver ctrlRe
    * @return a stream of connection nodes that can represent this endpoint
    */
   public Stream<ConnectionNode> resolveInGate(Gate g) {
-    return groupFinder.findTarget(g).stream().flatMap(this::resolve);
+    return targetFinder.findOnObject(g).stream().flatMap(this::resolve);
   }
 
   /**

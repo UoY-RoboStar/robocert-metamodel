@@ -57,7 +57,7 @@ public class LifelineChecker extends CheckerGroup<Lifeline> {
   public boolean isSLA1(Lifeline l) {
     final Predicate<Actor> isActorOfL = a -> EcoreUtil.equals(l.getActor(), a);
 
-    final var group = groupFinder.find(l);
+    final var group = groupFinder.findOnLifeline(l);
     final var actors = group.stream().flatMap(this::groupActors);
     return actors.anyMatch(isActorOfL);
   }

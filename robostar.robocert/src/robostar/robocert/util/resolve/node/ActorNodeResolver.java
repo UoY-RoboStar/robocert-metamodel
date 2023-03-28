@@ -16,30 +16,32 @@ import com.google.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.eclipse.emf.ecore.EObject;
 import robostar.robocert.Actor;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.MessageOccurrence;
 import robostar.robocert.TargetActor;
-import robostar.robocert.util.GroupFinder;
+import robostar.robocert.util.RoboCertSwitch;
+import robostar.robocert.util.TargetFinder;
 
 /**
  * Resolves actors into the connection nodes that can represent them.
  *
- * @param tgtRes      resolves targets to connection nodes.
- * @param groupFinder finds groups of objects.
+ * @param tgtRes       resolves targets to connection nodes.
+ * @param targetFinder finds groups of objects.
  */
-public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFinder) {
+public record ActorNodeResolver(TargetNodeResolver tgtRes, TargetFinder targetFinder) {
 
   /**
    * Constructs an actor resolver.
    *
-   * @param tgtRes      resolves targets to connection nodes.
-   * @param groupFinder finds groups of objects.
+   * @param tgtRes       resolves targets to connection nodes.
+   * @param targetFinder finds targets of objects.
    */
   @Inject
   public ActorNodeResolver {
     Objects.requireNonNull(tgtRes);
-    Objects.requireNonNull(groupFinder);
+    Objects.requireNonNull(targetFinder);
   }
 
   /**
@@ -64,17 +66,26 @@ public record ActorNodeResolver(TargetNodeResolver tgtRes, GroupFinder groupFind
    * @return a stream of connection nodes that can represent this actor
    */
   public Stream<ConnectionNode> resolve(Actor actor) {
-    if (actor instanceof ComponentActor c) {
-      return Stream.of(c.getNode());
-    }
-    if (actor instanceof TargetActor t) {
-      return resolveTarget(t);
-    }
-    throw new IllegalArgumentException("can't resolve actor %s".formatted(actor));
+    return new RoboCertSwitch<Stream<ConnectionNode>>() {
+      @Override
+      public Stream<ConnectionNode> defaultCase(EObject object) {
+        throw new IllegalArgumentException("can't resolve actor %s".formatted(actor));
+      }
+
+      @Override
+      public Stream<ConnectionNode> caseComponentActor(ComponentActor c) {
+        return Stream.of(c.getNode());
+      }
+
+      @Override
+      public Stream<ConnectionNode> caseTargetActor(TargetActor t) {
+        return resolveTarget(t);
+      }
+    }.doSwitch(actor);
   }
 
   private Stream<ConnectionNode> resolveTarget(TargetActor actor) {
-    final var tgt = groupFinder.findTarget(actor).orElseThrow(() -> new IllegalArgumentException(
+    final var tgt = targetFinder.findOnActor(actor).orElseThrow(() -> new IllegalArgumentException(
         "tried to resolve actor nodes of a TargetActor with no Target"));
 
     return tgtRes.resolve(tgt);

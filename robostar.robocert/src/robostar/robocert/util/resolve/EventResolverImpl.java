@@ -21,8 +21,8 @@ import com.google.inject.Inject;
 
 import circus.robocalc.robochart.Connection;
 import robostar.robocert.*;
-import robostar.robocert.util.GroupFinder;
 import robostar.robocert.util.RoboCertSwitch;
+import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.result.MessageEndNodesPair;
@@ -36,14 +36,14 @@ import robostar.robocert.util.resolve.result.ResolvedEvent.Direction;
  */
 public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolver tgtRes,
                                 ModuleResolver modRes, ControllerResolver ctrlRes,
-                                StateMachineResolver stmRes, GroupFinder groupFinder,
+                                StateMachineResolver stmRes, TargetFinder targetFinder,
                                 OutboundConnectionResolver outRes) implements EventResolver {
 
   @Inject
   public EventResolverImpl {
     Objects.requireNonNull(ctrlRes);
     Objects.requireNonNull(endRes);
-    Objects.requireNonNull(groupFinder);
+    Objects.requireNonNull(targetFinder);
     Objects.requireNonNull(modRes);
     Objects.requireNonNull(outRes);
     Objects.requireNonNull(stmRes);
@@ -55,7 +55,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     // Throw if the query is ill-formed:
     q.checkWellFormedness();
 
-    final var target = groupFinder.findTarget(q.from()).orElseThrow(() -> {
+    final var target = targetFinder.findOnObject(q.from()).orElseThrow(() -> {
       throw new IllegalArgumentException(
           "can't resolve event if endpoints not within SpecificationGroup");
     });
@@ -120,13 +120,12 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
      *
      * @param query      the original resolver query
      * @param candidates the stream of connections to consider
-     * @param nodes the pair of sets of nodes representing the ends of the message
+     * @param nodes      the pair of sets of nodes representing the ends of the message
      * @return a stream of successfully-matched connections
      */
     public static Stream<ResolvedEvent> tryMatchMany(EventResolverQuery query,
         Stream<Connection> candidates, MessageEndNodesPair nodes) {
-      return candidates.flatMap(
-          conn -> new MatchAttempt(query, conn, nodes).tryMatch().stream());
+      return candidates.flatMap(conn -> new MatchAttempt(query, conn, nodes).tryMatch().stream());
     }
 
     /**

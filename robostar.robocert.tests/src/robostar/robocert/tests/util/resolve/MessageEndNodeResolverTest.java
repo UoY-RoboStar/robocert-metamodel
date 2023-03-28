@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
 import robostar.robocert.tests.examples.ForagingExample;
 import robostar.robocert.util.GroupFinder;
+import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
@@ -57,14 +58,14 @@ class MessageEndNodeResolverTest {
   @BeforeEach
   void setUp() {
     // TODO(@MattWindsor91): fix dependency injection here.
-    final var groupFinder = new GroupFinder();
+    final var tgtFind = new TargetFinder(new GroupFinder());
     final var tgtRes = new TargetNodeResolver();
     final var defRes = new DefinitionResolver();
     final var ctrlRes = new ControllerResolver();
     final var modRes = new ModuleResolver(defRes);
     final var stmRes = new StateMachineResolver(ctrlRes);
-    final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
-    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
+    final var aNodeRes = new ActorNodeResolver(tgtRes, tgtFind);
+    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, tgtFind);
     resolver = new MessageEndNodeResolver(aNodeRes, wNodeRes);
 
     world = msgFac.gate();

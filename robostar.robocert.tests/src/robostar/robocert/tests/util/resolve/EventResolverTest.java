@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
 import robostar.robocert.tests.examples.ForagingExample;
 import robostar.robocert.util.GroupFinder;
+import robostar.robocert.util.TargetFinder;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.SetFactory;
 import robostar.robocert.util.factory.TargetFactory;
@@ -59,17 +60,17 @@ class EventResolverTest {
   @BeforeEach
   void setUp() {
     // TODO(@MattWindsor91): fix dependency injection here.
-    final var groupFinder = new GroupFinder();
+    final var tgtFinder = new TargetFinder(new GroupFinder());
     final var tgtRes = new TargetNodeResolver();
     final var defRes = new DefinitionResolver();
     final var ctrlRes = new ControllerResolver();
     final var modRes = new ModuleResolver(defRes);
     final var stmRes = new StateMachineResolver(ctrlRes);
-    final var aNodeRes = new ActorNodeResolver(tgtRes, groupFinder);
-    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, groupFinder);
+    final var aNodeRes = new ActorNodeResolver(tgtRes, tgtFinder);
+    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes, tgtFinder);
     final var endRes = new MessageEndNodeResolver(aNodeRes, wNodeRes);
     final var outRes = new OutboundConnectionResolver(modRes, ctrlRes, stmRes, defRes);
-    resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, groupFinder, outRes);
+    resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, tgtFinder, outRes);
 
     world = msgFac.gate();
     actor = actFac.targetActor("T");
