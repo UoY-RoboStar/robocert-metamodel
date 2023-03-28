@@ -73,8 +73,7 @@ public record MessageEndNodeResolver(ActorNodeResolver aNodeRes, WorldNodeResolv
    * actors
    */
   public Stream<ConnectionNode> resolve(MessageEnd endpoint, ResolveContext ctx) {
-    final var actorNodes = ctx.actors().stream().flatMap(a -> aNodeRes.resolve(a, ctx.target()))
-        .collect(Collectors.toUnmodifiableSet());
+    final var actorNodes = aNodeRes.actorNodes(ctx).collect(Collectors.toUnmodifiableSet());
 
     return new RoboCertSwitch<Stream<ConnectionNode>>() {
       @Override

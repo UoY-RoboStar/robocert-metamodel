@@ -27,18 +27,28 @@ import robostar.robocert.util.RoboCertSwitch;
 /**
  * Resolves actors into the connection nodes that can represent them.
  *
- * @param tgtRes       resolves targets to connection nodes.
+ * @param tgtRes resolves targets to connection nodes.
  */
 public record ActorNodeResolver(TargetNodeResolver tgtRes) {
 
   /**
    * Constructs an actor resolver.
    *
-   * @param tgtRes       resolves targets to connection nodes.
+   * @param tgtRes resolves targets to connection nodes
    */
   @Inject
   public ActorNodeResolver {
     Objects.requireNonNull(tgtRes);
+  }
+
+  /**
+   * Resolves a context to a stream of connection nodes that can represent all actors within.
+   *
+   * @param ctx the resolve context for which we are getting nodes
+   * @return a stream of connection nodes that can represent all actors in the context
+   */
+  public Stream<ConnectionNode> actorNodes(ResolveContext ctx) {
+    return ctx.actors().stream().flatMap(a -> resolve(a, ctx.target()));
   }
 
   /**
