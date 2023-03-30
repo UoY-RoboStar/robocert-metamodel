@@ -12,13 +12,12 @@ package robostar.robocert.tests.util.resolve;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.google.inject.Guice;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.tests.examples.MessageResolveExample;
-import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.resolve.message.EventMatchAttempt;
 import robostar.robocert.util.resolve.result.MatchDirection;
@@ -38,7 +37,7 @@ class EventMatchAttemptTest {
 
   @BeforeEach
   void setUp() {
-    final var inj = Guice.createInjector(new RoboCertBaseModule());
+    final var inj = TestInjectorProvider.getInjector();
 
     msgFac = inj.getInstance(MessageFactory.class);
     example = inj.getInstance(MessageResolveExample.class);

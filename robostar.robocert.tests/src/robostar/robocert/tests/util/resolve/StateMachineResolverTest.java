@@ -29,6 +29,7 @@ import robostar.robocert.util.resolve.StateMachineResolver;
  * @author Matt Windsor
  */
 class StateMachineResolverTest {
+
   private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
   private final StateMachineResolver resolver = new StateMachineResolver(new ControllerResolver());
 

@@ -144,7 +144,8 @@ class ControllerResolverTest {
   }
 
   /**
-   * Tests {@code name} on a module-bound controller reference where the definition is in a package.
+   * Tests {@code name} on a module-bound controller reference where the definition is in a
+   * package.
    */
   @Test
   void testName_RefInModDefInPkg() {
@@ -155,7 +156,8 @@ class ControllerResolverTest {
   }
 
   /**
-   * Tests {@code unqualifiedName} on a module-bound controller reference where the definition is in a package.
+   * Tests {@code unqualifiedName} on a module-bound controller reference where the definition is in
+   * a package.
    */
   @Test
   void testUnqualifiedName_RefInModDefInPkg() {
@@ -206,7 +208,8 @@ class ControllerResolverTest {
   }
 
   /**
-   * Tests that module resolution for controller definitions works properly when there is no module.
+   * Tests that module resolution for controller definitions works properly when there is no
+   * module.
    */
   @Test
   void testModule_Def_Absent() {
@@ -215,7 +218,8 @@ class ControllerResolverTest {
   }
 
   /**
-   * Tests that module resolution for controller definitions works properly when there is no module.
+   * Tests that module resolution for controller definitions works properly when there is no
+   * module.
    */
   @Test
   void testModule_Ref_Absent() {

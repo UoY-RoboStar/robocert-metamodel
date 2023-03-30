@@ -33,7 +33,8 @@ class TargetComponentsResolverTest {
   private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
   private final TargetFactory tgtFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
-  private final TargetComponentsResolver compRes = new TargetComponentsResolver(new DefinitionResolver());
+  private final TargetComponentsResolver compRes = new TargetComponentsResolver(
+      new DefinitionResolver());
 
   /**
    * Tests {@code hasComponent} on a basic assignment.

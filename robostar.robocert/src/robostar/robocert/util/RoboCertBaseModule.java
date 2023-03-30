@@ -10,7 +10,6 @@
 
 package robostar.robocert.util;
 
-import circus.robocalc.robochart.RoboChartFactory;
 import com.google.inject.AbstractModule;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.resolve.message.EventResolver;
@@ -22,11 +21,10 @@ import robostar.robocert.util.resolve.message.EventResolverImpl;
  * @author Matt Windsor
  */
 public class RoboCertBaseModule extends AbstractModule {
+
   @Override
   protected void configure() {
     bind(RoboCertFactory.class).toInstance(RoboCertFactory.eINSTANCE);
-    bind(RoboChartFactory.class).toInstance(RoboChartFactory.eINSTANCE);
-
     bind(EventResolver.class).to(EventResolverImpl.class);
   }
 }

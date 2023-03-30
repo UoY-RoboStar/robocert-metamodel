@@ -23,6 +23,7 @@ import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.resolve.EndIndex;
 
 class EndIndexTest {
+
   private final RoboChartFactory chartFac = RoboChartFactory.eINSTANCE;
   private final ActorFactory actFac = ActorFactory.DEFAULT;
   private final MessageFactory msgFac = MessageFactory.DEFAULT;

@@ -28,84 +28,89 @@ import robostar.robocert.util.resolve.TargetComponentsResolver;
 import robostar.robocert.util.resolve.TargetElementResolver;
 
 /**
- * Abstract skeleton of tests that check target implementations and resolution of their elements
- * and components.
- * 
+ * Abstract skeleton of tests that check target implementations and resolution of their elements and
+ * components.
+ *
  * @author Matt Windsor
  */
 abstract class TargetTest<T extends Target> {
-	/**
-	 * The example used in the test; should be set up with a BeforeEach.
-	 */
-	protected T example;
 
-	/**
-	 * The RoboChart factory that should be used for producing RoboChart elements.
-	 */
-	protected RoboChartFactory rchartFactory = RoboChartFactory.eINSTANCE;
+  /**
+   * The example used in the test; should be set up with a BeforeEach.
+   */
+  protected T example;
 
-	/**
-	 * The RoboCert factory that should be used for producing RoboCert elements.
-	 */
-	protected RoboCertFactory rcertFactory = RoboCertFactory.eINSTANCE;
-	
-	private final TargetElementResolver elemRes = new TargetElementResolver();
+  /**
+   * The RoboChart factory that should be used for producing RoboChart elements.
+   */
+  protected RoboChartFactory rchartFactory = RoboChartFactory.eINSTANCE;
 
-	private final TargetComponentsResolver compRes = new TargetComponentsResolver(new DefinitionResolver());
-	
-	/**
-	 * Tests that the string representation is correct.
-	 */
-	@Test
-	void testToString() {
-		assertThat(example.toString(), is(equalTo(expectedString())));
-	}
+  /**
+   * The RoboCert factory that should be used for producing RoboCert elements.
+   */
+  protected RoboCertFactory rcertFactory = RoboCertFactory.eINSTANCE;
 
-	/**
-	 * Tests that the components collection is what we expect it to be.
-	 */
-	@Test
-	void testComponents() {
-		testListsEquivalent(expectedComponents(), components());
-	}
+  private final TargetElementResolver elemRes = new TargetElementResolver();
 
-	private List<ConnectionNode> components() {
-		if (example instanceof CollectionTarget t) {
-			return compRes.resolve(t).toList();
-		}
-		return List.of();
-	}
+  private final TargetComponentsResolver compRes = new TargetComponentsResolver(
+      new DefinitionResolver());
 
-	@Test
-	void testElement() {
-		final var expected = expectedElement();
-		final var actual = elemRes.resolve(example);
-		
-		assertThat(expected, is(notNullValue()));
-		assertThat(expected, is(structurallyEqualTo(actual)));
-	}
+  /**
+   * Tests that the string representation is correct.
+   */
+  @Test
+  void testToString() {
+    assertThat(example.toString(), is(equalTo(expectedString())));
+  }
 
-	/**
-	 * Gets the expected string representation.
-	 * @return the expected string.
-	 */
-	protected abstract String expectedString();
-	
-	/**
-	 * Gets the expected components from the example.
-	 * @return the expected components.
-	 */
-	protected abstract ConnectionNode[] expectedComponents();
+  /**
+   * Tests that the components collection is what we expect it to be.
+   */
+  @Test
+  void testComponents() {
+    testListsEquivalent(expectedComponents(), components());
+  }
 
-	/**
-	 * Gets the expected element of the example.
-	 * @return the expected element.
-	 */
-	protected abstract NamedElement expectedElement();
-	
-	private <U> void testListsEquivalent(U[] expected, List<U>actual) {
-		assertThat("lists must have same number of items", actual.size(), is(expected.length));
-		assertThat(actual, hasItems(expected));
-	}
+  private List<ConnectionNode> components() {
+    if (example instanceof CollectionTarget t) {
+      return compRes.resolve(t).toList();
+    }
+    return List.of();
+  }
+
+  @Test
+  void testElement() {
+    final var expected = expectedElement();
+    final var actual = elemRes.resolve(example);
+
+    assertThat(expected, is(notNullValue()));
+    assertThat(expected, is(structurallyEqualTo(actual)));
+  }
+
+  /**
+   * Gets the expected string representation.
+   *
+   * @return the expected string.
+   */
+  protected abstract String expectedString();
+
+  /**
+   * Gets the expected components from the example.
+   *
+   * @return the expected components.
+   */
+  protected abstract ConnectionNode[] expectedComponents();
+
+  /**
+   * Gets the expected element of the example.
+   *
+   * @return the expected element.
+   */
+  protected abstract NamedElement expectedElement();
+
+  private <U> void testListsEquivalent(U[] expected, List<U> actual) {
+    assertThat("lists must have same number of items", actual.size(), is(expected.length));
+    assertThat(actual, hasItems(expected));
+  }
 
 }

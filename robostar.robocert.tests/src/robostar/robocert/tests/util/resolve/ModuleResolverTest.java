@@ -13,11 +13,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-import com.google.inject.Guice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.tests.examples.MessageResolveExample;
-import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.robochart.RoboChartBuilderFactory;
 import robostar.robocert.util.resolve.ModuleResolver;
 
@@ -36,7 +35,7 @@ class ModuleResolverTest {
 
   @BeforeEach
   void setUp() {
-    final var inj = Guice.createInjector(new RoboCertBaseModule());
+    final var inj = TestInjectorProvider.getInjector();
     chartFac = inj.getInstance(RoboChartBuilderFactory.class);
     modRes = inj.getInstance(ModuleResolver.class);
     msgResolveExample = inj.getInstance(MessageResolveExample.class);

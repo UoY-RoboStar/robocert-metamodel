@@ -15,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import circus.robocalc.robochart.ConnectionNode;
 
-import com.google.inject.Guice;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,8 +22,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.tests.examples.ForagingExample;
-import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
@@ -51,7 +50,7 @@ class MessageEndNodeResolverTest {
 
   @BeforeEach
   void setUp() {
-    final var inj = Guice.createInjector(new RoboCertBaseModule());
+    final var inj = TestInjectorProvider.getInjector();
 
     tgtFac = inj.getInstance(TargetFactory.class);
     example = inj.getInstance(ForagingExample.class);

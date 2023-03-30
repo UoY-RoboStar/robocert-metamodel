@@ -36,7 +36,7 @@ class StateMachineTargetImplTest extends TargetTest<StateMachineTarget> {
 
   @Override
   protected ConnectionNode[] expectedComponents() {
-    return new ConnectionNode[] {};
+    return new ConnectionNode[]{};
   }
 
   @Override

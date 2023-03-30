@@ -10,8 +10,10 @@
 
 package robostar.robocert.util.factory.robochart;
 
+import circus.robocalc.robochart.Parameter;
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.RoboticPlatform;
+import circus.robocalc.robochart.Type;
 import java.util.Objects;
 import javax.inject.Inject;
 
@@ -88,5 +90,23 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
    */
   public StateMachineDefBuilder stmDef(String name) {
     return new StateMachineDefBuilder(chartFac, name);
+  }
+
+  //
+  // Not builder-constructed, but stored in this class because they are adjacent to things that are
+  // builder-constructed:
+  //
+
+  /**
+   * Constructs an operation parameter.
+   * @param name the name of the parameter
+   * @param type the type of the parameter
+   * @return the parameter
+   */
+  public Parameter parameter(String name, Type type) {
+    final var param = chartFac.createParameter();
+    param.setName(name);
+    param.setType(type);
+    return param;
   }
 }

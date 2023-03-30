@@ -28,6 +28,7 @@ import robostar.robocert.wfc.seq.LifelineChecker;
  * @author Matt Windsor
  */
 class LifelineCheckerTest {
+
   private final LifelineChecker checker = new LifelineChecker(new GroupFinder());
   private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
   private final ActorFactory actFac = ActorFactory.DEFAULT;

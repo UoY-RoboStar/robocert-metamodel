@@ -11,14 +11,13 @@
 package robostar.robocert.tests.util.resolve;
 
 import circus.robocalc.robochart.Event;
-import com.google.inject.Guice;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.tests.examples.ForagingExample;
 import robostar.robocert.tests.examples.MessageResolveExample;
-import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
@@ -56,7 +55,7 @@ class EventResolverTest {
 
   @BeforeEach
   void setUp() {
-    final var inj = Guice.createInjector(new RoboCertBaseModule());
+    final var inj = TestInjectorProvider.getInjector();
 
     resolver = inj.getInstance(EventResolver.class);
 

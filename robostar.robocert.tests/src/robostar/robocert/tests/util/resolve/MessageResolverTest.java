@@ -13,17 +13,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-import com.google.inject.Guice;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.Actor;
 import robostar.robocert.Message;
 import robostar.robocert.RoboCertFactory;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.tests.examples.MessageResolveExample;
-import robostar.robocert.util.RoboCertBaseModule;
-import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.ActorFactory;
+import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.resolve.EndIndex;
 import robostar.robocert.util.resolve.message.MessageResolver;
 import robostar.robocert.util.resolve.node.ResolveContext;
@@ -48,7 +47,7 @@ class MessageResolverTest {
 
   @BeforeEach
   void setUp() {
-    final var inj = Guice.createInjector(new RoboCertBaseModule());
+    final var inj = TestInjectorProvider.getInjector();
 
     resolver = inj.getInstance(MessageResolver.class);
     certFac = inj.getInstance(RoboCertFactory.class);
@@ -56,13 +55,13 @@ class MessageResolverTest {
 
     final var example = inj.getInstance(MessageResolveExample.class);
 
-
     final var actFac = inj.getInstance(ActorFactory.class);
     actor = actFac.targetActor("A");
 
     rctx = new ResolveContext(example.target, List.of(actor));
 
-    msg1 = msgFac.message(msgFac.gate(), msgFac.occurrence(actor), msgFac.eventTopic(example.event));
+    msg1 = msgFac.message(msgFac.gate(), msgFac.occurrence(actor),
+        msgFac.eventTopic(example.event));
     msg2 = msgFac.message(msgFac.occurrence(actor), msgFac.gate(), msgFac.opTopic(example.op));
   }
 

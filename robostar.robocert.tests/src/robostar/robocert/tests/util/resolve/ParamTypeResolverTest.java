@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022, 2023 University of York and others
+ * Copyright (c) 2021-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -16,7 +16,6 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 
 import circus.robocalc.robochart.Event;
-import circus.robocalc.robochart.OperationSig;
 import circus.robocalc.robochart.Parameter;
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.Type;
@@ -29,10 +28,11 @@ import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.EventTopic;
 import robostar.robocert.MessageTopic;
-import robostar.robocert.OperationTopic;
 import robostar.robocert.RoboCertFactory;
+import robostar.robocert.tests.TestInjectorProvider;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.robochart.EventFactory;
+import robostar.robocert.util.factory.robochart.RoboChartBuilderFactory;
 import robostar.robocert.util.factory.robochart.TypeFactory;
 import robostar.robocert.util.resolve.ParamTypeResolver;
 
@@ -42,40 +42,30 @@ import robostar.robocert.util.resolve.ParamTypeResolver;
  * @author Matt Windsor
  */
 class ParamTypeResolverTest {
-  private final RoboCertFactory certFactory = RoboCertFactory.eINSTANCE;
-  private final EventFactory eventFactory = new EventFactory(RoboChartFactory.eINSTANCE);
-  private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
-  private final TypeFactory typeFactory = new TypeFactory(RoboChartFactory.eINSTANCE);
-  private final MessageFactory messageFactory = new MessageFactory(RoboCertFactory.eINSTANCE);
+
+  private RoboChartBuilderFactory chartFac;
+  private final TypeFactory typeFac = new TypeFactory(RoboChartFactory.eINSTANCE);
+  private MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
   private final ParamTypeResolver paramTypeRes = new ParamTypeResolver();
 
   private Event event;
   private EventTopic eventTopic;
 
-  private OperationSig op;
-  private OperationTopic opTopic;
   private Parameter[] opParams;
 
   @BeforeEach
   void setUp() {
-    event = eventFactory.event("foo");
-    eventTopic = messageFactory.eventTopic(event);
+    final var inj = TestInjectorProvider.getInjector();
+    chartFac = inj.getInstance(RoboChartBuilderFactory.class);
+    msgFac = inj.getInstance(MessageFactory.class);
 
-    op = chartFactory.createOperationSig();
-    op.setName("foo");
-    opTopic = certFactory.createOperationTopic();
-    opTopic.setOperation(op);
+    event = inj.getInstance(EventFactory.class).event("foo");
+    eventTopic = msgFac.eventTopic(event);
 
     opParams = new Parameter[3];
-    opParams[0] = chartFactory.createParameter();
-    opParams[0].setName("a");
-    opParams[0].setType(typeFactory.primRef("int"));
-    opParams[1] = chartFactory.createParameter();
-    opParams[1].setName("b");
-    opParams[1].setType(typeFactory.primRef("real"));
-    opParams[2] = chartFactory.createParameter();
-    opParams[2].setName("c");
-    opParams[2].setType(typeFactory.primRef("boolean"));
+    opParams[0] = chartFac.parameter("a", typeFac.primRef("int"));
+    opParams[1] = chartFac.parameter("b", typeFac.primRef("real"));
+    opParams[2] = chartFac.parameter("c", typeFac.primRef("boolean"));
   }
 
 
@@ -94,7 +84,7 @@ class ParamTypeResolverTest {
    */
   @Test
   void testGetParamTypes_nonEmpty() {
-    event.setType(typeFactory.primRef("int"));
+    event.setType(typeFac.primRef("int"));
     assertThat(paramTypes(eventTopic), contains(event.getType()));
   }
 
@@ -108,7 +98,8 @@ class ParamTypeResolverTest {
    */
   @Test
   void testGetParamTypes_empty() {
-    assertThat(paramTypes(opTopic), is(empty()));
+    var op = chartFac.operationSig("foo").get();
+    assertThat(paramTypes(msgFac.opTopic(op)), is(empty()));
   }
 
   /**
@@ -118,15 +109,18 @@ class ParamTypeResolverTest {
    */
   @RepeatedTest(3)
   void testGetParamTypes(RepetitionInfo info) {
+    var opBuilder = chartFac.operationSig("foo");
+
     final var numParams = info.getCurrentRepetition();
     // This convoluted explicit type is required to get the right resolution below!
     final List<Matcher<? super Type>> matchers = new ArrayList<>(numParams);
     for (int i = 0; i < numParams; i++) {
-      op.getParameters().add(opParams[i]);
+      opBuilder = opBuilder.parameters(opParams[i]);
       matchers.add(is(opParams[i].getType()));
     }
 
-    assertThat(paramTypes(opTopic), contains(matchers));
+    var op = opBuilder.get();
+    assertThat(paramTypes(msgFac.opTopic(op)), contains(matchers));
   }
 
   //
