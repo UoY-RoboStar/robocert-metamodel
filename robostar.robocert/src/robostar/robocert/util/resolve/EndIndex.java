@@ -10,12 +10,16 @@
 
 package robostar.robocert.util.resolve;
 
+import circus.robocalc.robochart.Connection;
+import circus.robocalc.robochart.Event;
+import robostar.robocert.EventTopic;
 import robostar.robocert.Message;
 import robostar.robocert.MessageEnd;
 
 /**
  * Indices that can be used for programmatically retrieving a {@link MessageEnd} from a
- * {@link Message}.
+ * {@link Message}, or the corresponding {@link Event} from a {@link Connection} or
+ * {@link EventTopic}.
  *
  * @author Matt Windsor
  */
@@ -32,13 +36,39 @@ public enum EndIndex {
   /**
    * Indexes a message by this index.
    *
-   * @param m the message to index
-   * @return the from-index if this is {@code From}; the to-index if it is {@code To}
+   * @param message the message to index
+   * @return the from-end if this is {@code From}; the to-end if it is {@code To}
    */
-  public MessageEnd of(Message m) {
+  public MessageEnd of(Message message) {
     return switch (this) {
-      case From -> m.getFrom();
-      case To -> m.getTo();
+      case From -> message.getFrom();
+      case To -> message.getTo();
+    };
+  }
+
+  /**
+   * Indexes a topic by this index, retrieving an event.
+   *
+   * @param event the topic to index
+   * @return the from-event if this is {@code From}; the to-event if it is {@code To}
+   */
+  public Event eventOf(EventTopic event) {
+    return switch (this) {
+      case From -> event.getEfrom();
+      case To -> event.getEto();
+    };
+  }
+
+  /**
+   * Indexes a connection by this index, retrieving an event.
+   *
+   * @param conn the connection to index
+   * @return the from-event if this is {@code From}; the to-event if it is {@code To}
+   */
+  public Event eventOf(Connection conn) {
+    return switch (this) {
+      case From -> conn.getEfrom();
+      case To -> conn.getEto();
     };
   }
 

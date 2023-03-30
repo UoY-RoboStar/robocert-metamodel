@@ -8,9 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.resolve;
+package robostar.robocert.util.resolve.message;
 
-import circus.robocalc.robochart.Connection;
 import java.util.stream.Stream;
 import robostar.robocert.util.resolve.result.ResolvedEvent;
 

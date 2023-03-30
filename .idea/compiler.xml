@@ -16,13 +16,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="robocert-metamodel" target="17" />
-      <module name="robostar.robocert" target="17" />
-      <module name="robostar.robocert.edit" target="17" />
-      <module name="robostar.robocert.editor" target="17" />
-      <module name="robostar.robocert.feature" target="17" />
-      <module name="robostar.robocert.parent" target="17" />
-      <module name="robostar.robocert.tests" target="17" />
-      <module name="robostar.robocert.update" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

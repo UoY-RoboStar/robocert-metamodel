@@ -8,25 +8,26 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.resolve;
+package robostar.robocert.util.resolve.message;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.inject.Inject;
 
 import circus.robocalc.robochart.Connection;
 import robostar.robocert.*;
 import robostar.robocert.util.RoboCertSwitch;
+import robostar.robocert.util.resolve.ControllerResolver;
+import robostar.robocert.util.resolve.ModuleResolver;
+import robostar.robocert.util.resolve.OutboundConnectionResolver;
+import robostar.robocert.util.resolve.StateMachineResolver;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.TargetNodeResolver;
 import robostar.robocert.util.resolve.result.MessageEndNodesPair;
 import robostar.robocert.util.resolve.result.ResolvedEvent;
-import robostar.robocert.util.resolve.result.ResolvedEvent.Direction;
 
 /**
  * Resolves an event topic to a connection.
@@ -86,7 +87,7 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
     // 1. from a ComponentActor to another ComponentActor, in which case the connection is inside
     //    the target;
     if (q.endpointsAreComponents()) {
-      return MatchAttempt.tryMatchMany(q, innerConnections, q.endNodes(endRes));
+      return tryMatchMany(q, innerConnections, q.endNodes(endRes));
     }
 
     // 2. from a ComponentActor to a Gate, in which case we need to proceed as if we were resolving
@@ -96,69 +97,25 @@ public record EventResolverImpl(MessageEndNodeResolver endRes, TargetNodeResolve
 
   private Stream<ResolvedEvent> resolveOutboundInCollection(EventResolverQuery q, Target t) {
     // TODO(@MattWindsor91): make sure we don't need to have a special case for resolving nodes here
-    return MatchAttempt.tryMatchMany(q, outRes.resolve(t), q.endNodes(endRes));
+    return tryMatchMany(q, outRes.resolve(t), q.endNodes(endRes));
   }
 
   /**
-   * Captures an attempt to match a query to a connection.
+   * Tries to match a query against multiple possible connections.
    *
-   * @param query the original resolver query
-   * @param conn  the candidate connection
-   * @param nodes the pair of sets of nodes representing the ends of the message
+   * @param query      the original resolver query
+   * @param candidates the stream of connections to consider
+   * @param nodes      the pair of sets of nodes representing the ends of the message
+   * @return a stream of successfully-matched connections
    */
-  private record MatchAttempt(EventResolverQuery query, Connection conn,
-                              MessageEndNodesPair nodes) {
+  private Stream<ResolvedEvent> tryMatchMany(EventResolverQuery query,
+      Stream<Connection> candidates, MessageEndNodesPair nodes) {
+    return candidates.flatMap(c -> tryMatchSingle(query, c, nodes));
+  }
 
-    /**
-     * Tries to match a query against multiple possible connections.
-     *
-     * @param query      the original resolver query
-     * @param candidates the stream of connections to consider
-     * @param nodes      the pair of sets of nodes representing the ends of the message
-     * @return a stream of successfully-matched connections
-     */
-    public static Stream<ResolvedEvent> tryMatchMany(EventResolverQuery query,
-        Stream<Connection> candidates, MessageEndNodesPair nodes) {
-      return candidates.flatMap(conn -> new MatchAttempt(query, conn, nodes).tryMatch().stream());
-    }
-
-    /**
-     * Tries to perform the match described by this attempt record.
-     *
-     * @return the resolved event, if this match attempt was successful
-     */
-    public Optional<ResolvedEvent> tryMatch() {
-      return matchEnds().filter(this::eventsMatch).map(d -> new ResolvedEvent(query, d, conn));
-    }
-
-    /**
-     * Checks whether this connection connects the two endpoints.
-     *
-     * @return the direction in which the connection connects its endpoints, if any.
-     */
-    private Optional<Direction> matchEnds() {
-      if (nodes.matches(conn)) {
-        return Optional.of(Direction.FORWARDS);
-      }
-
-      if (conn.isBidirec() && nodes.swap().matches(conn)) {
-        return Optional.of(Direction.BACKWARDS);
-      }
-
-      return Optional.empty();
-    }
-
-    private boolean eventsMatch(Direction dir) {
-      // TODO(@MattWindsor91): do we need this reversibility here?
-      final var cFrom = dir == Direction.FORWARDS ? conn.getEfrom() : conn.getEto();
-      final var cTo = dir == Direction.FORWARDS ? conn.getEto() : conn.getEfrom();
-
-      if (!EcoreUtil.equals(query.topic().getEfrom(), cFrom)) {
-        return false;
-      }
-      final var eto = query.topic().getEto();
-      return eto == null || EcoreUtil.equals(eto, cTo);
-    }
-
+  private Stream<ResolvedEvent> tryMatchSingle(EventResolverQuery query, Connection candidate,
+      MessageEndNodesPair nodes) {
+    final var attempt = new EventMatchAttempt(query.topic(), candidate, nodes);
+    return attempt.tryMatch().stream().map(d -> new ResolvedEvent(query, d, candidate));
   }
 }

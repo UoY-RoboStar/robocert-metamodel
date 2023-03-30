@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 University of York and others
+ * Copyright (c) 2022-2023 University of York and others
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -11,14 +11,15 @@
 package robostar.robocert.tests.examples;
 
 import circus.robocalc.robochart.Connection;
-import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.Event;
 import circus.robocalc.robochart.RCModule;
-import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.RoboticPlatformDef;
 import circus.robocalc.robochart.StateMachineDef;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+import robostar.robocert.util.factory.robochart.ConnectionFactory;
+import robostar.robocert.util.factory.robochart.RoboChartBuilderFactory;
+import robostar.robocert.util.factory.robochart.EventFactory;
 
 /**
  * Programmatic encoding of a simplified version of the Buchanan foraging robot case study.
@@ -45,65 +46,33 @@ public class ForagingExample {
   /**
    * Constructs the foraging example.
    *
-   * @param chartFactory RoboChart factory.
+   * @param connFac  a connection factory
+   * @param evFac    an event factory
+   * @param chartFac a RoboChart builder factory
    */
   @Inject
-  public ForagingExample(RoboChartFactory chartFactory) {
-    platformObstacle = chartFactory.createEvent();
-    platformObstacle.setName("obstacle");
+  public ForagingExample(ConnectionFactory connFac, EventFactory evFac,
+      RoboChartBuilderFactory chartFac) {
+    platformObstacle = evFac.event("obstacle");
+    avoidObstacle = evFac.event("obstacle");
+    obstacleAvoidanceObstacle = evFac.event("obstacle");
 
-    avoidObstacle = chartFactory.createEvent();
-    avoidObstacle.setName("obstacle");
+    avoid = chartFac.stmDef("Avoid").events(avoidObstacle).get();
 
-    setupAvoid(chartFactory);
+    obstacleAvoidance = chartFac.controllerDef("ObstacleAvoidance")
+        .events(obstacleAvoidanceObstacle).machines(avoid).get();
 
-    obstacleAvoidanceObstacle = chartFactory.createEvent();
-    obstacleAvoidanceObstacle.setName("obstacle");
-
-    setupObstacleAvoidance(chartFactory);
-
-    platform = chartFactory.createRoboticPlatformDef();
-    platform.setName("Platform");
-    platform.getEvents().add(platformObstacle);
-
-    obstaclePlatformToObstacleAvoidance = connection(chartFactory, platformObstacle,
-        obstacleAvoidanceObstacle, platform, obstacleAvoidance);
-
-    setupForaging(chartFactory);
-  }
-
-  private void setupForaging(RoboChartFactory chartFactory) {
-    foraging = chartFactory.createRCModule();
-    foraging.setName("Foraging");
-    foraging.getNodes().add(obstacleAvoidance);
-    foraging.getNodes().add(platform);
-    foraging.getConnections().add(obstaclePlatformToObstacleAvoidance);
-  }
-
-  private Connection connection(RoboChartFactory cf, Event efrom, Event eto, ConnectionNode from,
-      ConnectionNode to) {
-    final var result = cf.createConnection();
-    result.setEfrom(efrom);
-    result.setEto(eto);
-    result.setFrom(from);
-    result.setTo(to);
-    return result;
-  }
-
-  private void setupAvoid(RoboChartFactory chartFactory) {
-    avoid = chartFactory.createStateMachineDef();
-    avoid.setName("Avoid");
-    avoid.getEvents().add(avoidObstacle);
-  }
-
-  private void setupObstacleAvoidance(RoboChartFactory chartFactory) {
-    obstacleAvoidance = chartFactory.createControllerDef();
-    obstacleAvoidance.setName("ObstacleAvoidance");
-    obstacleAvoidance.getEvents().add(obstacleAvoidanceObstacle);
-    obstacleAvoidance.getMachines().add(avoid);
-
-    obstacleObstacleAvoidanceToAvoid = connection(chartFactory, obstacleAvoidanceObstacle,
-        avoidObstacle, obstacleAvoidance, avoid);
+    obstacleObstacleAvoidanceToAvoid = connFac.from(obstacleAvoidance, obstacleAvoidanceObstacle)
+        .to(avoid, avoidObstacle);
     obstacleAvoidance.getConnections().add(obstacleObstacleAvoidanceToAvoid);
+
+    platform = chartFac.rpDef("Platform").events(platformObstacle).get();
+
+    obstaclePlatformToObstacleAvoidance = connFac.from(platform, platformObstacle)
+        .to(obstacleAvoidance, obstacleAvoidanceObstacle);
+
+    foraging = chartFac.module("Foraging", platform).nodes(obstacleAvoidance)
+        .connections(obstaclePlatformToObstacleAvoidance).get();
   }
+
 }

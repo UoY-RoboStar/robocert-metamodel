@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.resolve;
+package robostar.robocert.util.resolve.message;
 
 import robostar.robocert.ComponentActor;
 import robostar.robocert.EventTopic;

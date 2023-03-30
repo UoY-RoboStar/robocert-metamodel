@@ -14,8 +14,8 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import circus.robocalc.robochart.ConnectionNode;
-import circus.robocalc.robochart.RoboChartFactory;
 
+import com.google.inject.Guice;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,15 +24,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
 import robostar.robocert.tests.examples.ForagingExample;
+import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
-import robostar.robocert.util.resolve.*;
 import robostar.robocert.util.resolve.node.ActorNodeResolver;
 import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
 import robostar.robocert.util.resolve.node.ResolveContext;
-import robostar.robocert.util.resolve.node.TargetNodeResolver;
-import robostar.robocert.util.resolve.node.WorldNodeResolver;
 
 /**
  * Tests that the {@link ActorNodeResolver} seems to be resolving things correctly on
@@ -44,10 +42,8 @@ class MessageEndNodeResolverTest {
 
 
   private MessageEndNodeResolver resolver;
-  private final ForagingExample example = new ForagingExample(RoboChartFactory.eINSTANCE);
-  private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
-  private final TargetFactory tgtFac = new TargetFactory(RoboCertFactory.eINSTANCE);
-  private final ActorFactory actFac = ActorFactory.DEFAULT;
+  private ForagingExample example;
+  private TargetFactory tgtFac;
 
   private Gate world;
   private MessageOccurrence target;
@@ -55,18 +51,16 @@ class MessageEndNodeResolverTest {
 
   @BeforeEach
   void setUp() {
-    // TODO(@MattWindsor91): fix dependency injection here.
-    final var tgtRes = new TargetNodeResolver();
-    final var defRes = new DefinitionResolver();
-    final var ctrlRes = new ControllerResolver();
-    final var modRes = new ModuleResolver(defRes);
-    final var stmRes = new StateMachineResolver(ctrlRes);
-    final var aNodeRes = new ActorNodeResolver(tgtRes);
-    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes);
-    resolver = new MessageEndNodeResolver(aNodeRes, wNodeRes);
+    final var inj = Guice.createInjector(new RoboCertBaseModule());
 
+    tgtFac = inj.getInstance(TargetFactory.class);
+    example = inj.getInstance(ForagingExample.class);
+    resolver = inj.getInstance(MessageEndNodeResolver.class);
+
+    actor = inj.getInstance(ActorFactory.class).targetActor("T");
+
+    final var msgFac = inj.getInstance(MessageFactory.class);
     world = msgFac.gate();
-    actor = actFac.targetActor("T");
     target = msgFac.occurrence(actor);
   }
 

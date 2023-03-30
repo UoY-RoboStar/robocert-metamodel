@@ -11,9 +11,8 @@
 package robostar.robocert.util.resolve.result;
 
 import circus.robocalc.robochart.Connection;
-import robostar.robocert.MessageEnd;
 import robostar.robocert.util.resolve.EndIndex;
-import robostar.robocert.util.resolve.EventResolverQuery;
+import robostar.robocert.util.resolve.message.EventResolverQuery;
 
 /**
  * Holds all information about a resolved event.
@@ -22,49 +21,21 @@ import robostar.robocert.util.resolve.EventResolverQuery;
  * @param direction  the direction in which the event was resolved
  * @param connection the connection to which the event was resolved
  */
-public record ResolvedEvent(EventResolverQuery query, Direction direction, Connection connection) {
+public record ResolvedEvent(EventResolverQuery query, MatchDirection direction,
+                            Connection connection) implements ResolvedTopic {
 
-  /**
-   * Gets the 'effective' from-end of this message.
-   *
-   * <p>
-   * This end is important because, in certain definitions of the RoboChart semantics (for instance,
-   * rule 15 of the CSP semantics), the to-end of synchronous messages is subsumed into the from-end
-   * for synchronisation.
-   *
-   * <p>
-   * We define the effective from-end for messages involving a gate as whichever end is not that
-   * gate.  Otherwise, we define it as the actual from-end if we matched forwards, and the actual
-   * to-end if we matched backwards.
-   *
-   * @return the effective from-end.
-   */
-  public MessageEnd effectiveFrom() {
-    return EndIndex.From.oppositeIf(effectiveFromIsTo()).of(query.message());
+  @Override
+  public EndIndex effectiveFrom() {
+    return EndIndex.From.oppositeIf(effectiveFromIsTo());
   }
 
   private boolean effectiveFromIsTo() {
     if (query.endpointsAreComponents()) {
       // TODO: It is unclear whether the semantics for BACKWARDS matches is correct.
-      return direction == Direction.BACKWARDS;
+      return direction == MatchDirection.BACKWARDS;
     } else {
       return query.isFromGate();
     }
   }
 
-  /**
-   * Enumeration of directions in which an event can be resolved.
-   *
-   * @author Matt Windsor
-   */
-  public enum Direction {
-    /**
-     * The query matched this event directly, without swapping direction.
-     */
-    FORWARDS,
-    /**
-     * The query matched this (bidirectional) event by swapping direction.
-     */
-    BACKWARDS
-  }
 }

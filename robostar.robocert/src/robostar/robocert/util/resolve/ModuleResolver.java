@@ -90,7 +90,6 @@ public record ModuleResolver(DefinitionResolver defRes) implements NameResolver<
     return mod.getConnections().stream().filter(this::connectsPlatform);
   }
 
-
   private boolean connectsPlatform(Connection c) {
     return c.getFrom() instanceof RoboticPlatform || c.getTo() instanceof RoboticPlatform;
   }

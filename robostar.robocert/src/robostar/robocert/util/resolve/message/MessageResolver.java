@@ -7,23 +7,32 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package robostar.robocert.util.resolve;
+package robostar.robocert.util.resolve.message;
 
 import com.google.common.collect.Streams;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.inject.Inject;
 import robostar.robocert.Actor;
 import robostar.robocert.MessageOccurrence;
 import robostar.robocert.MessageEnd;
 import robostar.robocert.Interaction;
 import robostar.robocert.Message;
 import robostar.robocert.util.StreamHelper;
+import robostar.robocert.util.resolve.node.ResolveContext;
+import robostar.robocert.util.resolve.result.ResolvedMessage;
 
 /**
  * Resolves various aspects of messages.
  *
  * @author Matt Windsor
  */
-public class MessageResolver {
+public record MessageResolver(TopicResolver topicRes) {
+  @Inject
+  public MessageResolver {
+    Objects.requireNonNull(topicRes);
+  }
 
   /**
    * Gets the messages referenced by fragments in an interaction.
@@ -34,6 +43,20 @@ public class MessageResolver {
   @SuppressWarnings("UnstableApiUsage")
   public Stream<Message> messages(Interaction seq) {
     return StreamHelper.filter(Streams.stream(seq.eAllContents()), Message.class);
+  }
+
+  /**
+   * Fully resolves a message.
+   *
+   * @param msg the message
+   * @param ctx the context (target and live actor list)
+   * @return the message combined with information about its actors and topic
+   */
+  public ResolvedMessage resolve(Message msg, ResolveContext ctx) {
+    final var actors = actors(msg).collect(Collectors.toUnmodifiableSet());
+    final var topic = topicRes.resolve(msg, ctx);
+
+    return new ResolvedMessage(msg, topic, actors);
   }
 
   /**

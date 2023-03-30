@@ -11,21 +11,21 @@
 package robostar.robocert.tests.util.resolve;
 
 import circus.robocalc.robochart.Event;
-import circus.robocalc.robochart.RoboChartFactory;
+import com.google.inject.Guice;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import robostar.robocert.*;
 import robostar.robocert.tests.examples.ForagingExample;
+import robostar.robocert.tests.examples.MessageResolveExample;
+import robostar.robocert.util.RoboCertBaseModule;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
 import robostar.robocert.util.factory.ActorFactory;
-import robostar.robocert.util.resolve.*;
-import robostar.robocert.util.resolve.node.ActorNodeResolver;
-import robostar.robocert.util.resolve.node.MessageEndNodeResolver;
+import robostar.robocert.util.resolve.message.EventResolver;
+import robostar.robocert.util.resolve.message.EventResolverImpl;
+import robostar.robocert.util.resolve.message.EventResolverQuery;
 import robostar.robocert.util.resolve.node.ResolveContext;
-import robostar.robocert.util.resolve.node.TargetNodeResolver;
-import robostar.robocert.util.resolve.node.WorldNodeResolver;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,102 +35,116 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests that the {@link EventResolverImpl} seems to be resolving things correctly on
- * {@link ForagingExample}.
+ * Tests that the {@link EventResolverImpl} seems to be resolving things correctly on various
+ * examples.
  *
  * @author Matt Windsor
  */
 class EventResolverTest {
 
   private EventResolver resolver;
-  private final ForagingExample example = new ForagingExample(RoboChartFactory.eINSTANCE);
-  private final ActorFactory actFac = ActorFactory.DEFAULT;
-  private final MessageFactory msgFac = MessageFactory.DEFAULT;
-  private final TargetFactory targetFactory = new TargetFactory(RoboCertFactory.eINSTANCE);
 
-  private Gate world;
-  private MessageOccurrence target;
+  private ForagingExample foragingExample;
+  private MessageResolveExample msgResolveExample;
+
+  private MessageFactory msgFac;
+  private TargetFactory tgtFac;
+
   private Actor actor;
+  private MessageOccurrence target;
+  private Gate gate;
 
   @BeforeEach
   void setUp() {
-    // TODO(@MattWindsor91): fix dependency injection here.
-    final var tgtRes = new TargetNodeResolver();
-    final var defRes = new DefinitionResolver();
-    final var ctrlRes = new ControllerResolver();
-    final var modRes = new ModuleResolver(defRes);
-    final var stmRes = new StateMachineResolver(ctrlRes);
-    final var aNodeRes = new ActorNodeResolver(tgtRes);
-    final var wNodeRes = new WorldNodeResolver(modRes, ctrlRes, stmRes, aNodeRes);
-    final var endRes = new MessageEndNodeResolver(aNodeRes, wNodeRes);
-    final var outRes = new OutboundConnectionResolver(modRes, ctrlRes, stmRes, defRes);
-    resolver = new EventResolverImpl(endRes, tgtRes, modRes, ctrlRes, stmRes, outRes);
+    final var inj = Guice.createInjector(new RoboCertBaseModule());
 
-    world = msgFac.gate();
-    actor = actFac.targetActor("T");
+    resolver = inj.getInstance(EventResolver.class);
+
+    foragingExample = inj.getInstance(ForagingExample.class);
+    msgResolveExample = inj.getInstance(MessageResolveExample.class);
+
+    msgFac = inj.getInstance(MessageFactory.class);
+    tgtFac = inj.getInstance(TargetFactory.class);
+
+    actor = inj.getInstance(ActorFactory.class).targetActor("T");
     target = msgFac.occurrence(actor);
+    gate = msgFac.gate();
   }
 
-
   /**
-   * Tests resolving connections on a module in the example.
+   * Tests resolving connections on a toy module.
    */
   @Test
-  void testResolve_module() {
+  void testResolve_MessageResolve_Module() {
+    final var events = resolve(msgResolveExample.event, null, gate, target,
+        msgResolveExample.target);
+
+    final var conns = events.stream().map(ResolvedEvent::connection)
+        .collect(Collectors.toUnmodifiableSet());
+    assertThat(conns, hasItems(msgResolveExample.conn));
+  }
+
+  /**
+   * Tests resolving connections on a module in the foraging example.
+   */
+  @Test
+  void testResolve_Foraging_Module() {
     // TODO(@MattWindsor91): clean this up and check directions.
 
-    final var mod = targetFactory.module(example.foraging);
+    final var mod = tgtFac.module(foragingExample.foraging);
 
-    final var events1 = resolve(example.platformObstacle, example.obstacleAvoidanceObstacle, world,
-        target, mod);
+    final var events1 = resolve(foragingExample.platformObstacle,
+        foragingExample.obstacleAvoidanceObstacle, gate, target, mod);
     final var conns1 = events1.stream().map(ResolvedEvent::connection)
         .collect(Collectors.toUnmodifiableSet());
-    assertThat(conns1, hasItems(example.obstaclePlatformToObstacleAvoidance));
+    assertThat(conns1, hasItems(foragingExample.obstaclePlatformToObstacleAvoidance));
 
     // This connection is not bidirectional, so this should be empty.
-    final var events2 = resolve(example.obstacleAvoidanceObstacle, example.platformObstacle, target,
-        world, mod);
+    final var events2 = resolve(foragingExample.obstacleAvoidanceObstacle,
+        foragingExample.platformObstacle, target, gate, mod);
     assertThat(events2, is(empty()));
 
     // Inferring an eto.
-    final var events3 = resolve(example.platformObstacle, null, world, target, mod);
+    final var events3 = resolve(foragingExample.platformObstacle, null, gate, target, mod);
     final var conns3 = events3.stream().map(ResolvedEvent::connection)
         .collect(Collectors.toUnmodifiableSet());
-    assertThat(conns3, hasItems(example.obstaclePlatformToObstacleAvoidance));
+    assertThat(conns3, hasItems(foragingExample.obstaclePlatformToObstacleAvoidance));
   }
 
   /**
    * Tests resolving connections on a state machine in the example.
    */
   @Test
-  void testResolve_stateMachine() {
+  void testResolve_Foraging_StateMachine() {
     // TODO(@MattWindsor91): clean this up and check directions.
 
-    final var stm = targetFactory.stateMachine(example.avoid);
+    final var stm = tgtFac.stateMachine(foragingExample.avoid);
 
-    final var events1 = resolve(example.obstacleAvoidanceObstacle, example.avoidObstacle, world,
-        target, stm);
+    final var events1 = resolve(foragingExample.obstacleAvoidanceObstacle,
+        foragingExample.avoidObstacle, gate, target, stm);
     final var conns1 = events1.stream().map(ResolvedEvent::connection)
         .collect(Collectors.toUnmodifiableSet());
-    assertThat(conns1, hasItems(example.obstacleObstacleAvoidanceToAvoid));
+    assertThat(conns1, hasItems(foragingExample.obstacleObstacleAvoidanceToAvoid));
 
     // This connection is not bidirectional, so this should be empty.
-    final var events2 = resolve(example.avoidObstacle, example.obstacleAvoidanceObstacle, target,
-        world, stm);
+    final var events2 = resolve(foragingExample.avoidObstacle,
+        foragingExample.obstacleAvoidanceObstacle, target, gate, stm);
     assertThat(events2, is(empty()));
 
     // Inferring an eto.
-    final var events3 = resolve(example.obstacleAvoidanceObstacle, null, world, target, stm);
+    final var events3 = resolve(foragingExample.obstacleAvoidanceObstacle, null, gate, target, stm);
     final var conns3 = events3.stream().map(ResolvedEvent::connection)
         .collect(Collectors.toUnmodifiableSet());
-    assertThat(conns3, hasItems(example.obstacleObstacleAvoidanceToAvoid));
+    assertThat(conns3, hasItems(foragingExample.obstacleObstacleAvoidanceToAvoid));
   }
 
-  private Set<ResolvedEvent> resolve(Event efrom, Event eto, MessageEnd from, MessageEnd to, Target target) {
+  private Set<ResolvedEvent> resolve(Event efrom, Event eto, MessageEnd from, MessageEnd to,
+      Target target) {
     final var topic = msgFac.eventTopic(efrom, eto);
     final var msg = msgFac.message(from, to, topic);
 
-    final var query = new EventResolverQuery(msg, topic, new ResolveContext(target, List.of(actor)));
+    final var query = new EventResolverQuery(msg, topic,
+        new ResolveContext(target, List.of(actor)));
     return resolver.resolve(query).collect(Collectors.toUnmodifiableSet());
   }
 }
