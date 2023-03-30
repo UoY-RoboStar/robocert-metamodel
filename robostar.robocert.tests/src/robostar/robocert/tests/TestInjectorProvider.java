@@ -10,9 +10,6 @@
 
 package robostar.robocert.tests;
 
-import circus.robocalc.robochart.RoboChartFactory;
-import circus.robocalc.robochart.impl.RoboChartFactoryImplCustom;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import robostar.robocert.util.RoboCertBaseModule;
@@ -31,13 +28,7 @@ public class TestInjectorProvider {
    * @return an injector that provides bindings suitable for tests.
    */
   public static Injector getInjector() {
-    return Guice.createInjector(new RoboCertBaseModule(), new AbstractModule() {
-      @Override
-      protected void configure() {
-        // We can't use the eINSTANCE here, because, without the Xtext boilerplate, it never picks
-        // up the custom bindings.
-        bind(RoboChartFactory.class).to(RoboChartFactoryImplCustom.class);
-      }
-    });
+    // This may become more complicated later on.
+    return Guice.createInjector(new RoboCertBaseModule());
   }
 }

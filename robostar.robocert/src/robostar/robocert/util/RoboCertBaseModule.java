@@ -10,6 +10,8 @@
 
 package robostar.robocert.util;
 
+import circus.robocalc.robochart.RoboChartFactory;
+import circus.robocalc.robochart.impl.RoboChartFactoryImplCustom;
 import com.google.inject.AbstractModule;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.util.resolve.message.EventResolver;
@@ -26,5 +28,9 @@ public class RoboCertBaseModule extends AbstractModule {
   protected void configure() {
     bind(RoboCertFactory.class).toInstance(RoboCertFactory.eINSTANCE);
     bind(EventResolver.class).to(EventResolverImpl.class);
+
+    // We can't use the eINSTANCE here, because, without the Xtext boilerplate, it never picks
+    // up the custom bindings.
+    bind(RoboChartFactory.class).to(RoboChartFactoryImplCustom.class);
   }
 }
