@@ -10,7 +10,9 @@
 
 package robostar.robocert.util.factory.robochart;
 
+import circus.robocalc.robochart.Connection;
 import circus.robocalc.robochart.ControllerDef;
+import circus.robocalc.robochart.Operation;
 import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.StateMachine;
 import java.util.List;
@@ -37,6 +39,31 @@ public class ControllerDefBuilder extends
    */
   public ControllerDefBuilder machines(StateMachine... stateMachines) {
     object.getMachines().addAll(List.of(stateMachines));
+
+    return this;
+  }
+
+
+  /**
+   * Adds locally-defined operations to the controller.
+   *
+   * @param operations the operation definitions to add
+   * @return a reference to this builder
+   */
+  public ControllerDefBuilder lOperations(Operation... operations) {
+    object.getLOperations().addAll(List.of(operations));
+
+    return this;
+  }
+
+  /**
+   * Adds connections to the controller.
+   *
+   * @param connections the connections to add
+   * @return a reference to this builder
+   */
+  public ControllerDefBuilder connections(Connection... connections) {
+    object.getConnections().addAll(List.of(connections));
 
     return this;
   }

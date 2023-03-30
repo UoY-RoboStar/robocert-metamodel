@@ -53,6 +53,16 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   }
 
   /**
+   * Initiates a builder for an operation definition.
+   *
+   * @param name name of the operation definition to build
+   * @return a {@link OperationDefBuilder} over the new signature
+   */
+  public OperationDefBuilder operationDef(String name) {
+    return new OperationDefBuilder(chartFac, name);
+  }
+
+  /**
    * Initiates a builder for an operation signature.
    *
    * @param name name of the operation signature to build

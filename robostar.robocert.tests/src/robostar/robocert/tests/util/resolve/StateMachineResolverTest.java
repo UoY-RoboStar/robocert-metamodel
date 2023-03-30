@@ -16,10 +16,11 @@ import static org.hamcrest.Matchers.is;
 
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.OperationDef;
-import circus.robocalc.robochart.RoboChartFactory;
 import circus.robocalc.robochart.StateMachineDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import robostar.robocert.tests.TestInjectorProvider;
+import robostar.robocert.util.factory.robochart.RoboChartBuilderFactory;
 import robostar.robocert.util.resolve.ControllerResolver;
 import robostar.robocert.util.resolve.StateMachineResolver;
 
@@ -30,29 +31,25 @@ import robostar.robocert.util.resolve.StateMachineResolver;
  */
 class StateMachineResolverTest {
 
-  private final RoboChartFactory chartFactory = RoboChartFactory.eINSTANCE;
   private final StateMachineResolver resolver = new StateMachineResolver(new ControllerResolver());
 
   private ControllerDef ctrl;
   private StateMachineDef stm;
   private OperationDef op;
+  private RoboChartBuilderFactory chartFac;
 
   @BeforeEach
   void setUp() {
-    final var mod = chartFactory.createRCModule();
-    mod.setName("Mod");
+    final var inj = TestInjectorProvider.getInjector();
+    chartFac = inj.getInstance(RoboChartBuilderFactory.class);
 
-    ctrl = chartFactory.createControllerDef();
-    ctrl.setName("Ctrl");
-    mod.getNodes().add(ctrl);
+    stm = chartFac.stmDef("Stm").get();
+    op = chartFac.operationDef("Op").get();
+    ctrl = chartFac.controllerDef("Ctrl").machines(stm).lOperations(op).get();
 
-    stm = chartFactory.createStateMachineDef();
-    stm.setName("Stm");
-    ctrl.getMachines().add(stm);
-
-    op = chartFactory.createOperationDef();
-    op.setName("Op");
-    ctrl.getLOperations().add(op);
+    // Put the controller within a module to
+    final var rp = chartFac.rpDef("RP").get();
+    final var ignoredMod = chartFac.module("Mod", rp).nodes(ctrl).get();
   }
 
   /**
@@ -86,9 +83,9 @@ class StateMachineResolverTest {
    */
   @Test
   void testController_noController() {
-    final var s2 = chartFactory.createStateMachineDef();
+    final var s2 = chartFac.stmDef("Stm").get();
     assertThat(resolver.controller(s2).isEmpty(), is(true));
-    final var o2 = chartFactory.createOperationDef();
+    final var o2 = chartFac.operationDef("Op").get();
     assertThat(resolver.controller(o2).isEmpty(), is(true));
   }
 }
