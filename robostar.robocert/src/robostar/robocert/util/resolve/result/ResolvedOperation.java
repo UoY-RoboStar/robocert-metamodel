@@ -11,6 +11,7 @@
 package robostar.robocert.util.resolve.result;
 
 import java.util.Objects;
+import robostar.robocert.MessageTopic;
 import robostar.robocert.OperationTopic;
 import robostar.robocert.util.resolve.EndIndex;
 
@@ -28,6 +29,11 @@ public record ResolvedOperation(OperationTopic op) implements ResolvedTopic {
 
   public ResolvedOperation {
     Objects.requireNonNull(op);
+  }
+
+  @Override
+  public MessageTopic topic() {
+    return op;
   }
 
   @Override

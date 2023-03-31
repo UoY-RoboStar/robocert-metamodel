@@ -10,6 +10,7 @@
 
 package robostar.robocert.util.resolve.result;
 
+import robostar.robocert.MessageTopic;
 import robostar.robocert.util.resolve.EndIndex;
 
 /**
@@ -18,6 +19,16 @@ import robostar.robocert.util.resolve.EndIndex;
  * @author Matt Windsor
  */
 public sealed interface ResolvedTopic permits ResolvedOperation, ResolvedEvent {
+  /**
+   * Gets the topic.
+   *
+   * <p>
+   * A more specialised method may provide the topic as an operation, event, etc.
+   *
+   * @return the topic
+   */
+  MessageTopic topic();
+
   /**
    * Gets the 'effective' from-end of this message.
    *

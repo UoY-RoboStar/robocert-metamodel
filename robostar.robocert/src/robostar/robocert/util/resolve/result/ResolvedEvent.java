@@ -11,6 +11,7 @@
 package robostar.robocert.util.resolve.result;
 
 import circus.robocalc.robochart.Connection;
+import robostar.robocert.MessageTopic;
 import robostar.robocert.util.resolve.EndIndex;
 import robostar.robocert.util.resolve.message.EventResolverQuery;
 
@@ -23,6 +24,11 @@ import robostar.robocert.util.resolve.message.EventResolverQuery;
  */
 public record ResolvedEvent(EventResolverQuery query, MatchDirection direction,
                             Connection connection) implements ResolvedTopic {
+
+  @Override
+  public MessageTopic topic() {
+    return query.topic();
+  }
 
   @Override
   public EndIndex effectiveFrom() {
