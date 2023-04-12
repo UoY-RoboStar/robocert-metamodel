@@ -22,13 +22,22 @@ import java.util.List;
  *
  * @author Matt Windsor
  */
-public class RCModuleBuilder extends AbstractBuilder<RCModule> {
+public class RCModuleBuilder extends AbstractRoboChartBuilder<RCModuleBuilder, RCModule> {
 
-  RCModuleBuilder(RoboChartFactory chartFac, String name, RoboticPlatform rp) {
-    this.chartFac = chartFac;
-    object = chartFac.createRCModule();
-    object.setName(name);
-    object.getNodes().add(rp);
+  RCModuleBuilder(RoboChartFactory factory, String name, RoboticPlatform rp) {
+    this(factory, makeInitial(factory, name, rp));
+  }
+
+  RCModuleBuilder(RoboChartFactory factory, RCModule initial) {
+    super(factory, initial);
+  }
+
+  private static RCModule makeInitial(RoboChartFactory factory, String name, RoboticPlatform rp) {
+    final var initial = factory.createRCModule();
+    initial.setName(name);
+    initial.getNodes().add(rp);
+
+    return initial;
   }
 
   /**
@@ -52,6 +61,16 @@ public class RCModuleBuilder extends AbstractBuilder<RCModule> {
   public RCModuleBuilder nodes(ConnectionNode... nodes) {
     object.getNodes().addAll(List.of(nodes));
 
+    return this;
+  }
+
+  @Override
+  protected RCModuleBuilder selfWith(RCModule newObject) {
+    return new RCModuleBuilder(chartFactory, newObject);
+  }
+
+  @Override
+  protected RCModuleBuilder self() {
     return this;
   }
 }

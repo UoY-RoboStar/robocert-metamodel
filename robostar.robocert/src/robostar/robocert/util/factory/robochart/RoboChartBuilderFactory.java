@@ -34,7 +34,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for a controller definition.
    *
-   * @param name name of the controller definition to build
+   * @param name the name of the controller definition to build
    * @return a {@link ControllerDefBuilder} over the new definition
    */
   public ControllerDefBuilder controllerDef(String name) {
@@ -44,7 +44,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for a RoboChart module.
    *
-   * @param name name of the RoboChart module to build
+   * @param name the name of the RoboChart module to build
    * @param rp   the robotic platform (definition or reference)
    * @return a {@link RCModuleBuilder} over the new module
    */
@@ -55,7 +55,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for an operation definition.
    *
-   * @param name name of the operation definition to build
+   * @param name the name of the operation definition to build
    * @return a {@link OperationDefBuilder} over the new signature
    */
   public OperationDefBuilder operationDef(String name) {
@@ -65,7 +65,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for an operation signature.
    *
-   * @param name name of the operation signature to build
+   * @param name the name of the operation signature to build
    * @return a {@link OperationSigBuilder} over the new signature
    */
   public OperationSigBuilder operationSig(String name) {
@@ -75,7 +75,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for a RoboChart package.
    *
-   * @param name name of the RoboChart package to build
+   * @param name the name of the RoboChart package to build
    * @return a {@link RCPackageBuilder} over the new package
    */
   public RCPackageBuilder pkg(String name) {
@@ -85,7 +85,7 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for a robotic platform definition.
    *
-   * @param name name of the robotic platform definition to build
+   * @param name the name of the robotic platform definition to build
    * @return a {@link RoboticPlatformDefBuilder} over the new definition
    */
   public RoboticPlatformDefBuilder rpDef(String name) {
@@ -95,11 +95,22 @@ public record RoboChartBuilderFactory(RoboChartFactory chartFac) {
   /**
    * Initiates a builder for a state machine definition.
    *
-   * @param name name of the state machine definition to build
+   * @param name the name of the state machine definition to build
    * @return a {@link StateMachineDefBuilder} over the new definition
    */
   public StateMachineDefBuilder stmDef(String name) {
     return new StateMachineDefBuilder(chartFac, name);
+  }
+
+  /**
+   * Initiates a builder for a variable.
+   *
+   * @param name the name of the variable to build
+   * @param type the type of the variable to build
+   * @return a {@link VariableBuilder} over the new definition
+   */
+  public VariableBuilder var(String name, Type type) {
+    return new VariableBuilder(chartFac, name, type);
   }
 
   //

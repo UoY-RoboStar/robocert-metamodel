@@ -21,13 +21,20 @@ import circus.robocalc.robochart.StateMachineDef;
 public class StateMachineDefBuilder extends
     AbstractBasicContextBuilder<StateMachineDefBuilder, StateMachineDef> {
 
-  StateMachineDefBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createStateMachineDef();
-    object.setName(name);
+  StateMachineDefBuilder(RoboChartFactory factory, String name) {
+    this(factory, makeInitialNamed(factory::createStateMachineDef, name));
+  }
+
+  StateMachineDefBuilder(RoboChartFactory factory, StateMachineDef initial) {
+    super(factory, initial);
   }
 
   // TODO(@MattWindsor91): add more methods as needed
+
+  @Override
+  protected StateMachineDefBuilder selfWith(StateMachineDef newObject) {
+    return new StateMachineDefBuilder(chartFactory, newObject);
+  }
 
   @Override
   public StateMachineDefBuilder self() {

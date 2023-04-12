@@ -8,9 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package robostar.robocert.util.factory.robochart;
+package robostar.robocert.util.factory;
 
-import circus.robocalc.robochart.RoboChartFactory;
+import java.util.Objects;
 
 /**
  * Base class for builders.
@@ -18,15 +18,14 @@ import circus.robocalc.robochart.RoboChartFactory;
  * @param <T> type of item being built
  */
 public abstract class AbstractBuilder<T> {
+  protected AbstractBuilder(T initial) {
+    object = Objects.requireNonNull(initial, "initial object must not be null");
+  }
+
   /**
    * The object being built.
    */
-  protected T object;
-
-  /**
-   * The underlying RoboChart factory.
-   */
-  protected RoboChartFactory chartFac;
+  protected final T object;
 
   /**
    * @return the object being built

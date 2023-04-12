@@ -20,12 +20,15 @@ import java.util.List;
  *
  * @author Matt Windsor
  */
-public class OperationSigBuilder extends AbstractBuilder<OperationSig> {
+public class OperationSigBuilder extends
+    AbstractRoboChartBuilder<OperationSigBuilder, OperationSig> {
 
-  OperationSigBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createOperationSig();
-    object.setName(name);
+  OperationSigBuilder(RoboChartFactory factory, String name) {
+    this(factory, makeInitialNamed(factory::createOperationSig, name));
+  }
+
+  OperationSigBuilder(RoboChartFactory factory, OperationSig initial) {
+    super(factory, initial);
   }
 
   /**
@@ -37,6 +40,16 @@ public class OperationSigBuilder extends AbstractBuilder<OperationSig> {
   public OperationSigBuilder parameters(Parameter... parameters) {
     object.getParameters().addAll(List.of(parameters));
 
+    return this;
+  }
+
+  @Override
+  protected OperationSigBuilder selfWith(OperationSig newObject) {
+    return new OperationSigBuilder(chartFactory, newObject);
+  }
+
+  @Override
+  protected OperationSigBuilder self() {
     return this;
   }
 

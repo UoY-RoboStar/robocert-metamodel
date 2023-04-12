@@ -21,13 +21,20 @@ import circus.robocalc.robochart.RoboChartFactory;
 public class OperationDefBuilder extends
     AbstractBasicContextBuilder<OperationDefBuilder, OperationDef> {
 
-  OperationDefBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createOperationDef();
-    object.setName(name);
+  OperationDefBuilder(RoboChartFactory factory, String name) {
+    this(factory, makeInitialNamed(factory::createOperationDef, name));
+  }
+
+  OperationDefBuilder(RoboChartFactory factory, OperationDef initial) {
+    super(factory, initial);
   }
 
   // TODO(@MattWindsor91): add more methods as needed
+
+  @Override
+  protected OperationDefBuilder selfWith(OperationDef newObject) {
+    return new OperationDefBuilder(chartFactory, newObject);
+  }
 
   @Override
   public OperationDefBuilder self() {

@@ -20,12 +20,22 @@ import java.util.List;
  *
  * @author Matt Windsor
  */
-public class RCPackageBuilder extends AbstractBuilder<RCPackage> {
+public class RCPackageBuilder extends AbstractRoboChartBuilder<RCPackageBuilder, RCPackage> {
 
   RCPackageBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createRCPackage();
-    object.setName(name);
+    // TODO(@MattWindsor91): make name optional?
+    this(chartFac, makeInitial(chartFac, name));
+  }
+
+  RCPackageBuilder(RoboChartFactory chartFac, RCPackage initial) {
+    super(chartFac, initial);
+  }
+
+  private static RCPackage makeInitial(RoboChartFactory chartFac, String name) {
+    final var initial = chartFac.createRCPackage();
+    initial.setName(name);
+
+    return initial;
   }
 
   /**
@@ -36,6 +46,16 @@ public class RCPackageBuilder extends AbstractBuilder<RCPackage> {
   public RCPackageBuilder modules(RCModule... modules) {
     object.getModules().addAll(List.of(modules));
 
+    return this;
+  }
+
+  @Override
+  protected RCPackageBuilder selfWith(RCPackage newObject) {
+    return new RCPackageBuilder(chartFactory, newObject);
+  }
+
+  @Override
+  protected RCPackageBuilder self() {
     return this;
   }
 

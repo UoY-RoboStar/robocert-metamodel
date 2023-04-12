@@ -39,7 +39,7 @@ class EndIndexTest {
 
     from = msgFac.occurrence(actFac.targetActor("T"));
     to = msgFac.gate();
-    msg = msgFac.message(from, to, msgFac.eventTopic(e));
+    msg = msgFac.sync(e).from(from).to(to).get();
   }
 
   /**

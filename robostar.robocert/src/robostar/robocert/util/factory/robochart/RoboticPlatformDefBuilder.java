@@ -21,13 +21,21 @@ import circus.robocalc.robochart.RoboticPlatformDef;
 public class RoboticPlatformDefBuilder extends
     AbstractBasicContextBuilder<RoboticPlatformDefBuilder, RoboticPlatformDef> {
 
-  RoboticPlatformDefBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createRoboticPlatformDef();
-    object.setName(name);
+  RoboticPlatformDefBuilder(RoboChartFactory factory, String name) {
+    this(factory, makeInitialNamed(factory::createRoboticPlatformDef, name));
+  }
+
+
+  RoboticPlatformDefBuilder(RoboChartFactory factory, RoboticPlatformDef initial) {
+    super(factory, initial);
   }
 
   // TODO(@MattWindsor91): add more methods as needed
+
+  @Override
+  protected RoboticPlatformDefBuilder selfWith(RoboticPlatformDef newObject) {
+    return new RoboticPlatformDefBuilder(chartFactory, newObject);
+  }
 
   @Override
   public RoboticPlatformDefBuilder self() {

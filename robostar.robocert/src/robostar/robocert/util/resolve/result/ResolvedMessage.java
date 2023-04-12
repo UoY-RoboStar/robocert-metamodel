@@ -10,10 +10,12 @@
 
 package robostar.robocert.util.resolve.result;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import robostar.robocert.Actor;
 import robostar.robocert.Message;
+import robostar.robocert.util.resolve.message.IndexedVariableBinding;
 
 /**
  * Contains a message and various pieces of pre-calculated information about it.
@@ -23,11 +25,12 @@ import robostar.robocert.Message;
  * @param actors  the pre-calculated set of actors connected by the message
  * @author Matt Windsor
  */
-public record ResolvedMessage(Message message, ResolvedTopic topic, Set<Actor> actors) {
+public record ResolvedMessage(Message message, ResolvedTopic topic, Set<Actor> actors, List<IndexedVariableBinding> argBindings) {
 
   public ResolvedMessage {
     Objects.requireNonNull(message, "message must be non-null");
     Objects.requireNonNull(topic, "topic must be non-null");
     Objects.requireNonNull(actors, "actors must be non-null");
+    Objects.requireNonNull(argBindings, "argument bindings list must be non-null");
   }
 }

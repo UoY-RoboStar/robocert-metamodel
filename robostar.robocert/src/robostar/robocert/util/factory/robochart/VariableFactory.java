@@ -79,6 +79,7 @@ public record VariableFactory(RoboChartFactory chartFac) {
    * @param initial initial value expression of the variable.
    * @return a variable with the given name, type, and initial value expression.
    */
+  @Deprecated
   public Variable var(String name, Type type, Expression initial) {
     final var result = var(name, type);
     result.setInitial(initial);
@@ -92,6 +93,7 @@ public record VariableFactory(RoboChartFactory chartFac) {
    * @param type type of the variable.
    * @return a variable with the given name and type.
    */
+  @Deprecated
   public Variable var(String name, Type type) {
     final var result = chartFac.createVariable();
     result.setName(name);

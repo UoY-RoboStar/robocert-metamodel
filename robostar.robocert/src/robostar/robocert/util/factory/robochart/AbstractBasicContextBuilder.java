@@ -13,6 +13,7 @@ package robostar.robocert.util.factory.robochart;
 import circus.robocalc.robochart.BasicContext;
 import circus.robocalc.robochart.Event;
 import circus.robocalc.robochart.OperationSig;
+import circus.robocalc.robochart.RoboChartFactory;
 import java.util.List;
 
 /**
@@ -22,7 +23,11 @@ import java.util.List;
  * @param <T>    type of item being built
  */
 public abstract class AbstractBasicContextBuilder<Self, T extends BasicContext> extends
-    AbstractBuilder<T> {
+    AbstractRoboChartBuilder<Self, T> {
+
+  protected AbstractBasicContextBuilder(RoboChartFactory factory, T initial) {
+    super(factory, initial);
+  }
 
   /**
    * Adds events to the context being built.
@@ -48,8 +53,4 @@ public abstract class AbstractBasicContextBuilder<Self, T extends BasicContext> 
     return self();
   }
 
-  /**
-   * @return this, as a {@code Self}
-   */
-  protected abstract Self self();
 }

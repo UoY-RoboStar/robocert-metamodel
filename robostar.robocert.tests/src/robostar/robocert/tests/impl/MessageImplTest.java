@@ -12,20 +12,19 @@ package robostar.robocert.tests.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import circus.robocalc.robochart.Event;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import circus.robocalc.robochart.ControllerDef;
-import circus.robocalc.robochart.RoboChartFactory;
-import circus.robocalc.robochart.StateMachineDef;
 import robostar.robocert.ComponentActor;
 import robostar.robocert.RoboCertFactory;
 import robostar.robocert.TargetActor;
+import robostar.robocert.tests.TestInjectorProvider;
+import robostar.robocert.util.factory.ActorFactory;
 import robostar.robocert.util.factory.MessageFactory;
 import robostar.robocert.util.factory.TargetFactory;
-import robostar.robocert.util.factory.ActorFactory;
+import robostar.robocert.util.factory.robochart.EventFactory;
+import robostar.robocert.util.factory.robochart.RoboChartBuilderFactory;
 
 /**
  * Tests custom functionality on Messages.
@@ -34,86 +33,67 @@ import robostar.robocert.util.factory.ActorFactory;
  */
 class MessageImplTest {
 
-  private final MessageFactory msgFac = new MessageFactory(RoboCertFactory.eINSTANCE);
-  private final RoboChartFactory chartFac = RoboChartFactory.eINSTANCE;
-  private final RoboCertFactory certFac = RoboCertFactory.eINSTANCE;
-  private final TargetFactory tgtFac = new TargetFactory(RoboCertFactory.eINSTANCE);
-  private final ActorFactory actFac = ActorFactory.DEFAULT;
+  private MessageFactory msgFac;
 
   private TargetActor comTarget;
 
   private ComponentActor c1;
   private ComponentActor c2;
 
+  private Event event;
+
   @BeforeEach
   void setUp() {
-    final var stm1 = chartFac.createStateMachineDef();
-    stm1.setName("Stm1");
-    final var stm2 = chartFac.createStateMachineDef();
-    stm2.setName("Stm1");
+    final var inj = TestInjectorProvider.getInjector();
+    msgFac = inj.getInstance(MessageFactory.class);
 
-    final var ctrl = chartFac.createControllerDef();
-    ctrl.setName("Ctrl");
-    ctrl.getMachines().addAll(List.of(stm1, stm2));
+    final var chartFac = inj.getInstance(RoboChartBuilderFactory.class);
+    final var stm1 = chartFac.stmDef("Stm1").get();
+    final var stm2 = chartFac.stmDef("Stm2").get();
+    final var ctrl = chartFac.controllerDef("Ctrl").machines(stm1, stm2).get();
 
-    setUpComponent(ctrl);
-    setUpCollection(stm1, stm2, ctrl);
-  }
+    final var actFac = inj.getInstance(ActorFactory.class);
+    comTarget = actFac.targetActor("T");
+    c1 = actFac.componentActor("C1", stm1);
+    c2 = actFac.componentActor("C2", stm2);
 
-  private void setUpComponent(ControllerDef ctrl) {
-    final var comTgt = tgtFac.controller(ctrl);
+    final var certFac = inj.getInstance(RoboCertFactory.class);
+    final var tgtFac = inj.getInstance(TargetFactory.class);
+
     final var comGrp = certFac.createSpecificationGroup();
     comGrp.setName("ComGroup");
-    comGrp.setTarget(comTgt);
-
-    comTarget = actFac.targetActor("T");
+    comGrp.setTarget(tgtFac.controller(ctrl));
     comGrp.getActors().add(comTarget);
-  }
 
-  private void setUpCollection(StateMachineDef stm1, StateMachineDef stm2, ControllerDef ctrl) {
-    final var collTgt = tgtFac.inController(ctrl);
     final var collGrp = certFac.createSpecificationGroup();
     collGrp.setName("CollGroup");
-    collGrp.setTarget(collTgt);
-
-    c1 = certFac.createComponentActor();
-    c1.setName("C1");
-    c1.setNode(stm1);
-    c2 = certFac.createComponentActor();
-    c2.setName("C2");
-    c2.setNode(stm2);
+    collGrp.setTarget(tgtFac.inController(ctrl));
     collGrp.getActors().addAll(List.of(c1, c2));
+
+    event = inj.getInstance(EventFactory.class).event("e");
   }
 
   @Test
   void testIsOutbound_component() {
-    final var e = chartFac.createEvent();
-    e.setName("e");
-    final var topic = msgFac.eventTopic(e);
-
     // All messages in a component context are outbound.
-    final var msg1 = msgFac.message(msgFac.occurrence(comTarget), msgFac.gate(), topic);
+    final var msg1 = msgFac.sync(event).from(comTarget).toGate().get();
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFac.message(msgFac.gate(), msgFac.occurrence(comTarget), topic);
+    final var msg2 = msgFac.sync(event).fromGate().to(comTarget).get();
     assertThat(msg2.isOutbound(), is(true));
   }
 
   @Test
   void testIsOutbound_collection() {
-    final var e = chartFac.createEvent();
-    e.setName("e");
-    final var topic = msgFac.eventTopic(e);
-
     // All messages with a world (and only those) are outbound:
 
-    final var msg1 = msgFac.message(msgFac.occurrence(c1), msgFac.gate(), topic);
+    final var msg1 = msgFac.sync(event).from(c1).toGate().get();
     assertThat(msg1.isOutbound(), is(true));
 
-    final var msg2 = msgFac.message(msgFac.gate(), msgFac.occurrence(c2), topic);
+    final var msg2 = msgFac.sync(event).fromGate().to(c2).get();
     assertThat(msg2.isOutbound(), is(true));
 
-    final var msg3 = msgFac.message(msgFac.occurrence(c1), msgFac.occurrence(c2), topic);
+    final var msg3 = msgFac.sync(event).from(c1).to(c2).get();
     assertThat(msg3.isOutbound(), is(false));
   }
 }

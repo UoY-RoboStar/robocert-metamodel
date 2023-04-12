@@ -25,10 +25,12 @@ import java.util.List;
 public class ControllerDefBuilder extends
     AbstractBasicContextBuilder<ControllerDefBuilder, ControllerDef> {
 
-  ControllerDefBuilder(RoboChartFactory chartFac, String name) {
-    this.chartFac = chartFac;
-    object = chartFac.createControllerDef();
-    object.setName(name);
+  ControllerDefBuilder(RoboChartFactory factory, String name) {
+    this(factory, makeInitialNamed(factory::createControllerDef, name));
+  }
+
+  ControllerDefBuilder(RoboChartFactory factory, ControllerDef initial) {
+    super(factory, initial);
   }
 
   /**
@@ -69,6 +71,11 @@ public class ControllerDefBuilder extends
   }
 
   // TODO(@MattWindsor91): add more methods as needed
+
+  @Override
+  protected ControllerDefBuilder selfWith(ControllerDef newObject) {
+    return new ControllerDefBuilder(chartFactory, newObject);
+  }
 
   @Override
   public ControllerDefBuilder self() {
