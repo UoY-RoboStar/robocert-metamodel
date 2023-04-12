@@ -403,27 +403,6 @@
       <details key="documentation" value="A single interaction fragment in a subsequence."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeFragment" abstract="true" eSuperTypes="#//InteractionFragment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base class of fragments imposing time conditions on one lifeline."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The actor on which this occurrence is occurring."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The number of time units this fragment involves."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//TimeFragment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Represents a wait for some amount of time units."/>
-    </eAnnotations>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MessageFragment" eSuperTypes="#//InteractionFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A fragment that represents a message communication.&#xD;&#xA;&#xD;&#xA;Unlike UML, there is only one element for both ends of the message."/>
@@ -460,11 +439,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="OptFragment" eSuperTypes="#//BlockFragment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="An optional fragment."/>
-    </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//TimeFragment #//BlockFragment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Fragment imposing a deadline constraint on a block.&#xD;&#xA;&#xD;&#xA;In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LoopFragment" eSuperTypes="#//BlockFragment">
@@ -521,17 +495,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A sequential block fragment where the body can be interrupted by occurrences in a 'trigger' operand.&#xD;&#xA;&#xD;&#xA;This fragment implicitly forces strict ordering in both the body and trigger.  This may change in future revisions of the language. &#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
     </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeoutFragment" eSuperTypes="#//BlockFragment #//SequentialFragment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A sequential block fragment where the body can be pre-empted by a timeout.&#xD;&#xA;&#xD;&#xA;Semantically equivalent to an UntilFragment with a WaitFragment trigger.&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" lowerBound="1"
-        eType="#//WaitFragment" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The wait-fragment being wrapped inside this timeout fragment."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DiscreteBound">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -624,6 +587,37 @@
   <eClassifiers xsi:type="ecore:EClass" name="ElseGuard" eSuperTypes="#//Guard">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A guard that is true if all other guards in the BranchFragment are false.&#xD;&#xA;&#xD;&#xA;It is ill-formed to have multiple ElseGuards in a step, or to have both an&#xD;&#xA;ElseGuard and an EmptyGuard in a step."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeFragment" abstract="true" eSuperTypes="#//InteractionFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Base class of fragments imposing time conditions on one lifeline."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" lowerBound="1" eType="#//Actor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The actor on which this occurrence is occurring."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1" eType="ecore:EClass ../../circus.robocalc.robochart/model/robochart.ecore#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of time units this fragment involves."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WaitFragment" eSuperTypes="#//TimeFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents a wait for some amount of time units."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeadlineFragment" eSuperTypes="#//TimeFragment #//BlockFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fragment imposing a deadline constraint on a block.&#xD;&#xA;&#xD;&#xA;In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeoutFragment" eSuperTypes="#//TimeFragment #//BlockFragment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A sequential block fragment where the part of the body lying on an actor can be pre-empted by a timeout.&#xD;&#xA;&#xD;&#xA;Semantically similar to an UntilFragment with a WaitFragment trigger, but only affects one actor.&#xD;&#xA;&#xD;&#xA;This is an extension to UML."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Message">

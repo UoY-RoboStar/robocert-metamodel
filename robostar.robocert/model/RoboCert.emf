@@ -370,22 +370,6 @@ class Lifeline {
 abstract class InteractionFragment {
 }
 
-@genmodel(documentation="Base class of fragments imposing time conditions on one lifeline.")
-abstract class TimeFragment extends InteractionFragment {
-	@genmodel(documentation="The actor on which this occurrence is occurring.")
-	ref Actor[1] actor;	
-	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
-	// restricts the 0 condition to when we're at the top of a sequential
-	// fragment.  This used to be the case in previous iterations of the
-	// metamodel, but I've rowed back on it to simplify things for v0.1.
-	@genmodel(documentation="The number of time units this fragment involves.")
-	val robochart.Expression[1] units;
-}
-
-@genmodel(documentation="Represents a wait for some amount of time units.")
-class WaitFragment extends TimeFragment {
-}
-
 @genmodel(documentation="A fragment that represents a message communication.
 
 Unlike UML, there is only one element for both ends of the message.")
@@ -422,12 +406,6 @@ abstract class BlockFragment extends CombinedFragment {
 
 @genmodel(documentation="An optional fragment.")
 class OptFragment extends BlockFragment {
-}
-
-@genmodel(documentation="Fragment imposing a deadline constraint on a block.
-
-In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block.")
-class DeadlineFragment extends TimeFragment, BlockFragment {
 }
 
 @genmodel(documentation="A fragment containing one or more sequence elements in loop.")
@@ -491,16 +469,6 @@ This fragment implicitly forces strict ordering in both the body and trigger.  T
 
 This is an extension to UML.")
 class DoUntilFragment extends UntilFragment, BlockFragment {
-}
-
-@genmodel(documentation="A sequential block fragment where the body can be pre-empted by a timeout.
-
-Semantically equivalent to an UntilFragment with a WaitFragment trigger.
-
-This is an extension to UML.")
-class TimeoutFragment extends BlockFragment, SequentialFragment {
-	@genmodel(documentation="The wait-fragment being wrapped inside this timeout fragment.")
-	val WaitFragment[1] trigger;
 }
 
 //
@@ -578,6 +546,40 @@ ElseGuard and an EmptyGuard in a step.")
 class ElseGuard extends Guard {
 }
 
+//
+// Time fragments
+//
+
+@genmodel(documentation="Base class of fragments imposing time conditions on one lifeline.")
+abstract class TimeFragment extends InteractionFragment {
+	@genmodel(documentation="The actor on which this occurrence is occurring.")
+	ref Actor[1] actor;	
+	// TODO(@MattWindsor91): maybe make this [0..1] and have a wfc that
+	// restricts the 0 condition to when we're at the top of a sequential
+	// fragment.  This used to be the case in previous iterations of the
+	// metamodel, but I've rowed back on it to simplify things for v0.1.
+	@genmodel(documentation="The number of time units this fragment involves.")
+	val robochart.Expression[1] units;
+}
+
+@genmodel(documentation="Represents a wait for some amount of time units.")
+class WaitFragment extends TimeFragment {
+}
+
+@genmodel(documentation="Fragment imposing a deadline constraint on a block.
+
+In such a fragment, the 'units' expression names an upper bound on the time that can pass in the block.")
+class DeadlineFragment extends TimeFragment, BlockFragment {
+}
+
+
+@genmodel(documentation="A sequential block fragment where the part of the body lying on an actor can be pre-empted by a timeout.
+
+Semantically similar to an UntilFragment with a WaitFragment trigger, but only affects one actor.
+
+This is an extension to UML.")
+class TimeoutFragment extends TimeFragment, BlockFragment {
+}
 
 //
 // MESSAGES

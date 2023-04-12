@@ -126,11 +126,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Lifeline/variables"/>
     </genClasses>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//InteractionFragment"/>
-    <genClasses image="false" ecoreClass="RoboCert.ecore#//TimeFragment">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeFragment/actor"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeFragment/units"/>
-    </genClasses>
-    <genClasses ecoreClass="RoboCert.ecore#//WaitFragment"/>
     <genClasses ecoreClass="RoboCert.ecore#//MessageFragment">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//MessageFragment/message"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoboCert.ecore#//MessageFragment/temperature"/>
@@ -140,7 +135,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//BlockFragment/body"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//OptFragment"/>
-    <genClasses ecoreClass="RoboCert.ecore#//DeadlineFragment"/>
     <genClasses ecoreClass="RoboCert.ecore#//LoopFragment">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//LoopFragment/bound"/>
     </genClasses>
@@ -155,9 +149,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//AnyUntilFragment/body"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//DoUntilFragment"/>
-    <genClasses ecoreClass="RoboCert.ecore#//TimeoutFragment">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeoutFragment/trigger"/>
-    </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//DiscreteBound">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//DiscreteBound/lower"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//DiscreteBound/upper"/>
@@ -181,6 +172,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//ExprGuard/expr"/>
     </genClasses>
     <genClasses ecoreClass="RoboCert.ecore#//ElseGuard"/>
+    <genClasses image="false" ecoreClass="RoboCert.ecore#//TimeFragment">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeFragment/actor"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//TimeFragment/units"/>
+    </genClasses>
+    <genClasses ecoreClass="RoboCert.ecore#//WaitFragment"/>
+    <genClasses ecoreClass="RoboCert.ecore#//DeadlineFragment"/>
+    <genClasses ecoreClass="RoboCert.ecore#//TimeoutFragment"/>
     <genClasses image="false" ecoreClass="RoboCert.ecore#//Message">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/topic"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoboCert.ecore#//Message/arguments"/>
