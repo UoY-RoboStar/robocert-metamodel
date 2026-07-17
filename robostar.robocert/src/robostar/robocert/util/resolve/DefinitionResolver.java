@@ -13,9 +13,12 @@
 package robostar.robocert.util.resolve;
 
 import circus.robocalc.robochart.ConnectionNode;
+import circus.robocalc.robochart.Context;
 import circus.robocalc.robochart.Controller;
 import circus.robocalc.robochart.ControllerDef;
 import circus.robocalc.robochart.ControllerRef;
+import circus.robocalc.robochart.GeneralController;
+import circus.robocalc.robochart.GeneralOperation;
 import circus.robocalc.robochart.Operation;
 import circus.robocalc.robochart.OperationDef;
 import circus.robocalc.robochart.OperationRef;
@@ -98,7 +101,10 @@ public class DefinitionResolver {
       return d;
     }
     if (c instanceof ControllerRef r) {
-      return r.getRef();
+		GeneralController ref = ((ControllerRef) c).getRef();
+	    if (ref instanceof ControllerDef) {
+	  	  return (ControllerDef) ref;
+	    }
     }
     throw new IllegalArgumentException("expected Controller{Def, Ref}, got %s".formatted(c));
   }
@@ -114,7 +120,10 @@ public class DefinitionResolver {
       return d;
     }
     if (op instanceof OperationRef r) {
-      return r.getRef();
+    	GeneralOperation ref = ((OperationRef) op).getRef();
+        if (ref instanceof OperationDef) {
+      	  return (OperationDef) ref;
+        }
     }
     throw new IllegalArgumentException("expected Operation{Def, Ref}, got %s".formatted(op));
   }

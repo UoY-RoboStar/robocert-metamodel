@@ -15,6 +15,8 @@ package robostar.robocert.util;
 import circus.robocalc.robochart.ConnectionNode;
 import circus.robocalc.robochart.Context;
 import circus.robocalc.robochart.ControllerRef;
+import circus.robocalc.robochart.GeneralOperation;
+import circus.robocalc.robochart.OperationDef;
 import circus.robocalc.robochart.OperationRef;
 import circus.robocalc.robochart.StateMachineRef;
 import com.google.inject.Inject;
@@ -76,7 +78,10 @@ public record ActorContextFinder(DefinitionResolver defResolver, ActorNodeResolv
       return s.getRef();
     }
     if (n instanceof OperationRef r) {
-      return r.getRef();
+      GeneralOperation ref = ((OperationRef) n).getRef();
+      if (ref instanceof OperationDef) {
+    	  return (Context) ref;
+      }
     }
 
     throw new IllegalArgumentException("Node not supported for context finding: %s".formatted(n));
