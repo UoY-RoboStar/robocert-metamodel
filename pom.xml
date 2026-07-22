@@ -20,7 +20,7 @@ SPDX-License-Identifier: EPL-2.0
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <eclipse-repo.url>http://download.eclipse.org/releases/2021-12</eclipse-repo.url>
-    <xtext.version>2.27.0</xtext.version>
+    <xtext.version>2.25.0</xtext.version>
   </properties>
 
   <modules>
