@@ -47,6 +47,11 @@ SPDX-License-Identifier: EPL-2.0
           </cleanupDaemonThreads>          <!-- see https://bugs.eclipse.org/bugs/show_bug.cgi?id=475098#c3 -->
         </configuration>
         <dependencies>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.ecore</artifactId>
+				<version>${xtextVersion}</version>
+			</dependency>			
           <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.mwe2.launch</artifactId>
